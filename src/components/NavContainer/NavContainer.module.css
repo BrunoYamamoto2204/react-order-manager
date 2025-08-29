@@ -1,6 +1,6 @@
 .navContainer {
     background-color: var(--gray-800);
-    max-width: 45rem;
+    max-width: 35rem;
     height: 100vh;
     display: flex;
     flex-direction: column;

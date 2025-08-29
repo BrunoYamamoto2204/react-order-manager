@@ -1,4 +1,4 @@
 .mainTemplate {
     display: grid;
-    grid-template-columns: clamp(25rem, 30vw, 45rem) 1fr;
+    grid-template-columns: clamp(20rem, 30vw, 35rem) 1fr;
 }

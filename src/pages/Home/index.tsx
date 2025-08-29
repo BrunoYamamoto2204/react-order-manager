@@ -32,7 +32,7 @@ export function Home() {
                 <div className={styles.HomeContainer}>
                     <div className={styles.titles}>
                         <h1>Geral</h1>
-                        <h2>Olá Confeitaria Rosinha! Aqui está o seu resumo diário</h2>
+                        <h2>Olá Usuário! Aqui está o seu resumo diário</h2>
                     </div>
 
                     <h2 className={styles.date}>
@@ -103,8 +103,6 @@ export function Home() {
                             <p>20</p>
                         </div>
                     </div>
-
-
                 </div>
             </Container>
         </MainTemplate>

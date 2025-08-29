@@ -7,10 +7,10 @@ import { Calendar1Icon, CalendarIcon } from "lucide-react";
 
 export function Home() {
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [day, setDay] = useState("");
-    const [month, setMonth] = useState("");
-    const [year, setYear] = useState("");
-    const [isActive, setIsActive] = useState(true);
+    const [day, setDay] = useState(String(selectedDate.getDate()));
+    const [month, setMonth] = useState(String(selectedDate.getMonth() + 1));
+    const [year, setYear] = useState(String(selectedDate.getFullYear()));
+    const [isActive, setIsActive] = useState(false);
 
     const formatDate =  (date : Date) => date.toLocaleDateString("pt-BR", 
         {
@@ -36,27 +36,27 @@ export function Home() {
                     </div>
 
                     <h2 className={styles.date}>
-                        {formatDate(selectedDate)}
                         <button onClick={() => setIsActive(isActive ? false : true)}>
                             <CalendarIcon/>
                         </button>
+                        {formatDate(selectedDate)}
                     </h2>
                     
 
                     <div className={isActive ? styles.dateForm : styles.dateFormDeactivated}>
-                        <input 
+                        <input id="day"
                             type="number"
                             placeholder="Dia" 
                             value={day} 
                             onChange={e => setDay(e.target.value)} 
                         />
-                        <input 
+                        <input id="month"
                             type="number"
                             placeholder="Mês" 
                             value={month} 
                             onChange={e => setMonth(e.target.value)} 
                         />
-                        <input 
+                        <input id="year"
                             type="number"
                             placeholder="Ano" 
                             value={year} 

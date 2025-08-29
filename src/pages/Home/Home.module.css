@@ -11,6 +11,20 @@
 .date{
     margin-top: 6rem;
     font-size: 2.5rem;
+    display: flex;
+}
+
+.date button , .dateForm button{
+    margin-right: 1rem;
+    background-color: inherit;
+    border: none;
+    color: var(--gray-200);
+    cursor: pointer;
+}
+
+.date button svg {
+  width: 3rem;
+  height: 3rem;
 }
 
 .summary{
@@ -71,5 +85,25 @@
 }
 
 .dateForm {
-    display: block;
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.dateForm input{
+    padding: 0.8rem;
+    font-family: inherit;
+    font-size: 1.5rem;
+    background-color: inherit;
+    color: inherit;
+    
+    border: 0.2rem solid transparent; /* Preeencher o espaço da borda do input focus */
+    border-bottom: 0.2rem solid var(--primary);
+    transition: all 0.2s ease-in-out;
+    outline: none;
+}
+
+.dateForm input:focus{
+    border: 0.2rem solid var(--primary);
+    border-radius: 0.8rem;
 }

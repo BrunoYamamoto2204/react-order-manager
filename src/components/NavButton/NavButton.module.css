@@ -1,0 +1,37 @@
+.navButtonContainer {
+    border: none;
+    padding: 0.2rem;
+}
+
+.navButton {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    text-align: start;
+    width: 95%;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--gray-800);
+    color: var(--text-default);
+    transition: all 0.2s ease-in-out;
+}
+
+.navButton span {
+    font-size: 2rem;
+    margin-left: 2rem;
+}
+
+.navButton:hover {
+    background-color: var(--gray-500);
+    color: var(--gray-300)
+}
+
+.buttonActive {
+    background-color: var(--gray-200);
+    color: var(--gray-800);
+}
+
+.buttonActive:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-800);
+}

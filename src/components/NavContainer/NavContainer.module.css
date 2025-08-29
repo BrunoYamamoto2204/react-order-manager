@@ -1,0 +1,22 @@
+.navContainer {
+    background-color: var(--gray-800);
+    max-width: 45rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.titleContainer {
+    margin-bottom: 3rem;
+}
+
+.titleContainer h1 {
+    font-size: 3rem;
+}
+
+.titleContainer h2 {
+    font-size: 2rem;
+    color: var(--secondary-text);
+}
+

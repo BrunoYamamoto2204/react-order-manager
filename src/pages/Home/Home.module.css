@@ -22,6 +22,11 @@
     cursor: pointer;
 }
 
+.date button:hover, .dateForm button:hover{
+    transition: all 0.2s ease-in-out;
+    color: var(--gray-500);
+}
+
 .date button svg {
   width: 3rem;
   height: 3rem;

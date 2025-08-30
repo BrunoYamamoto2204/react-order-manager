@@ -1,0 +1,84 @@
+.titles h1{
+    font-size: 4.5rem;
+}
+
+.titles h2{
+    font-size: 2rem;
+    color: var(--secondary-text);
+}
+
+.orderTable {
+    font-size: 2rem;
+    margin-top: 6rem;
+    color: var(--gray-100);
+    overflow: hidden;
+    border-radius: 0.5rem; 
+}
+
+.orderTable table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.orderTable thead, 
+.orderTable tbody, 
+.orderTable tr {
+    display: contents; 
+}
+
+.orderTable th {
+    padding: 1rem;
+    background-color: var(--gray-400);
+    font-weight: bold;
+    border-bottom: 2px solid var(--gray-500);
+    text-align: start;
+}
+
+.orderTable td {
+    padding: 1.5rem;
+    padding-right: 2rem;
+    padding-bottom: 4rem;
+    border-bottom: 2px solid var(--gray-500); 
+    transition: background-color 0.3s ease; 
+}
+
+/* Zebrado na tabela */
+.orderTable tr:nth-child(even) td {
+    background-color: var(--gray-700);
+}
+
+/* Destaque para linha selecionada */
+.orderTable tbody tr:hover td {
+    background-color: var(--gray-200);
+    color: var(--gray-800);
+    font-weight: bold;
+}
+
+/* Botao Ver mais ... */
+.orderTable tbody tr:hover .seeMore button {
+    color: var(--info); 
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.liList {
+    margin-left: 2rem;
+}
+
+.seeMore{
+    margin-top: 0.5rem;
+    list-style: none;
+    color: inherit; 
+    cursor: pointer;
+    display: inline-block;
+}
+
+.seeMore button{ 
+    background-color: inherit; 
+    color: var(--gray-300);
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+}

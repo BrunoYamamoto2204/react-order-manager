@@ -3,10 +3,9 @@ import { Container } from "../../components/Container";
 import { MainTemplate } from "../../templates/MainTemplate";
 
 import styles from "./Pedidos.module.css"
+import { ProductList } from "../../components/ProductList";
 
 export function Pedidos() {
-    const [showAll, setShowAll] = useState(false);
-
     const product1 = [
         "1Kg Bolo",
         "30 Brigadeiros",
@@ -28,23 +27,6 @@ export function Pedidos() {
         "30 Brigadeiros",
         "40 Risoles Carne",
     ];
-
-    const productList = (products : string[]) => {
-        const list = showAll ? products : products.slice(0,4)
-        const showButton = showAll ? "Ver menos..." : "Ver mais..."
-
-        const formatList = list.map((p, i) => {
-            return <li key={i} className={styles.liList}>{p}</li>
-        })
-
-        if (products.length > 4){
-            formatList.push(<div className={styles.seeMore}>
-                <li><button onClick={() => setShowAll(!showAll)}>{showButton}</button></li>
-            </div>)
-        }
-        
-        return <ul>{formatList}</ul>
-    }
 
     return (
         <MainTemplate>
@@ -71,7 +53,7 @@ export function Pedidos() {
                                 <td>Cliente 1</td>
                                 <td>31/08/2025</td>
                                 <td>
-                                    {productList(product1)}
+                                   <ProductList products={product1}/>
                                 </td>
                                 <td>R$ 399,59</td>
                                 <td>Pendente</td>
@@ -80,7 +62,7 @@ export function Pedidos() {
                                 <td>Cliente 2</td>
                                 <td>30/08/2025</td>
                                 <td>
-                                    {productList(product2)}
+                                    <ProductList products={product2}/>
                                 </td>
                                 <td>R$ 299,59</td>
                                 <td>Pendente</td>
@@ -89,9 +71,7 @@ export function Pedidos() {
                                 <td>Cliente 3</td>
                                 <td>29/08/2025</td>
                                 <td>
-                                    {product3.map((p, i) =>
-                                        <li key={i}> {p}</li>
-                                    )}
+                                    <ProductList products={product3}/>
                                 </td>
                                 <td>R$ 199,59</td>
                                 <td>Pendente</td>

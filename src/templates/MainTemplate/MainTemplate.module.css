@@ -1,4 +1,10 @@
 .mainTemplate {
     display: grid;
     grid-template-columns: clamp(20rem, 30vw, 35rem) 1fr;
+    overflow-y: hidden; 
+    height: 100vh;
+}
+
+.mainTemplate main{
+    overflow-y: scroll;
 }

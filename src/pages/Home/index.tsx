@@ -4,6 +4,7 @@ import { MainTemplate } from "../../templates/MainTemplate";
 
 import styles from "./Home.module.css"
 import { Calendar1Icon, CalendarIcon } from "lucide-react";
+import { Title } from "../../components/Title";
 
 export function Home() {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -30,10 +31,7 @@ export function Home() {
         <MainTemplate>
             <Container>
                 <div className={styles.HomeContainer}>
-                    <div className={styles.titles}>
-                        <h1>Geral</h1>
-                        <h2>Olá Usuário! Aqui está o seu resumo diário</h2>
-                    </div>
+                    <Title title="Geral" subtitle="Olá Usuário! Aqui está o seu resumo diário"/>
 
                     <h2 className={styles.date}>
                         <button onClick={() => setIsActive(isActive ? false : true)}>

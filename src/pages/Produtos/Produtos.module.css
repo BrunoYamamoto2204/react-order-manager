@@ -1,0 +1,114 @@
+.productTable {
+    font-size: 2rem;
+    margin-top: 6rem;
+    color: var(--gray-100);
+    overflow: hidden;
+    border-radius: 0.5rem; 
+}
+
+.productTable table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.productTable thead, 
+.productTable tbody, 
+.productTable tr {
+    display: contents; 
+}
+
+.productTable th {
+    padding: 1rem;
+    background-color: var(--gray-400);
+    font-weight: bold;
+    border-bottom: 2px solid var(--gray-500);
+    text-align: start;
+}
+
+.productTable td {
+    padding: 1.5rem;
+    padding-right: 2rem;
+    padding-bottom: 4rem;
+    border-bottom: 2px solid var(--gray-500); 
+    transition: background-color 0.3s ease; 
+}
+
+/* Zebrado na tabela */
+.productTable tr:nth-child(even) td {
+    background-color: var(--gray-700);
+}
+
+/* Destaque para linha selecionada */
+.productTable tbody tr:hover td{
+    background-color: var(--gray-200);
+    color: var(--gray-800);
+    font-weight: bold;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header button {
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-family: inherit;
+    border-radius: 0.7rem;
+    border: none;
+    background-color: var(--gray-100);
+    transition: all 0.2s ease;
+}
+
+.header button:hover {
+    transform: scale(1.08);
+    color: inherit;
+    background-color: var(--gray-800);
+}
+
+.actions{
+    display: flex;
+    gap: 2rem;
+}
+
+.actions a{
+    color: inherit;
+}
+
+.actions a svg {
+    width: 3rem;
+    height: 3rem;
+    transition: all 0.2s ease;
+}
+
+.editIcon:hover svg{
+    color: var(--primary);
+    font-weight: bold;
+    transform: scale(1.2);
+}
+
+.deleteIcon:hover svg {
+    color: var(--error);
+    font-weight: bold;
+    transform: scale(1.2);
+}
+
+.category {
+    background-color: var(--gray-600);
+    color: inherit;
+    padding: 1rem;
+    border-radius: 1.2rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.productTable tbody tr:hover td .category{
+    background-color: var(--gray-300);
+}
+
+td.categoryColumn {
+    padding-top: 3rem;
+}
+

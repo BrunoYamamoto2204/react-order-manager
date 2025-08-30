@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./ProductList.module.css"
+import styles from "../../pages/Pedidos/Pedidos.module.css"
 
 type ProductListProps = {
     products: string[]
@@ -16,15 +16,15 @@ export function ProductList({ products } : ProductListProps) {
     })
 
     if (products.length > 4){
-        formatList.push(<div className={styles.seeMore}>
-            <li><button onClick={() => setShowAll(!showAll)}>{showButton}</button></li>
-        </div>)
+        formatList.push(
+            <li className={styles.seeMore}>
+                <button onClick={() => setShowAll(!showAll)}>{showButton}</button>
+            </li>
+        )
     }
     
     return (
-        <ul>
-            {formatList}
-        </ul>
+        <ul>{formatList}</ul>
     )
     
 }

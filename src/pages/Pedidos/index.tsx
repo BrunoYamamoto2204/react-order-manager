@@ -1,9 +1,10 @@
-import { useState } from "react";
 import { Container } from "../../components/Container";
 import { MainTemplate } from "../../templates/MainTemplate";
 
+// import styles from "../../components/OrdersList/OrdersList.module.css"
 import styles from "./Pedidos.module.css"
-import { ProductList } from "../../components/ProductList";
+import { ProductList } from "../../components/OrdersList";
+import { Title } from "../../components/Title";
 
 export function Pedidos() {
     const product1 = [
@@ -31,10 +32,7 @@ export function Pedidos() {
     return (
         <MainTemplate>
             <Container>
-                <div className={styles.titles}>
-                    <h1>Pedidos</h1>
-                    <h2>Confira o histórico de pedidos</h2>
-                </div>
+                <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
 
                 <div className={styles.orderTable}>
                     <table>

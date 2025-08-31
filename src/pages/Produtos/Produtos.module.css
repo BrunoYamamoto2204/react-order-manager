@@ -67,6 +67,7 @@
     transform: scale(1.08);
     color: inherit;
     background-color: var(--gray-800);
+    cursor: pointer;
 }
 
 .actions{

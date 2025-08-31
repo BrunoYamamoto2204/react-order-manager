@@ -1,9 +1,9 @@
-import { Edit2Icon, TrashIcon } from "lucide-react";
 import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 
 import styles from "./Produtos.module.css"
+import { ProductsList } from "../../components/ProductsList";
 
 export function Produtos() {
     const produtos = [
@@ -18,45 +18,6 @@ export function Produtos() {
         { produto: "Pão de Mel", preco: 5.00, categoria: "Docinho", unidade: "UN" },
         { produto: "Empada Frango", preco: 6.00, categoria: "Salgado", unidade: "UN" },
     ];
-
-    const allProducts = (products : object[]) => {
-        return products.map((p, i) => {
-            return <tr key={i}>{tdProduct(p)}</tr>
-        })
-    }
-    
-    const tdProduct = (product : object) => {
-        // let toCategory = 0;
-
-        const valuesList = Object.entries(product).map(([k, v]) => {
-            let displayValue;
-            let classCategory;
-
-            if (typeof(v) === "number"){
-                displayValue = `R$ ${v.toFixed(2).replace(".",",")}`;
-            }
-            else if (k === "categoria") {
-                classCategory = styles.categoryColumn
-                displayValue = <span className={styles.category}>{v}</span>
-            }
-            else {
-                displayValue = v
-            }
-
-            return <td key={k} className={classCategory}>{displayValue}</td>
-        })
-
-        valuesList.push(
-            <td>
-                <div className={styles.actions}>
-                    <a className={styles.editIcon} href=""><Edit2Icon /></a>
-                    <a className={styles.deleteIcon} href=""><TrashIcon /></a>
-                </div>
-            </td>
-        )
-
-        return valuesList
-    }
 
     return(
        <MainTemplate>
@@ -78,7 +39,7 @@ export function Produtos() {
                             </tr>
                         </thead>
                         <tbody>
-                            {allProducts(produtos)}
+                            <ProductsList productsList={produtos}/>
                         </tbody>
                     </table>
                 </div>

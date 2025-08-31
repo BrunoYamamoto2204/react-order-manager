@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
+import { InfoIcon } from "lucide-react";
 
 type ProductListProps = {
     orders: object[]
@@ -33,10 +34,22 @@ export function OrdersList({ orders } : ProductListProps) {
     // Transforma todas as chaves em <td>
     const buildOrder = (order : object) => {
         const tdOrder = Object.entries(order).map(([k, v]) => {
+            
+            if (k === "status"){
+                return (
+                    <td>
+                        <div className={styles.status}>
+                            {v}
+                            <a href=""><InfoIcon /></a>
+                        </div>
+                    </td>
+                )
+            }
             // Produtos: toda a lista <ul> em um td
-            if (k !== "produtos") {
+            else if (k !== "produtos") {
                 return <td>{v}</td>
-            } else{
+            } 
+            else{
                 return <td>{orderProducts(v)}</td>
             }
         })

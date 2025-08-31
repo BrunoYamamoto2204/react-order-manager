@@ -35,6 +35,16 @@
     transition: background-color 0.3s ease; 
 }
 
+/* Ver o status detalhado do pedido */
+.status {
+    display: flex;
+    gap: 1rem;
+}
+
+.status svg{
+    color: var(--gray-100);
+}
+
 /* Zebrado na tabela */
 .orderTable tr:nth-child(even) td {
     background-color: var(--gray-700);
@@ -47,8 +57,9 @@
     font-weight: bold;
 }
 
-
-.orderTable tbody tr:hover td ul li.seeMore button {
+/* Botões em destaque  */
+.orderTable tbody tr:hover td ul li.seeMore button, 
+.orderTable tbody tr:hover td .status svg {
     color: var(--info);
     font-weight: bold;
 }
@@ -79,3 +90,4 @@
 .liList {
     margin-left: 2rem;
 }
+

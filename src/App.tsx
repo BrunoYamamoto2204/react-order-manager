@@ -1,3 +1,4 @@
+import { Analises } from "./pages/Analises";
 import { Clientes } from "./pages/Clientes";
 import { Home } from "./pages/Home";
 import { Pedidos } from "./pages/Pedidos";
@@ -8,6 +9,6 @@ import "./styles/theme.css";
 
 export function App(){
   return (
-    <Clientes />
+    <Home />
   )
 }

@@ -53,7 +53,7 @@ export function Clientes() {
                                 <th>Nome</th>
                                 <th>Celular</th>
                                 <th>E-mail</th>
-                                <th>Pedidos Pendentes</th>
+                                <th style={{ textAlign: 'center'}}>Pedidos Pendentes</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>

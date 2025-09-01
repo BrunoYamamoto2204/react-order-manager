@@ -74,5 +74,23 @@
     transform: scale(1.2);
 }
 
+.pendingOrders {
+    text-align: center;
+    color: var(--primary);
+}
+
+.noPendingOrders {
+    text-align: center;
+    color: var(--error);
+}
+
+.noPendingOrders svg,
+.pendingOrders svg {
+    width: 3rem;
+    height: 3rem;
+}
+
+
+
 
 

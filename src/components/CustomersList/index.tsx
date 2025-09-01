@@ -1,4 +1,4 @@
-import { Edit2Icon, TrashIcon } from "lucide-react"
+import { CheckLineIcon, CircleXIcon, Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
 
 type CustomersListProps = {
@@ -9,7 +9,13 @@ export function CustomersList({ customersList } : CustomersListProps) {
     // Contruir cada cliente (<td>)
     const buildCustomer = (customer : object) => {
         const valuesList = Object.entries(customer).map(([k, v]) => {
-            return <td key={k}>{v}</td>
+            if (k === "pedidosPendentes") {
+                if (v > 0) {
+                    return <td className={styles.pendingOrders} key={k}><CheckLineIcon/></td>
+                }
+                else return <td className={styles.noPendingOrders} key={k}><CircleXIcon/></td>
+            }
+            else  return <td key={k}>{v}</td>
         })
         
         valuesList.push(

@@ -64,7 +64,7 @@ export function Home() {
                     </div>
 
                     <div className={styles.summary}>
-                        <h2>Número de Pedidos: <span>0</span></h2>
+                        <h2>Receita total: R$ <span>5553,50</span></h2>
                         <hr />
                         <div className={styles.categories}>
                             <div className={styles.category}>

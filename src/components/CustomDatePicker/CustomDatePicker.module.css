@@ -1,0 +1,245 @@
+/* ========== CONTAINER PRINCIPAL ========== */
+.container {
+    position: relative;
+    width: 100%;
+}
+
+/* ========== INPUT DISPLAY ========== */
+.inputDisplay {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border: 0.2rem solid var(--primary);
+    border-radius: 0.8rem;
+    background-color: inherit;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: inherit;
+    font-size: 1.5rem;
+    min-height: 5rem;
+}
+
+.inputDisplay:hover {
+    border-color: var(--primary-hover, var(--primary));
+    box-shadow: 0 0 0 0.1rem var(--primary);
+}
+
+.inputDisplay.disabled {
+    background-color: var(--gray-700);
+    border-color: var(--gray-600);
+    color: var(--gray-400);
+    cursor: not-allowed;
+}
+
+.inputText {
+    font-size: 1.5rem;
+    color: inherit;
+}
+
+.calendarIcon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--primary);
+    margin-left: 1rem;
+}
+
+.calendarIcon.disabled {
+    color: var(--gray-500);
+}
+
+/* ========== DROPDOWN ========== */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    background-color: var(--background-secondary, #1f2937);
+    border: 0.2rem solid var(--gray-600);
+    border-radius: 0.8rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
+    z-index: 50;
+    padding: 1.5rem;
+    min-width: 32rem;
+}
+
+/* ========== HEADER ========== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.navigationButton {
+    padding: 0.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: white;
+}
+
+.navigationButton:hover {
+    background-color: var(--gray-700);
+}
+
+.navigationIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.monthYear {
+    color: white;
+    font-weight: 600;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+/* ========== DIAS DA SEMANA ========== */
+.weekDays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.weekDay {
+    text-align: center;
+    color: var(--gray-400);
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.8rem;
+}
+
+/* ========== DIAS DO CALENDÁRIO ========== */
+.calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+}
+
+.dayButton {
+    padding: 0.8rem;
+    text-align: center;
+    border-radius: 0.4rem;
+    border: none;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 1.3rem;
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dayButton.empty {
+    visibility: hidden;
+}
+
+.dayButton.disabled {
+    color: var(--gray-600);
+    cursor: not-allowed;
+}
+
+.dayButton.today {
+    background-color: var(--primary-dark, #1e3a8a);
+    color: var(--primary-light, #93c5fd);
+    font-weight: 600;
+}
+
+.dayButton.selected {
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+}
+
+.dayButton.available {
+    color: var(--gray-300);
+}
+
+.dayButton.available:hover {
+    background-color: var(--gray-700);
+    color: white;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.1rem solid var(--gray-600);
+}
+
+.footerLeft {
+    display: flex;
+    gap: 1rem;
+}
+
+.footerButton {
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.3rem;
+    background-color: transparent;
+}
+
+.cancelButton {
+    color: var(--gray-400);
+}
+
+.cancelButton:hover {
+    color: white;
+}
+
+.clearButton {
+    color: #ef4444;
+}
+
+.clearButton:hover {
+    color: #dc2626;
+}
+
+.todayButton {
+    background-color: var(--primary);
+    color: white;
+}
+
+.todayButton:hover {
+    background-color: var(--primary-hover, var(--primary));
+    transform: translateY(-0.1rem);
+}
+
+/* ========== RESPONSIVIDADE ========== */
+@media (max-width: 768px) {
+    .dropdown {
+        min-width: 28rem;
+        padding: 1rem;
+    }
+    
+    .inputDisplay {
+        font-size: 1.3rem;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .calendarIcon {
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+    
+    .monthYear {
+        font-size: 1.4rem;
+    }
+    
+    .dayButton {
+        font-size: 1.2rem;
+        min-height: 3.5rem;
+        padding: 0.6rem;
+    }
+}

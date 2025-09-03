@@ -4,7 +4,7 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Analises.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
-import { ArrowDown01Icon, ArrowDownAZ, ArrowDownIcon, ChartNoAxesColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, CircleDollarSignIcon, DollarSignIcon, Package2Icon, TrophyIcon } from "lucide-react"
+import { ArrowDown01Icon, ArrowDownAZ, ArrowDownIcon, ChartAreaIcon, ChartColumnIcon, ChartNoAxesColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, CircleDollarSignIcon, DollarSignIcon, ListOrderedIcon, Package2Icon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
 import { AnalysisList } from "../../components/AnalysisList"
 
 export function Analises() {
@@ -45,7 +45,6 @@ export function Analises() {
                     title="Análises" 
                     subtitle="Analise os resultados e gere insights para o seu negócio"
                 />
-                <hr />
                 <div className={styles.analysisDate}>
                     <h2>Período de análise: </h2>
                     <div className={styles.period}>
@@ -71,9 +70,31 @@ export function Analises() {
                     </div>
                 </div>
 
+                {/* RESUMO DO PERÍODO */}
+                <div className={styles.periodResume}>
+                    <div className={styles.resumeTitle}>
+                        <h2>Resumo do perído</h2>
+                        <h3>Visão geral dos seus resultados de vendas.</h3>
+                    </div>
+                    <div className={styles.resumeContent}>
+                        <div className={styles.resumeItem}>
+                            <h3>Quantidade de Pedidos</h3>
+                            <h4>231</h4>
+                        </div>
+                        <div className={styles.resumeItem}>
+                            <h3>Valor dos h4edidos</h3>
+                            <h4>R$ 10.231,76</h4>
+                        </div>
+                        <div className={styles.resumeItem}>
+                            <h3>Ticket Médio</h3>
+                            <h4>R$ 44,76</h4>
+                        </div>
+                    </div>
+                </div>
+
                 <div className={styles.featuredProductStats}>
                     <div className={styles.productChoice}>
-                        <h2>Produto Destaque: </h2>
+                        <h2>Destaques </h2>
                         <div className={styles.dropdown}>
                             <button
                                 className={`${styles.dropbtn} ${isOpen ? styles.open : ""}`}
@@ -100,6 +121,7 @@ export function Analises() {
                         </div>
                     </div>
 
+                    {/* DESTAQUES */}
                     <div className={styles.containersGroup}>
                         <div className={styles.featuredProduct}>
                             <h2><TrophyIcon/> Produto</h2>
@@ -107,12 +129,12 @@ export function Analises() {
                             <h4 className={styles.productSubtitle}>se destacou no período.</h4>
                         </div>
                         <div className={styles.featuredProduct}>
-                            <h2><Package2Icon/> Quantidade Vendida</h2>
+                            <h2><ShoppingCartIcon/> Quantidade Vendida</h2>
                             <h3 className={styles.productName}>852</h3>
                             <h4 className={styles.productSubtitle}>unidades vendidas</h4>
                         </div>
                         <div className={styles.featuredProduct}>
-                            <h2><CircleDollarSignIcon/> Valor Total</h2>
+                            <h2><DollarSignIcon/> Valor Total</h2>
                             <h3 className={styles.productName}>R$ 2543,43</h3>
                             <h4 className={styles.productSubtitle}>unidades vendidas</h4>
                         </div>
@@ -122,7 +144,7 @@ export function Analises() {
                         <div className={styles.bestSellersContainer}>
                             <h2>
                                 <ChartNoAxesCombinedIcon/>
-                                Produtos mais pedidos
+                                Produtos mais vendidos
                             </h2>
                             <table>
                                 <thead>
@@ -137,10 +159,14 @@ export function Analises() {
                                     <AnalysisList productsList={productList}/>
                                 </tbody>
                             </table>
+                            <h3 className={styles.seeMore}>Ver mais...</h3>
                         </div>
-                        <div className={styles.orderStats}>
-                        
-                        </div>
+                        <div className={styles.orderChart}>
+                            <h2>
+                                <ChartColumnIcon/>
+                                Produtos mais vendidos
+                            </h2>
+                        </div>  
                     </div>
                 </div>
             </Container>

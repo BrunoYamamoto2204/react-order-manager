@@ -10,7 +10,6 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr); 
     border-collapse: collapse;
-    width: 100%;
 }
 
 .orderTable thead, 

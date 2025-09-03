@@ -18,6 +18,7 @@ export function OrdersList({ orders } : ProductListProps) {
             return <li key={i} className={styles.liList}>{p}</li>
         })
 
+        // Botão de Ver Mais/Ver Menos 
         if (products.length > 4){
             formatList.push(
                 <li className={styles.seeMore}>
@@ -45,10 +46,10 @@ export function OrdersList({ orders } : ProductListProps) {
                     </td>
                 )
             }
-            // Produtos: toda a lista <ul> em um td
             else if (k !== "produtos") {
                 return <td>{v}</td>
             } 
+            // Produtos: toda a lista <ul> em um td
             else{
                 return <td>{orderProducts(v)}</td>
             }

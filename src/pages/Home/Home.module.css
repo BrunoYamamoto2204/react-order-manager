@@ -44,6 +44,7 @@
 .summary hr {
     height: 0.4rem;
     margin: 2rem 0;
+    border: none;
     background-color: var(--secondary-text);
 }
 

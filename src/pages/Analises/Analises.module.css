@@ -1,36 +1,193 @@
 hr {
-    height: 0.4rem;
+    height: 0.1rem;
     margin: 4rem 0;
-    background-color: var(--secondary-text);
+    border: none;
+    background-color: var(--disabled);
 }
 
-
-.analysisDate{
-    text-align: center;
+.analysisDate {
+    margin-top: 4rem;
+    display: flex;
+    align-items: center;
 }
 
 .analysisDate h2{
-    margin-top: 4rem;
-    font-size: 3rem;
-}
-
-.analysisDate h3{
-    margin-bottom: 3rem;
-    font-size: 2.2rem;
-    color: var(--secondary-text);
+    font-size: 2.5rem;
 }
 
 .period{
     display: flex;
+    gap: 2rem;
+    margin-left: 3rem;
+}
+
+.midText{
+    display: flex;
+    align-items: center;
+    color: var(--secondary-text);
+    font-size: 2rem;
+}
+
+/* Featured Product Stats */
+.featuredProductStats{
+    margin-top: 3rem;
+}
+
+.featuredProductStats h2 {
+    font-size: 3rem;
+}
+
+.featuredProductStats h3 {
+    display: flex;
+}
+
+/* Container Botão Dropdown */
+.productChoice{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown{
+    position: relative;
+}
+
+.dropbtn{
+    display: flex;
+    align-items: center;
+    background-color: var(--gray-600);
+    color: white;
+    padding: 10px 14px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+
+.dropbtn svg {
+    transition: transform 0.3s ease;
+    margin-left: 8px;
+}
+
+.dropbtn.open svg {
+    transform: rotate(180deg);
+}
+
+/* Opcoes do Dropdown */
+.dropdownContent {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    position: absolute;
+}
+
+.dropdownContent.open {
+    max-height: 30rem;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdownContent a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    padding: 1rem;
+    background-color: var(--gray-800);
+    transition: all 0.3s ease;
+}
+
+.dropdownContent a:hover {
+  background-color: var(--gray-600);
+  border-radius: 1rem;
+}
+
+
+/* Produto em destaque */
+.containersGroup{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 2rem;
     gap: 5rem;
-    justify-content: center;
 }
 
-.period h3{
-    margin: 0;
-    margin-bottom: 1rem;
+.featuredProduct{
+    background-color: var(--gray-800);
+    padding: 3rem;
+    border-radius: 1rem;
 }
 
+.featuredProduct h2{
+    display: flex;
+    color: var(--gray-200);
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.featuredProduct h2 svg{
+    margin-right: 1rem;
+    color: var(--primary);
+}
+
+.productName{
+    margin-top: 2rem;
+    font-size: 4rem;
+}
+
+.productSubtitle{
+    color: var(--text-disabled);
+    font-weight: 400;
+    margin-top: 0.5rem;
+}
+
+.bestSellersContainer, .orderStats{
+    background-color: var(--gray-800);
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+/* Produtos mais vendidos */
+.bestSellersContainer h2 {
+    display: flex;
+    font-size: 2.2rem;
+    color: var(--gray-200);
+    margin-bottom: 2rem;
+}
+
+.bestSellersContainer h2 svg{
+    margin-right: 1rem;
+    color: var(--primary);
+}
+
+.bestSellersContainer table{
+    display: grid;
+    grid-template-columns: 0.8fr 1.5fr 1fr 1fr; 
+    border-collapse: collapse;
+}
+
+.bestSellersContainer table th, td{
+    padding: 1rem;
+    text-align: start;
+}
+
+.bestSellersContainer table th {
+    border-bottom: 0.2rem var(--disabled) solid;
+    margin-bottom: 1.5rem;
+}
+
+.bestSellersContainer thead, 
+.bestSellersContainer tbody, 
+.bestSellersContainer tr {
+    display: contents; 
+}
+
+/* Geral de pedidos */
 
 
-
+.gridOfTwo{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}

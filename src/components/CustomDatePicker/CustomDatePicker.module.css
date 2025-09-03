@@ -4,6 +4,23 @@
     width: 100%;
 }
 
+/* ========== INPUT BOX COM LABEL ========== */
+.inputBox {
+    position: relative;
+    width: 100%;
+}
+
+.label {
+    position: absolute;
+    top: -0.8rem;
+    left: 1.2rem;
+    background-color: var(--background-primary, #111827);
+    padding: 0 0.8rem;
+    font-size: 1.2rem;
+    color: var(--secondary-text);
+    z-index: 1;
+    pointer-events: none;
+}
 /* ========== INPUT DISPLAY ========== */
 .inputDisplay {
     display: flex;
@@ -39,10 +56,10 @@
 }
 
 .calendarIcon {
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     color: var(--primary);
-    margin-left: 1rem;
+    margin-left: 2.5rem;
 }
 
 .calendarIcon.disabled {

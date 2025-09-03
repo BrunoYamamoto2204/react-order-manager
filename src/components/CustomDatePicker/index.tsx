@@ -1,276 +1,372 @@
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
-import styles from './CustomDatePicker.module.css';
+// ========== PARTE 1: IMPORTS E DEPENDÊNCIAS ==========
+import { useState } from 'react';           // Hook para gerenciar estado
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'; // Ícones
+import styles from './CustomDatePicker.module.css'; // Estilos CSS Modules
 
-// ========== INTERFACES E TIPOS ==========
+// ========== PARTE 2: INTERFACES (CONTRATOS DE TIPOS) ==========
+
+// Define o que o componente espera receber como props
 interface CustomDatePickerProps {
-    value: string;
-    onChange: (date: string) => void;
-    placeholder?: string;
-    disabled?: boolean;
-    minDate?: string;
-    maxDate?: string;
+    value: string;                    // Data selecionada (formato "YYYY-MM-DD")
+    onChange: (date: string) => void; // Função chamada quando data muda
+    placeholder?: string;             // Texto quando não há data (opcional)
+    disabled?: boolean;               // Se o componente está desabilitado (opcional)
+    minDate?: string;                // Data mínima permitida (opcional)
+    maxDate?: string;                // Data máxima permitida (opcional)  
+    dateName? : string
+    className?: string;               // Classes CSS extras (opcional)
 }
 
+// Define a estrutura de cada dia no calendário
 interface CalendarDay {
-    day: number | null;
-    isCurrentMonth: boolean;
-    isSelected: boolean;
-    isToday: boolean;
-    isDisabled: boolean;
+    day: number | null;      // Número do dia (1-31) ou null para espaços vazios
+    isCurrentMonth: boolean; // Se o dia pertence ao mês atual
+    isSelected: boolean;     // Se o dia está selecionado
+    isToday: boolean;        // Se o dia é hoje
+    isDisabled: boolean;     // Se o dia está desabilitado
 }
 
-// ========== COMPONENTE PRINCIPAL ==========
+// ========== PARTE 3: DECLARAÇÃO DO COMPONENTE ==========
 export function CustomDatePicker({
-    value,
-    onChange,
-    placeholder = "Selecione a data",
-    disabled = false,
-    minDate,
-    maxDate,
+    value,                           // Data atual selecionada
+    onChange,                        // Função para mudar a data
+    placeholder = "Selecione a data", // Valor padrão se não informado
+    disabled = false,                // Valor padrão se não informado
+    minDate,                         // Pode ser undefined
+    maxDate,                         // Pode ser undefined
+    dateName,
+    className = ""                   // Valor padrão se não informado
+}: CustomDatePickerProps) {
 
-    }: CustomDatePickerProps) {
-        const [isOpen, setIsOpen] = useState<boolean>(false);
-        const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+    // ========== PARTE 4: ESTADOS (useState) ==========
+    
+    // Controla se o calendário está aberto ou fechado
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    
+    // Controla qual mês/ano está sendo mostrado no calendário
+    const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+    // new Date() = data atual (ex: 31/08/2025)
 
-    // ========== FUNÇÕES UTILITÁRIAS ==========
+    // ========== PARTE 5: FUNÇÕES UTILITÁRIAS ==========
+    
+    // Converte "2025-08-31" para "31/08/2025" (para mostrar ao usuário)
     const formatDateForDisplay = (dateString: string): string => {
-        if (!dateString) return placeholder;
-        const [year, month, day] = dateString.split('-');
-        return `${day}/${month}/${year}`;
+        if (!dateString) return placeholder; // Se vazio, mostra placeholder
+        const [year, month, day] = dateString.split('-'); // Divide a string
+        return `${day}/${month}/${year}`; // Reconstrói no formato brasileiro
     };
 
+    // Verifica se uma data deve estar desabilitada
     const isDateDisabled = (date: Date): boolean => {
+        // Converte Date para string no formato do input ("YYYY-MM-DD")
         const dateString = date.toISOString().split('T')[0];
         
-        // Ocorre não por conta da data, mas por ordem alfabética e numérica
+        // Se tem data mínima E a data é menor que a mínima
         if (minDate && dateString < minDate) return true;
+        
+        // Se tem data máxima E a data é maior que a máxima
         if (maxDate && dateString > maxDate) return true;
         
-        return false;
+        return false; // Não está desabilitada
     };
 
+    // Verifica se uma data é hoje
     const isToday = (date: Date): boolean => {
-        const today = new Date();
+        const today = new Date(); // Data atual
+        // Compara as strings de data (ignora horário)
         return date.toDateString() === today.toDateString();
     };
 
+    // FUNÇÃO MAIS COMPLEXA: Gera todos os dias do calendário
     const getDaysInMonth = (date: Date): CalendarDay[] => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDayOfWeek = firstDay.getDay();
-
-        const days: CalendarDay[] = [];
+        const year = date.getFullYear();    // 2025
+        const month = date.getMonth();      // 7 (agosto = 7, pois janeiro = 0)
         
-        // Dias vazios no início
+        // Primeiro dia do mês (1º de agosto)
+        const firstDay = new Date(year, month, 1);
+        
+        // Último dia do mês (31 de agosto) 
+        const lastDay = new Date(year, month + 1, 0); // Dia 0 do próximo mês = último dia do atual
+        
+        const daysInMonth = lastDay.getDate();        // 31 (quantos dias tem agosto)
+        const startingDayOfWeek = firstDay.getDay();  // 4 (quinta-feira, se 1º agosto for quinta)
+
+        const days: CalendarDay[] = []; // Array que vai conter todos os dias
+        
+        // ETAPA 1: Adiciona espaços vazios no início
+        // Se o mês começa numa quinta (4), precisa de 4 espaços vazios antes
         for (let i = 0; i < startingDayOfWeek; i++) {
             days.push({
-                day: null,
-                isCurrentMonth: false,
-                isSelected: false,
-                isToday: false,
-                isDisabled: true
+                day: null,              // Não há dia
+                isCurrentMonth: false,  // Não é do mês atual
+                isSelected: false,      // Não pode estar selecionado
+                isToday: false,         // Não pode ser hoje
+                isDisabled: true        // Está desabilitado
             });
         }
         
-        // Dias do mês
+        // ETAPA 2: Adiciona os dias reais do mês (1, 2, 3... 31)
         for (let day = 1; day <= daysInMonth; day++) {
+            // Cria objeto Date para este dia específico
             const currentDate = new Date(year, month, day);
             const dateString = currentDate.toISOString().split('T')[0];
             
             days.push({
-                day,
-                isCurrentMonth: true,
-                isSelected: value === dateString,
-                isToday: isToday(currentDate),
-                isDisabled: isDateDisabled(currentDate)
+                day,                                    // 1, 2, 3... 31
+                isCurrentMonth: true,                   // É do mês atual
+                isSelected: value === dateString,       // Compara com data selecionada
+                isToday: isToday(currentDate),          // Verifica se é hoje
+                isDisabled: isDateDisabled(currentDate) // Verifica se deve estar desabilitado
             });
         }
         
-        return days;
+        return days; // Retorna array com ~35-42 elementos (depende do mês)
     };
 
-    // ========== HANDLERS ==========
+    // ========== PARTE 6: HANDLERS (FUNÇÕES DE EVENTO) ==========
+    
+    // Chamada quando usuário clica em um dia
     const handleDateClick = (calendarDay: CalendarDay): void => {
+        // Se não tem dia ou está desabilitado, não faz nada
         if (!calendarDay.day || calendarDay.isDisabled) return;
         
-        const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth();
-        const selectedDate = new Date(year, month, calendarDay.day);
-        const formattedDate = selectedDate.toISOString().split('T')[0];
+        // Reconstrói a data completa
+        const year = currentMonth.getFullYear();    // 2025
+        const month = currentMonth.getMonth();      // 7 (agosto)
+        const selectedDate = new Date(year, month, calendarDay.day); // Nova data
         
-        onChange(formattedDate);
-        setIsOpen(false);
+        // Converte para formato string que o input entende
+        const formattedDate = selectedDate.toISOString().split('T')[0]; // "2025-08-15"
+        
+        onChange(formattedDate); // Chama função do componente pai
+        setIsOpen(false);        // Fecha o calendário
     };
 
+    // Navega para mês anterior (-1) ou próximo (+1)
     const navigateMonth = (direction: -1 | 1): void => {
-        const newMonth = new Date(currentMonth);
-        newMonth.setMonth(currentMonth.getMonth() + direction);
-        setCurrentMonth(newMonth);
+        const newMonth = new Date(currentMonth); // Cria cópia da data atual
+        newMonth.setMonth(currentMonth.getMonth() + direction); // +1 ou -1 mês
+        setCurrentMonth(newMonth); // Atualiza o estado
     };
 
+    // Seleciona a data de hoje
     const handleTodayClick = (): void => {
-        const today = new Date().toISOString().split('T')[0];
-        onChange(today);
-        setIsOpen(false);
+        const today = new Date().toISOString().split('T')[0]; 
+        // today.setDate(today.getDate() - 1)
+        // const correctDate = today.toISOString().split('T')[0]
+        onChange(today);  // Atualiza a data selecionada
+        setIsOpen(false); // Fecha o calendário
     };
 
+    // Limpa a seleção (deixa vazio)
     const handleClearClick = (): void => {
-        onChange('');
-        setIsOpen(false);
+        onChange('');     // String vazia
+        setIsOpen(false); // Fecha o calendário
     };
 
+    // Abre/fecha o calendário (só se não estiver desabilitado)
     const handleToggle = (): void => {
         if (!disabled) {
-            setIsOpen(!isOpen);
+            setIsOpen(!isOpen); // Inverte o estado: true -> false, false -> true
         }
     };
 
-    // ========== CONSTANTES ==========
+    // ========== PARTE 7: CONSTANTES ==========
+    
+    // Nomes dos meses em português
     const monthNames: string[] = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
+    // Nomes dos dias da semana (abreviados)
     const weekDays: string[] = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-    // ========== CLASSES DINÂMICAS ==========
+    // ========== PARTE 8: FUNÇÕES DE CLASSE CSS (LÓGICA VISUAL) ==========
+    
+    // Determina as classes CSS do input principal
     const getInputDisplayClasses = (): string => {
-        let classes = styles.inputDisplay;
-        if (disabled) classes += ` ${styles.disabled}`;
+        let classes = styles.inputDisplay; // Classe base
+        if (disabled) classes += ` ${styles.disabled}`; // Adiciona classe se desabilitado
         return classes;
     };
 
+    // Determina as classes CSS de cada botão de dia
     const getDayButtonClasses = (calendarDay: CalendarDay): string => {
-        let classes = styles.dayButton;
+        let classes = styles.dayButton; // Classe base
         
         if (!calendarDay.day) {
-            classes += ` ${styles.empty}`;
+            classes += ` ${styles.empty}`;      // Dia vazio (invisível)
         } else if (calendarDay.isDisabled) {
-            classes += ` ${styles.disabled}`;
+            classes += ` ${styles.disabled}`;   // Dia desabilitado (cinza)
         } else if (calendarDay.isSelected) {
-            classes += ` ${styles.selected}`;
+            classes += ` ${styles.selected}`;   // Dia selecionado (azul)
         } else if (calendarDay.isToday) {
-            classes += ` ${styles.today}`;
+            classes += ` ${styles.today}`;      // Hoje (azul mais escuro)
         } else {
-            classes += ` ${styles.available}`;
+            classes += ` ${styles.available}`;  // Dia normal (clicável)
         }
         
         return classes;
     };
 
+    // Determina as classes CSS do ícone de calendário
     const getCalendarIconClasses = (): string => {
-        let classes = styles.calendarIcon;
-        if (disabled) classes += ` ${styles.disabled}`;
+        let classes = styles.calendarIcon; // Classe base
+        if (disabled) classes += ` ${styles.disabled}`; // Cinza se desabilitado
         return classes;
     };
 
-    // ========== RENDER ==========
+    // ========== PARTE 9: RENDER (O QUE APARECE NA TELA) ==========
     return (
-        <div className={`${styles.container}`}>
-            {/* Input Display */}
-            <div 
-                onClick={handleToggle}
-                className={getInputDisplayClasses()}
-            >
-                <span className={styles.inputText}>
-                    {formatDateForDisplay(value)}
-                </span>
-                <Calendar className={getCalendarIconClasses()} />
-            </div>
-
-            {/* Calendar Dropdown */}
-            {isOpen && !disabled && (
-                <div className={styles.dropdown}>
-                    {/* Header */}
-                    <div className={styles.header}>
-                        <button 
-                            type="button"
-                            onClick={() => navigateMonth(-1)}
-                            className={styles.navigationButton}
-                            aria-label="Mês anterior"
-                        >
-                            <ChevronLeft className={styles.navigationIcon} />
-                        </button>
-                        
-                        <h3 className={styles.monthYear}>
-                            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                        </h3>
-                        
-                        <button 
-                            type="button"
-                            onClick={() => navigateMonth(1)}
-                            className={styles.navigationButton}
-                            aria-label="Próximo mês"
-                        >
-                            <ChevronRight className={styles.navigationIcon} />
-                        </button>
-                    </div>
-
-                    {/* Week Days */}
-                    <div className={styles.weekDays}>
-                        {weekDays.map((day: string) => (
-                            <div key={day} className={styles.weekDay}>
-                                {day}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Calendar Days */}
-                    <div className={styles.calendarGrid}>
-                        {getDaysInMonth(currentMonth).map((calendarDay: CalendarDay, index: number) => {
-                            return (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    onClick={() => handleDateClick(calendarDay)}
-                                    disabled={!calendarDay.day || calendarDay.isDisabled}
-                                    className={getDayButtonClasses(calendarDay)}
-                                    aria-label={
-                                        calendarDay.day 
-                                            ? `Selecionar dia ${calendarDay.day}`
-                                            : undefined
-                                    }
-                                >
-                                    {calendarDay.day}
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    {/* Footer */}
-                    <div className={styles.footer}>
-                        <div className={styles.footerLeft}>
-                            <button 
+        <div className={styles.inputBox}>
+            <span className={styles.label}>{dateName}</span>
+            <div className={`${styles.container} ${className}`}>
+            
+                {/* SEÇÃO 1: INPUT DISPLAY - O campo que o usuário vê */}
+                <div
+                    onClick={handleToggle}           // Abre/fecha quando clica
+                    className={getInputDisplayClasses()} // Classes CSS dinâmicas
+                >
+                    <span className={styles.inputText}>
+                        {formatDateForDisplay(value)} {/* "31/08/2025" ou placeholder */}
+                    </span>
+                    <Calendar className={getCalendarIconClasses()} /> {/* Ícone de calendário */}
+                </div>
+                {/* SEÇÃO 2: DROPDOWN - O calendário que aparece quando abre */}
+                {isOpen && !disabled && ( // Só renderiza se estiver aberto E não desabilitado
+                    <div className={styles.dropdown}>
+            
+                        {/* SUBSEÇÃO 1: HEADER - Navegação de mês/ano */}
+                        <div className={styles.header}>
+                            {/* Botão mês anterior */}
+                            <button
                                 type="button"
-                                onClick={() => setIsOpen(false)}
-                                className={`${styles.footerButton} ${styles.cancelButton}`}
+                                onClick={() => navigateMonth(-1)} // -1 = mês anterior
+                                className={styles.navigationButton}
+                                aria-label="Mês anterior" // Acessibilidade
                             >
-                                Cancelar
+                                <ChevronLeft className={styles.navigationIcon} />
                             </button>
-                            <button 
+            
+                            {/* Título do mês/ano */}
+                            <h3 className={styles.monthYear}>
+                                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                                {/* Ex: "Agosto 2025" */}
+                            </h3>
+            
+                            {/* Botão próximo mês */}
+                            <button
                                 type="button"
-                                onClick={handleClearClick}
-                                className={`${styles.footerButton} ${styles.clearButton}`}
+                                onClick={() => navigateMonth(1)} // +1 = próximo mês
+                                className={styles.navigationButton}
+                                aria-label="Próximo mês" // Acessibilidade
                             >
-                                Limpar
+                                <ChevronRight className={styles.navigationIcon} />
                             </button>
                         </div>
-                        <button 
-                            type="button"
-                            onClick={handleTodayClick}
-                            className={`${styles.footerButton} ${styles.todayButton}`}
-                        >
-                            Hoje
-                        </button>
+                        {/* SUBSEÇÃO 2: DIAS DA SEMANA - Cabeçalho do calendário */}
+                        <div className={styles.weekDays}>
+                            {weekDays.map((day: string) => ( // Para cada dia da semana
+                                <div key={day} className={styles.weekDay}>
+                                    {day} {/* Dom, Seg, Ter... */}
+                                </div>
+                            ))}
+                        </div>
+                        {/* SUBSEÇÃO 3: GRID DE DIAS - O calendário propriamente dito */}
+                        <div className={styles.calendarGrid}>
+                            {getDaysInMonth(currentMonth).map((calendarDay: CalendarDay, index: number) => {
+                                return (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        onClick={() => handleDateClick(calendarDay)} // Seleciona o dia
+                                        disabled={!calendarDay.day || calendarDay.isDisabled} // Desabilita se necessário
+                                        className={getDayButtonClasses(calendarDay)} // Classes CSS dinâmicas
+                                        aria-label={ // Acessibilidade
+                                            calendarDay.day
+                                                ? `Selecionar dia ${calendarDay.day}`
+                                                : undefined
+                                        }
+                                    >
+                                        {calendarDay.day} {/* 1, 2, 3... ou vazio */}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {/* SUBSEÇÃO 4: FOOTER - Botões de ação */}
+                        <div className={styles.footer}>
+                            <div className={styles.footerLeft}>
+                                {/* Botão Cancelar */}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsOpen(false)} // Apenas fecha, não muda nada
+                                    className={`${styles.footerButton} ${styles.cancelButton}`}
+                                >
+                                    Cancelar
+                                </button>
+                                {/* Botão Limpar */}
+                                <button
+                                    type="button"
+                                    onClick={handleClearClick} // Limpa a seleção
+                                    className={`${styles.footerButton} ${styles.clearButton}`}
+                                >
+                                    Limpar
+                                </button>
+                            </div>
+                            {/* Botão Hoje */}
+                            <button
+                                type="button"
+                                onClick={handleTodayClick} // Seleciona hoje
+                                className={`${styles.footerButton} ${styles.todayButton}`}
+                            >
+                                Hoje
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }
 
-export default CustomDatePicker;
+// ========== PARTE 10: EXPORT ==========
+export default CustomDatePicker; // Permite importar como default
+
+// ========== RESUMO DO FLUXO DE FUNCIONAMENTO ==========
+/*
+1. INICIALIZAÇÃO:
+   - Componente recebe props (value, onChange, etc.)
+   - Estados são criados (isOpen = false, currentMonth = hoje)
+
+2. RENDER INICIAL:
+   - Mostra o input com a data formatada ou placeholder
+   - Calendário não aparece (isOpen = false)
+
+3. USUÁRIO CLICA NO INPUT:
+   - handleToggle é chamado
+   - isOpen vira true
+   - Calendário aparece na tela
+
+4. USUÁRIO NAVEGA PELO CALENDÁRIO:
+   - Botões < > chamam navigateMonth(-1 ou +1)
+   - currentMonth muda
+   - getDaysInMonth recalcula os dias
+   - Interface atualiza
+
+5. USUÁRIO CLICA EM UM DIA:
+   - handleDateClick é chamado
+   - Data é formatada ("2025-08-15")
+   - onChange é chamado (avisa o componente pai)
+   - isOpen vira false (calendário fecha)
+
+6. COMPONENTE PAI RECEBE A DATA:
+   - A prop 'value' muda
+   - Componente re-renderiza
+   - Input mostra a nova data
+
+7. VALIDAÇÕES:
+   - minDate/maxDate desabilitam dias inválidos
+   - disabled impede interação
+   - Dias vazios não são clicáveis
+*/

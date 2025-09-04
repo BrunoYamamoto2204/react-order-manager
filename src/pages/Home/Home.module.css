@@ -32,84 +32,94 @@
   height: 3rem;
 }
 
+/* Resumo do dia */
 .summary{
     margin-top: 3rem;
-    background-color: var(--gray-200);
-    color: var(--gray-800);
-    padding: 2rem;
     border-radius: 1rem;
     font-family: var(--main-font);
 }
 
-.summary hr {
-    height: 0.4rem;
-    margin: 2rem 0;
-    border: none;
-    background-color: var(--secondary-text);
+.summary h2 span {
+    color: var(--primary-light);
 }
 
 .categories {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.category{
+    background-color: var(--gray-800);
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.category h2{
+    font-weight: 400;
+    color: var(--secondary-text);
+}
+
+.category h4 {
+    font-weight: 400;
+    color: var(--secondary-text);
+    margin-top: 0.5rem;
 }
 
 .quantity{
     font-size: 3rem;
 }
 
+/* STATUS RÁPIDO */
 .quickStatsTitle{
     font-size: 3rem;
     margin-top: 6rem;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .quickStats{
     font-size: 1.8rem;
     display: grid;
-    color: var(--gray-800);
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .quickStatsBox{
-    background-color: var(--gray-200);
-    padding: 2rem;
+    background-color: var(--gray-800);
+    padding: 3rem;
     border-radius: 1rem;
+    display: flex;
+    align-items: center;
 }
 
 .quickStatsBox h3{
-    color: var(--gray-400);
     font-size: 2rem;
+    font-weight: 500;
 }
 
 .quickStatsBox p {
     font-size: 3rem;
+    font-weight: bold;
 }
 
-.dateFormDeactivated{
-    display: none;
+
+.iconWrapper{
+    background-color: var(--primary);
+    padding: 1rem;
+    width: 5rem;   
+    height: 5rem;  
+    border-radius: 50%;
 }
 
-.dateForm {
-    margin-top: 1rem;
-    display: flex;
-    gap: 1rem;
+.iconWrapper svg{
+    color: white; 
+    width: 3rem;
+    height: 3rem;
 }
 
-.dateForm input{
-    padding: 0.8rem;
-    font-family: inherit;
-    font-size: 1.5rem;
-    background-color: inherit;
-    color: inherit;
-    
-    border: 0.2rem solid transparent; /* Preeencher o espaço da borda do input focus */
-    border-bottom: 0.2rem solid var(--primary);
-    transition: all 0.2s ease-in-out;
-    outline: none;
+.statsContent{
+    margin-left: 2rem;
 }
 
-.dateForm input:focus{
-    border: 0.2rem solid var(--primary);
-    border-radius: 0.8rem;
-}
+

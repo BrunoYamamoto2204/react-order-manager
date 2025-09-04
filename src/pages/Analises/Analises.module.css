@@ -29,7 +29,7 @@
 }
 
 .featuredProductStats h2 {
-    font-size: 2.5rem;
+    font-size: 3rem;
 }
 
 .featuredProductStats h3 {
@@ -191,6 +191,7 @@
     display: grid;
     grid-template-columns: 0.8fr 1.5fr 1fr 1fr; 
     border-collapse: collapse;
+    font-size: 2rem;
 }
 
 .bestSellersContainer table th, td{
@@ -238,5 +239,5 @@ h3.seeMore:hover{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    margin-top: 2rem;
+    margin-top: 3rem;
 }

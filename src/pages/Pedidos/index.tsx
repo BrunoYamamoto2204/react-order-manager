@@ -45,14 +45,18 @@ export function Pedidos() {
                 "40 Risoles Carne"
             ],
             valor: "R$ 199,59",
-            status: "Pendente"
+            status: "Concluído"
         }
     ];
 
     return (
         <MainTemplate>
             <Container>
-                <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
+                <div className={styles.header}>
+                    <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
+                    <button>Adicionar Pedido</button>
+
+                </div>
 
                 <div className={styles.orderTable}>
                     <table>

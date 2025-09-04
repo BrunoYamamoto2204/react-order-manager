@@ -1,9 +1,9 @@
 .titles h1{
-    font-size: 3.2rem;
+    font-size: 4rem;
 }
 
 .titles h2{
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: var(--secondary-text);
     font-weight: 400;
 }

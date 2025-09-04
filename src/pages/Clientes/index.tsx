@@ -44,7 +44,10 @@ export function Clientes() {
     return(
         <MainTemplate>
             <Container>
-                <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
+                <div className={styles.header}>
+                    <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
+                    <button>Adicionar Cliente</button>
+                </div>
 
                 <div className={styles.customersTable}>
                     <table>

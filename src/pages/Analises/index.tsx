@@ -82,7 +82,7 @@ export function Analises() {
                             <h4>231</h4>
                         </div>
                         <div className={styles.resumeItem}>
-                            <h3>Valor dos h4edidos</h3>
+                            <h3>Valor dos Pedidos</h3>
                             <h4>R$ 10.231,76</h4>
                         </div>
                         <div className={styles.resumeItem}>

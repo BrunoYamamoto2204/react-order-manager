@@ -13,6 +13,7 @@ const OrderProducts = (products : string[]) =>{
     const list = showAll ? products : products.slice(0,3)
     const showButton = showAll ? "Ver menos..." : "Ver mais..."
 
+    // A lista de produtos
     const formatList = list.map((p, i) => {
         return <li key={i} className={styles.liList}>{p}</li>
     })
@@ -20,7 +21,7 @@ const OrderProducts = (products : string[]) =>{
     // Botão de Ver Mais/Ver Menos 
     if (products.length > 3){
         formatList.push(
-            <li className={styles.seeMore}>
+            <li key="show" className={styles.seeMore}>
                 <button onClick={() => setShowAll(!showAll)}>{showButton}</button>
             </li>
         )
@@ -39,7 +40,7 @@ export function OrdersList({ orders } : ProductListProps) {
             if (k === "status"){
                 if (v === "Pendente"){
                     return (
-                        <td>
+                        <td key={`${k}_${v}`}>
                             <div className={styles.pending}>
                                 {v}
                                 <a href="#"><InfoIcon /></a>
@@ -49,7 +50,7 @@ export function OrdersList({ orders } : ProductListProps) {
                 }
                 else {
                     return (
-                        <td>
+                        <td key={`${k}_${v}`}>
                             <div className={styles.completed}>
                                 {v}
                                 <a href="#"><InfoIcon /></a>
@@ -59,11 +60,11 @@ export function OrdersList({ orders } : ProductListProps) {
                 }
             }
             else if (k !== "produtos") {
-                return <td>{v}</td>
+                return <td key={`${k}_${v}`}>{v}</td>
             } 
             // Produtos: toda a lista <ul> em um td
             else{
-                return <td>{OrderProducts(v)}</td>
+                return <td key={`${k}_${v}`}>{OrderProducts(v)}</td>
             }
         })
 

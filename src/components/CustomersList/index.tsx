@@ -19,7 +19,7 @@ export function CustomersList({ customersList } : CustomersListProps) {
         })
         
         valuesList.push(
-            <td>
+            <td key="actions">
                 <div className={styles.actions}>
                     <a className={styles.editIcon} href=""><Edit2Icon /></a>
                     <a className={styles.deleteIcon} href=""><TrashIcon /></a>

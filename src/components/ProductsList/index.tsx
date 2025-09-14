@@ -8,7 +8,8 @@ type ProductsListProps = {
 export function ProductsList({ productsList } : ProductsListProps) {
     const allProducts = (products : object[]) => {
         return products.map((p, i) => {
-            return <tr key={i}>{tdProduct(p)}</tr>
+            // Futuramente mudar a key p/ o id do produto
+            return <tr key={i}>{tdProduct(p)}</tr> 
         })
     }
     
@@ -32,7 +33,7 @@ export function ProductsList({ productsList } : ProductsListProps) {
         })
 
         valuesList.push(
-            <td>
+            <td key="actions"> 
                 <div className={styles.actions}>
                     <a className={styles.editIcon} href=""><Edit2Icon /></a>
                     <a className={styles.deleteIcon} href=""><TrashIcon /></a>

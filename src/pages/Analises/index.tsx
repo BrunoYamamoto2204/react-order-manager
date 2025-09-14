@@ -1,10 +1,10 @@
-import { use, useState } from "react"
+import { useState } from "react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Analises.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
-import { ArrowDown01Icon, ArrowDownAZ, ArrowDownIcon, ChartAreaIcon, ChartColumnIcon, ChartNoAxesColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, CircleDollarSignIcon, DollarSignIcon, ListOrderedIcon, Package2Icon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
+import {  ChartColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, DollarSignIcon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
 import { AnalysisList } from "../../components/AnalysisList"
 
 export function Analises() {
@@ -15,7 +15,7 @@ export function Analises() {
 
     // Data em tipo Date
     const today = new Date()
-    today.setDate(today.getDate() - 1);
+    today.setDate(today.getDate());
     const yesterday = new Date(today)
     yesterday.setDate(yesterday.getDate() - 1);
 

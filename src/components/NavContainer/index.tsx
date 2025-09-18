@@ -1,6 +1,5 @@
 import { CakeIcon, ChartNoAxesCombinedIcon, HouseIcon, ScrollText, User2Icon } from "lucide-react";
 import { NavButton } from "../NavButton";
-import { useEffect, useState } from "react";
 
 import styles from "./NavContainer.module.css"
 

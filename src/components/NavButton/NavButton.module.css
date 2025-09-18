@@ -13,7 +13,7 @@
     border-radius: 0.5rem;
     background-color: var(--gray-800);
     color: var(--text-default);
-    transition: all 0.1s ease-in-out;
+    transition: all 0.2s ease-in-out;
     font-family: var(--header-font);
 }
 

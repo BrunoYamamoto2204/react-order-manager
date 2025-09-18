@@ -8,11 +8,13 @@ type NavButtonProps = {
 
 export function NavButton({ icon, sectionName } : NavButtonProps) {
     const navigate = useNavigate();
-    const location = useLocation();
+    const { pathname } = useLocation();
 
-    const homeSection = sectionName === "Home" ? "/" : `/${sectionName}`
+    // Formata a URL 
+    const currentSection = sectionName === "Home" ? "/" : `/${sectionName}`
 
-    const isActive = location.pathname === homeSection;
+    // Define se está o componente está ativo 
+    const isActive = pathname === currentSection;
     const activeButton = isActive ? styles.buttonActive : "";
 
     const handleClick = () => {

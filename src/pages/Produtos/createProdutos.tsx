@@ -56,6 +56,14 @@ export function CreateProdutos() {
         
         Messages.sucess("Produto criado com sucesso")
 
+        console.log({
+            name: name,
+            price: price,
+            category: selectCategory,
+            unit: selectUn,
+            description: description
+        }) 
+
         return{
             name: name,
             price: price,

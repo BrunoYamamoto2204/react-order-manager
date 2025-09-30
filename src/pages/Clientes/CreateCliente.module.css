@@ -1,0 +1,148 @@
+.formContent{
+    min-width: 50rem;
+    margin-top: 4rem;
+    background-color: var(--gray-700);
+    padding: 4rem;
+    border-radius: 1rem;
+}
+
+.inputGroup {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);    
+    gap: 1rem 3rem;
+}
+
+.roadBox{
+    grid-column: 1 / -2;
+}
+
+.inputBox {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* Normal Input */
+.formContent label{
+    color: var(--gray-300);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.formContent input, .description textarea {
+    color: var(--gray-100);
+    margin-bottom: 1rem;
+}
+
+.formContent input, 
+.inputCategory button, 
+.description textarea{
+    background-color: var(--gray-400);
+    border: 2px solid transparent; 
+    padding: 2rem;
+    border-radius: 1rem;
+    min-height: 5rem;
+    font-size: 1.8rem;
+    width: 100%; 
+}
+
+.formContent input::placeholder, .description textarea::placeholder{
+    color: var(--gray-300);
+}
+
+.formContent input:focus{
+    border-color: var(--gray-300);
+}
+
+/* Address */
+.addressGroup{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0 2rem;
+    border: 1px solid var(--gray-400);
+    padding: 3rem 2rem;
+    margin: 2rem 0;
+    border-radius: 1rem;
+    position: relative;
+}
+
+.label{
+    position: absolute;
+    top: -3%;
+    left: 2%;
+    background-color: var(--gray-700);
+    z-index: 999;
+    padding: 0 0.7rem;
+    color: var(--gray-300);
+}
+
+.addressBox{
+    display: flex;
+    flex-direction: column;
+}
+
+/* Description */
+.description textarea {
+    min-height: 15rem;
+    resize: vertical; 
+    font-family: inherit; 
+}
+
+/* Buttons */
+.buttons{
+    display: flex;
+    justify-content: end;
+    gap: 2rem;
+}
+
+.cancel, .save{
+    padding: 1rem 3rem;
+    margin-top: 2rem;
+    min-height: 5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    gap: 1rem;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.cancel {
+    background-color: var(--gray-400);
+    color: var(--gray-100);
+}
+
+.save {
+    background-color: var(--primary);
+    color: var(--gray-100);
+}
+
+.cancel:hover, .save:hover{
+    background-color: var(--gray-300);
+    color: var(--gray-800);
+    transform: scale(1.02);
+}
+
+
+@media (max-width: 1300px) {
+    .inputGroup {
+        grid-template-columns: 1fr;
+    }
+    .addressGroup{
+        grid-template-columns: 1fr 1fr;
+    }
+    .roadBox{
+        grid-column: 1; 
+    }
+    .label{
+        position: absolute;
+        top: -2%;
+        left: 2%;
+        background-color: var(--gray-700);
+        z-index: 999;
+        padding: 0 0.7rem;
+        color: var(--gray-300);
+    }
+
+}

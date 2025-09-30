@@ -5,10 +5,13 @@ import { CustomersList } from "../../components/CustomersList"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Clientes.module.css"
+import { useNavigate } from "react-router"
 
 
 
 export function Clientes() {
+    const navigate = useNavigate();
+
     useEffect(() => {
         document.title = "Clientes - Comanda"
     },[])
@@ -51,7 +54,7 @@ export function Clientes() {
             <Container>
                 <div className={styles.header}>
                     <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
-                    <button>Adicionar Cliente</button>
+                    <button onClick={() => navigate("/clientes/criar")}>Adicionar Cliente</button>
                 </div>
 
                 <div className={styles.customersTable}>
@@ -61,7 +64,7 @@ export function Clientes() {
                                 <th>Nome</th>
                                 <th>Celular</th>
                                 <th>E-mail</th>
-                                <th style={{ textAlign: 'center'}}>Pedidos Pendentes</th>
+                                <th style={{ textAlign: 'center'}}>Pedidos Concluídos</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
@@ -8,6 +8,10 @@ import {  ChartColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, DollarSignI
 import { AnalysisList } from "../../components/AnalysisList"
 
 export function Analises() {
+    useEffect(() => {
+        document.title = "Análises - Comanda"
+    },[])
+
     // Converte p/ string
     const formatDateString = (date : Date) => {
         return date.toISOString().split("T")[0];

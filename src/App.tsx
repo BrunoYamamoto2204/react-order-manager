@@ -7,17 +7,22 @@ import { Produtos } from "./pages/Produtos";
 
 import "./styles/global.css";
 import "./styles/theme.css";
+import { CreateProdutos } from "./pages/Produtos/createProdutos";
+import { MessageContainer } from "./components/Messages/MessageContainer";
 
 export function App(){
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Analises" element={<Analises />} />
-        <Route path="/Clientes" element={<Clientes />} />
-        <Route path="/Pedidos" element={<Pedidos />} />
-        <Route path="/Produtos" element={<Produtos />} />
-      </Routes>
+        <MessageContainer >
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/analises" element={<Analises />} />
+            <Route path="/clientes" element={<Clientes />} />
+            <Route path="/pedidos" element={<Pedidos />} />
+            <Route path="/produtos" element={<Produtos />} />
+            <Route path="/produtos/criar" element={<CreateProdutos />} />
+          </Routes>
+        </MessageContainer>
     </BrowserRouter>
   )
 }

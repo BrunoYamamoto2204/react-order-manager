@@ -1,6 +1,6 @@
 // ========== PARTE 1: IMPORTS E DEPENDÊNCIAS ==========
 import { useState } from 'react';           // Hook para gerenciar estado
-import { ChevronLeft, ChevronRight, Calendar, CalendarIcon } from 'lucide-react'; // Ícones
+import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react'; // Ícones
 import styles from "./GeralDatePicker.module.css" // Estilos CSS Modules
 
 // ========== PARTE 2: INTERFACES (CONTRATOS DE TIPOS) ==========
@@ -29,7 +29,6 @@ export function GeralDatePicker({
     value,                           // Data atual selecionada
     onChange,                        // Função para mudar a data
     disabled = false,                // Valor padrão se não informado
-    dateName,
     className = "",                   // Valor padrão se não informado
     displayValue,
 }: GeralDatePickerProps) {
@@ -120,6 +119,9 @@ export function GeralDatePicker({
     // Seleciona a data de hoje
     const handleTodayClick = (): void => {
         const today = new Date().toISOString().split('T')[0]; 
+        // const today = new Date(); 
+        // today.setDate(today.getDate() - 1)
+        // const correctDate = today.toISOString().split('T')[0]
         onChange(today);  // Atualiza a data selecionada
         setIsOpen(false); // Fecha o calendário
     };

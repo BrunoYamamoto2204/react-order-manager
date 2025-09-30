@@ -4,8 +4,16 @@ import { MainTemplate } from "../../templates/MainTemplate";
 
 import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export function Produtos() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = "Produtos - Comanda"
+    },[])
+
     const produtos = [
         { produto: "Brigadeiro", preco: 1.99, categoria: "Docinho", unidade: "UN" },
         { produto: "Beijinho", preco: 1.99, categoria: "Docinho", unidade: "UN" },
@@ -24,7 +32,9 @@ export function Produtos() {
             <Container>
                 <div className={styles.header}>
                     <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
-                    <button>Adicionar Produto</button>
+                    <button onClick={() => navigate("/produtos/criar")}>
+                        Adicionar Produto
+                    </button>
                 </div>
 
                 <div className={styles.productTable}>

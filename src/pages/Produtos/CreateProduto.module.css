@@ -1,0 +1,193 @@
+.formContent{
+    margin-top: 4rem;
+    background-color: var(--gray-700);
+    padding: 4rem;
+    border-radius: 1rem;
+}
+
+.inputGroup{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.inputBox {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Category Input */
+.inputCategory {
+    position: relative;
+}
+
+.inputCategory button{
+    margin-top: 2rem;
+    width: 100%;
+}
+
+/* Normal Input */
+.formContent label{
+    margin-bottom: 2rem;
+    color: var(--gray-300);
+    font-size: 2rem;
+}
+
+.formContent input, .description textarea {
+    color: var(--gray-100);
+}
+
+.formContent input, .inputCategory button, .description textarea{
+    background-color: var(--gray-400);
+    border: 2px solid transparent; 
+    padding: 2rem;
+    border-radius: 1rem;
+    min-height: 5rem;
+    font-size: 1.8rem;
+}
+
+.formContent input::placeholder, .description textarea::placeholder{
+    color: var(--gray-300);
+}
+
+.formContent input:focus{
+    border-color: var(--gray-300);
+}
+
+.priceInput {
+    position: relative;
+}
+
+.priceInput input{
+    display: flex;
+    align-items: center;
+}
+
+.priceInput::before {
+    content: "R$";
+    position: absolute;
+    left: 2rem;
+    top: 30%;
+    color: var(--gray-100);
+    font-size: 1.8rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.priceInput input {
+    width: 100%;
+    padding-left: 5rem; 
+}
+
+/* Choice input */
+
+.productChoice{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown{
+    position: relative;
+}
+
+.dropbtn{
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--gray-600);
+    color: white;
+    padding: 10px 14px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+
+.dropbtn svg {
+    transition: transform 0.3s ease;
+    margin-left: 8px;
+}
+
+.dropbtn.open svg {
+    transform: rotate(180deg);
+}
+
+.dropdownContent {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    position: absolute;
+    width: 100%;
+    overflow: hidden; 
+    pointer-events: none; 
+}
+
+.dropdownContent.open {
+    max-height: 30rem;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dropdownContent a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    padding: 1rem;
+    background-color: var(--gray-800);
+    transition: all 0.3s ease;
+}
+
+.dropdownContent a:hover {
+  background-color: var(--gray-600);
+}
+
+/* Description */
+.description{
+    grid-column: 1 / -1;
+}
+
+.description textarea {
+    min-height: 15rem;
+    resize: vertical; 
+    font-family: inherit; 
+}
+
+/* Buttons */
+.buttons{
+    display: flex;
+    justify-content: end;
+    gap: 2rem;
+}
+
+.cancel, .save{
+    padding: 1rem 3rem;
+    margin-top: 2rem;
+    min-height: 5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    gap: 1rem;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.cancel {
+    background-color: var(--gray-400);
+    color: var(--gray-100);
+}
+
+.save {
+    background-color: var(--primary);
+    color: var(--gray-100);
+}
+
+.cancel:hover, .save:hover{
+    background-color: var(--gray-300);
+    color: var(--gray-800);
+    transform: scale(1.02);
+}

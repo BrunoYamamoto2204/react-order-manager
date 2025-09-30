@@ -11,15 +11,18 @@ export function NavButton({ icon, sectionName } : NavButtonProps) {
     const { pathname } = useLocation();
 
     // Formata a URL 
-    const currentSection = sectionName === "Home" ? "/" : `/${sectionName}`
+    const currentSection = sectionName === "home" ? "/" : `/${sectionName}`
 
     // Define se está o componente está ativo 
     const isActive = pathname === currentSection;
     const activeButton = isActive ? styles.buttonActive : "";
 
     const handleClick = () => {
-        const section = sectionName === "Home" ? "/" : `/${sectionName}`;
-        navigate(section);
+        navigate(currentSection);
+    }
+
+    function firstUpperCase(name: string){
+        return name.charAt(0).toUpperCase() + name.slice(1)
     }
 
     return (
@@ -29,7 +32,7 @@ export function NavButton({ icon, sectionName } : NavButtonProps) {
                 onClick={handleClick}
             >
                 {icon}
-                <span>{sectionName}</span>
+                <span>{firstUpperCase(sectionName)}</span>
             </button>
         </div>
     )

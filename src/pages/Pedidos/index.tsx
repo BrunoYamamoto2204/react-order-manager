@@ -5,8 +5,13 @@ import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
+import { useEffect } from "react";
 
 export function Pedidos() {
+    useEffect(() => {
+        document.title = "Comanda - Pedidos"
+    },[])
+
     const pedidos = [
         {
             nome: "Cliente 1",

@@ -14,23 +14,23 @@ export function NavContainer() {
             <nav>
                 <NavButton 
                     icon={<HouseIcon />} 
-                    sectionName="Home" 
+                    sectionName="home" 
                 />
                 <NavButton 
                     icon={<ScrollText/>} 
-                    sectionName="Pedidos" 
+                    sectionName="pedidos" 
                 />
                 <NavButton 
                     icon={<CakeIcon />} 
-                    sectionName="Produtos" 
+                    sectionName="produtos" 
                 />
                 <NavButton 
                     icon={<User2Icon />} 
-                    sectionName="Clientes" 
+                    sectionName="clientes" 
                 />
                 <NavButton 
                     icon={<ChartNoAxesCombinedIcon />} 
-                    sectionName="Analises" 
+                    sectionName="analises" 
                 />
             </nav>
         </div>

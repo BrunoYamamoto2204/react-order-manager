@@ -1,4 +1,5 @@
 
+import { useEffect } from "react"
 import { Container } from "../../components/Container"
 import { CustomersList } from "../../components/CustomersList"
 import { Title } from "../../components/Title"
@@ -8,6 +9,10 @@ import styles from "./Clientes.module.css"
 
 
 export function Clientes() {
+    useEffect(() => {
+        document.title = "Clientes - Comanda"
+    },[])
+
     const clientes = {
         1: {
             nome: "Maria Silva",

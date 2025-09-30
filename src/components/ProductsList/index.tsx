@@ -6,13 +6,6 @@ type ProductsListProps = {
 }
 
 export function ProductsList({ productsList } : ProductsListProps) {
-    const allProducts = (products : object[]) => {
-        return products.map((p, i) => {
-            // Futuramente mudar a key p/ o id do produto
-            return <tr key={i}>{tdProduct(p)}</tr> 
-        })
-    }
-    
     const tdProduct = (product : object) => {
         const valuesList = Object.entries(product).map(([k, v]) => {
             let displayValue;
@@ -43,6 +36,14 @@ export function ProductsList({ productsList } : ProductsListProps) {
 
         return valuesList
     }
+
+    const allProducts = (products : object[]) => {
+        return products.map((p, i) => {
+            // Futuramente mudar a key p/ o id do produto
+            return <tr key={i}>{tdProduct(p)}</tr> 
+        })
+    }
+
 
     return (
        allProducts(productsList)

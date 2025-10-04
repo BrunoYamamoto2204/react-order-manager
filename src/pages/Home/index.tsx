@@ -14,7 +14,7 @@ export function Home() {
         return date.toISOString().split("T")[0];
     }
 
-    const formatDate =  (date : Date) => {
+    const formatDate = (date : Date) => {
         date.setDate(date.getDate() + 1)
 
         return date.toLocaleDateString("pt-BR", 
@@ -40,7 +40,7 @@ export function Home() {
                             displayValue={formatDate}
                             value={date}
                             onChange={setDate}
-                            placeholder="Selecione a data inicial"
+                            placeholder="Selecione uma data"
                             dateName = "Data"
                         />
                         

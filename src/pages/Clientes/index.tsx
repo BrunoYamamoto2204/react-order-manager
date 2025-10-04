@@ -6,6 +6,7 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Clientes.module.css"
 import { useNavigate } from "react-router"
+import { PlusIcon } from "lucide-react"
 
 
 
@@ -54,7 +55,9 @@ export function Clientes() {
             <Container>
                 <div className={styles.header}>
                     <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
-                    <button onClick={() => navigate("/clientes/criar")}>Adicionar Cliente</button>
+                    <button onClick={() => navigate("/clientes/criar")}>
+                        <PlusIcon/> Adicionar Cliente
+                    </button>
                 </div>
 
                 <div className={styles.customersTable}>

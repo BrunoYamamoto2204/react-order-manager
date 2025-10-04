@@ -6,8 +6,12 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect } from "react";
+import { PlusIcon } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export function Pedidos() {
+    const navigate = useNavigate();
+
     useEffect(() => {
         document.title = "Comanda - Pedidos"
     },[])
@@ -59,7 +63,7 @@ export function Pedidos() {
             <Container>
                 <div className={styles.header}>
                     <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
-                    <button>Adicionar Pedido</button>
+                    <button onClick={() => navigate("/pedidos/novo")}><PlusIcon/> Adicionar Pedido</button>
 
                 </div>
 

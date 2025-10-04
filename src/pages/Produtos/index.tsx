@@ -6,6 +6,7 @@ import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { PlusIcon } from "lucide-react";
 
 export function Produtos() {
     const navigate = useNavigate();
@@ -33,7 +34,7 @@ export function Produtos() {
                 <div className={styles.header}>
                     <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
                     <button onClick={() => navigate("/produtos/criar")}>
-                        Adicionar Produto
+                        <PlusIcon/> Adicionar Produto
                     </button>
                 </div>
 

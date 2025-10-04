@@ -208,11 +208,11 @@
 }
 
 button.cancelButton {
-    color: var(--gray-400);
+    color: white;
 }
 
 button.cancelButton:hover {
-    color: white;
+    color: var(--gray-400);
 }
 
 button.clearButton {

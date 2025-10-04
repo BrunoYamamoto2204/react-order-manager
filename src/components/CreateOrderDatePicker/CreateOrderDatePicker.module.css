@@ -5,12 +5,12 @@
 }
 
 /* ========== INPUT BOX COM LABEL ========== */
-.inputBox {
+/* .inputBox {
     position: relative;
     width: 100%;
-}
+} */
 
-.label {
+/* .label {
     position: absolute;
     top: -0.8rem;
     left: 1.2rem;
@@ -20,27 +20,21 @@
     color: var(--secondary-text);
     z-index: 1;
     pointer-events: none;
-}
+} */
 /* ========== INPUT DISPLAY ========== */
 .inputDisplay {
-    display: inline-block;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border: 0.2rem solid var(--gray-400);
-    border-radius: 0.8rem;
-    background-color: inherit;
-    color: inherit;
-    cursor: pointer;
+    background-color: var(--gray-400);
+    border: 2.5px solid transparent; 
+    padding: 2rem;
+    border-radius: 1rem;
+    min-height: inherit;
+    font-size: 1.8rem;
     transition: all 0.2s ease-in-out;
-    font-family: inherit;
-    min-height: 5rem;
-    background-color: var(--gray-800);
 }
 
 .inputDisplay:hover {
     border-color: var(--primary-hover, var(--primary));
-    box-shadow: 0 0 0 0.1rem var(--primary);
+    cursor: pointer;
 }
 
 .inputDisplay.disabled {
@@ -51,16 +45,17 @@
 }
 
 .inputText {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: inherit;
     display: flex;
     align-items: center;
     font-weight: 400;
+    justify-content: space-between;
 }
 
 .calendarIcon {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
     color: var(--primary);
     margin-right: 1rem;
 }

@@ -65,6 +65,8 @@
     background-color: var(--gray-200);
     transition: all 0.2s ease;
     font-weight: 500;
+    display: flex;
+    gap: 1rem;
 }
 
 .header button:hover {

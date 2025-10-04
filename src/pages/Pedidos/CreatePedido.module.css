@@ -1,0 +1,302 @@
+.formContent{
+    margin-top: 4rem;
+    background-color: var(--gray-700);
+    padding: 4rem;
+    border-radius: 1rem;
+}
+
+.inputGroup{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.inputBox {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Normal Input */
+.formContent label{
+    margin-bottom: 2rem;
+    color: var(--gray-300);
+    font-size: 2rem;
+}
+
+.formContent input, .obs textarea {
+    color: var(--gray-100);
+}
+
+.formContent input, 
+.inputCategory button, 
+.obs textarea{
+    background-color: var(--gray-400);
+    border: 2px solid transparent; 
+    padding: 2rem;
+    border-radius: 1rem;
+    min-height: 5rem;
+    font-size: 1.8rem;
+}
+
+.formContent input:hover, 
+.inputCategory button:hover, 
+.obs textarea:hover{
+    border-color: var(--primary-hover, var(--primary));
+    cursor: pointer;
+}
+
+.formContent input::placeholder, 
+.obs textarea::placeholder{
+    color: var(--gray-300);
+}
+
+.formContent input:focus, 
+.obs textarea:focus {
+    outline: none; 
+    border-color: var(--primary); 
+}
+
+/* Checkbox */
+.withouRegister{
+    display: flex;
+    align-items: center;
+}
+
+.withouRegister label {
+    margin: 0 1rem 0 0;  
+    font-size: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.withouRegister input[type="checkbox"] {
+    accent-color: var(--primary); 
+    border: none;
+}
+
+/* Customer research Input */
+.inputWithIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 2rem;
+    color: var(--gray-300);
+    width: 2rem;
+    height: 2rem;
+    pointer-events: none; 
+    top: 31%;
+}
+
+.inputWithIcon input {
+    padding-left: 5rem; 
+    width: 100%;
+}
+
+/* Orders - Table */
+.itemTopLine{
+    border-top: 0.2rem solid var(--gray-400);
+}
+
+.full {
+    grid-column: 1 / -1; 
+}
+
+.noProductsContainer{
+    grid-column: 1 / -1;
+    margin: auto;
+}
+
+.noProducts {
+    margin: 2rem 0;
+    color: var(--gray-300);
+    font-style: italic;
+}
+
+.orderBox .addProducth3 { 
+    margin: 1rem 0 1rem 0; 
+}
+
+.orderTable {
+    font-size: 1.7rem;
+    color: var(--gray-100);
+    overflow: hidden;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    border: none;
+}
+
+.orderBox {
+    padding-bottom: 2rem;
+    text-align: left;
+}
+
+.orderBox h3 {
+    margin-bottom: 2rem;
+}
+
+.orderTable table {
+    border-collapse: collapse;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 1fr 1fr 0.5fr; 
+}
+
+.orderTable thead, 
+.orderTable tbody, 
+.orderTable tr {
+    display: contents; 
+}
+
+.orderTable th {
+    background-color: var(--gray-500);
+    padding: 1.5rem;
+    color: var(--gray-300);
+    font-weight: 400;
+}
+
+.orderTable td input {
+    width: 100%;
+    background-color: var(--gray-600);
+    border: 2px solid transparent;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: var(--gray-100);
+    font-size: 1.6rem;
+    transition: all 0.1s ease-in-out;
+}
+
+.orderTable td{
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    
+}
+
+.orderTable td.icon{
+    justify-content: flex-end;
+}
+
+.orderTable td.icon svg{
+    color: red;
+    transition: all 0.2s ease-in-out;
+}
+.orderTable td.icon svg:hover{
+    justify-content: flex-end;
+    color: white;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+/* Add product Input */
+.formContent .addProductInput{
+    margin-bottom: 1rem;
+}
+
+/* Description */
+.obs textarea {
+    min-height: 15rem;
+    resize: vertical; 
+    font-family: inherit; 
+}
+
+/* Discount */
+.discount{
+    margin-bottom: 1rem;
+}
+
+.changeDiscountTypeButton{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.8rem;
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
+    border: 0.2rem solid var(--gray-300);
+    width: clamp(1rem, 10rem, 100%);
+    height: 5rem;
+    color: var(--gray-200);
+    background-color: var(--gray-400);
+    transition: all 0.2s ease-in-out;
+}
+
+.discountInputBox{
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.changeDiscountTypeButton:hover{
+    border: 0.2rem solid var(--primary);
+    transform: scale(1.02);
+}
+
+.inputBox .discountInput {
+    height: 10%;
+    width: 80%;
+}
+
+.statsValueBox{
+    display: flex;
+    justify-content: space-between;
+}
+.statsValueBox p{
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Buttons */
+.addItemButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: inherit;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.addItemButton:hover {
+    color: var(--gray-100);
+    transform: scale(1.01);
+}
+
+.buttons{
+    display: flex;
+    justify-content: end;
+    gap: 2rem;
+}
+
+.cancel, .save{
+    padding: 1rem 3rem;
+    margin-top: 2rem;
+    min-height: 5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    gap: 1rem;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.cancel {
+    background-color: var(--gray-400);
+    color: var(--gray-100);
+}
+
+.save {
+    background-color: var(--primary);
+    color: var(--gray-100);
+}
+
+.cancel:hover, .save:hover{
+    background-color: var(--gray-300);
+    color: var(--gray-800);
+    transform: scale(1.02);
+}

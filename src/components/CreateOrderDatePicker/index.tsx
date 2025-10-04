@@ -1,12 +1,12 @@
 // ========== PARTE 1: IMPORTS E DEPENDÊNCIAS ==========
 import { useState } from 'react';           // Hook para gerenciar estado
 import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react'; // Ícones
-import styles from "./GeralDatePicker.module.css" // Estilos CSS Modules
+import styles from "./CreateOrderDatePicker.module.css" // Estilos CSS Modules
 
 // ========== PARTE 2: INTERFACES (CONTRATOS DE TIPOS) ==========
 
 // Define o que o componente espera receber como props
-interface GeralDatePickerProps {
+interface CreateOrderDatePickerProps {
     value: string;                    // Data selecionada (formato "YYYY-MM-DD")
     onChange: (date: string) => void; // Função chamada quando data muda
     placeholder: string;             // Texto quando não há data (opcional)
@@ -25,14 +25,14 @@ interface CalendarDay {
 }
 
 // ========== PARTE 3: DECLARAÇÃO DO COMPONENTE ==========
-export function GeralDatePicker({
+export function CreateOrderDatePicker({
     value,                           // Data atual selecionada
     onChange,                        // Função para mudar a data
     placeholder,
     disabled = false,                // Valor padrão se não informado
     className = "",                   // Valor padrão se não informado
     displayValue,
-}: GeralDatePickerProps) {
+}: CreateOrderDatePickerProps) {
 
     // ========== PARTE 4: ESTADOS (useState) ==========
     
@@ -186,116 +186,112 @@ export function GeralDatePicker({
 
     // ========== PARTE 9: RENDER (O QUE APARECE NA TELA) ==========
     return (
-        <div className={styles.inputBox}>
-            {/* <span className={styles.label}>{dateName}</span> */}
-            <div className={`${styles.container} ${className}`}>
-            
-                {/* SEÇÃO 1: INPUT DISPLAY - O campo que o usuário vê */}
-                <div
-                    onClick={handleToggle}
-                    className={getInputDisplayClasses()}
-                >
-                    <span className={styles.inputText}>
-                        <CalendarIcon className={getCalendarIconClasses()}/>
-                        {value ? displayValue(new Date(value)) : placeholder}
-                    </span>
-                </div>
+        <div className={`${styles.container} ${className}`}>
+        
+            {/* SEÇÃO 1: INPUT DISPLAY - O campo que o usuário vê */}
+            <div
+                onClick={handleToggle}
+                className={getInputDisplayClasses()}
+            >
+                <span className={styles.inputText}>
+                    {value ? displayValue(new Date(value)) : placeholder}
+                    <CalendarIcon className={getCalendarIconClasses()}/>
+                </span>
+            </div>
 
-                {/* SEÇÃO 2: DROPDOWN - O calendário que aparece quando abre */}
-                {isOpen && !disabled && ( // Só renderiza se estiver aberto E não desabilitado
-                    <div className={styles.dropdown}>
-            
-                        {/* SUBSEÇÃO 1: HEADER - Navegação de mês/ano */}
-                        <div className={styles.header}>
-                            {/* Botão mês anterior */}
-                            <button
-                                type="button"
-                                onClick={() => navigateMonth(-1)} // -1 = mês anterior
-                                className={styles.navigationButton}
-                                aria-label="Mês anterior" // Acessibilidade
-                            >
-                                <ChevronLeft className={styles.navigationIcon} />
-                            </button>
-            
-                            {/* Título do mês/ano */}
-                            <h3 className={styles.monthYear}>
-                                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                                {/* Ex: "Agosto 2025" */}
-                            </h3>
-            
-                            {/* Botão próximo mês */}
-                            <button
-                                type="button"
-                                onClick={() => navigateMonth(1)} // +1 = próximo mês
-                                className={styles.navigationButton}
-                                aria-label="Próximo mês" // Acessibilidade
-                            >
-                                <ChevronRight className={styles.navigationIcon} />
-                            </button>
-                        </div>
-                        {/* SUBSEÇÃO 2: DIAS DA SEMANA - Cabeçalho do calendário */}
-                        <div className={styles.weekDays}>
-                            {weekDays.map((day: string) => ( // Para cada dia da semana
-                                <div key={day} className={styles.weekDay}>
-                                    {day} {/* Dom, Seg, Ter... */}
-                                </div>
-                            ))}
-                        </div>
-                        {/* SUBSEÇÃO 3: GRID DE DIAS - O calendário propriamente dito */}
-                        <div className={styles.calendarGrid}>
-                            {getDaysInMonth(currentMonth).map((calendarDay: CalendarDay, index: number) => {
-                                return (
-                                    <button
-                                        key={index}
-                                        type="button"
-                                        onClick={() => handleDateClick(calendarDay)} // Seleciona o dia
-                                        className={getDayButtonClasses(calendarDay)} // Classes CSS dinâmicas
-                                        aria-label={ // Acessibilidade
-                                            calendarDay.day
-                                                ? `Selecionar dia ${calendarDay.day}`
-                                                : undefined
-                                        }
-                                    >
-                                        {calendarDay.day} {/* 1, 2, 3... ou vazio */}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        {/* SUBSEÇÃO 4: FOOTER - Botões de ação */}
-                        <div className={styles.footer}>
-                            <div className={styles.footerLeft}>
-                                {/* Botão Cancelar */}
-                                <button 
-                                    type="button"
-                                    onClick={() => setIsOpen(false)} // Apenas fecha, não muda nada
-                                    className={`${styles.footerButton} ${styles.cancelButton}`}
-                                >
-                                    Cancelar
-                                </button>
-                                {/* Botão Limpar */}
-                                <button 
-                                    type="button"
-                                    onClick={handleClearClick} // Limpa a seleção
-                                    className={styles.clearButton}
-                                >
-                                    Limpar
-                                </button>
+            {/* SEÇÃO 2: DROPDOWN - O calendário que aparece quando abre */}
+            {isOpen && !disabled && ( // Só renderiza se estiver aberto E não desabilitado
+                <div className={styles.dropdown}>
+        
+                    {/* SUBSEÇÃO 1: HEADER - Navegação de mês/ano */}
+                    <div className={styles.header}>
+                        {/* Botão mês anterior */}
+                        <button
+                            type="button"
+                            onClick={() => navigateMonth(-1)} // -1 = mês anterior
+                            className={styles.navigationButton}
+                            aria-label="Mês anterior" // Acessibilidade
+                        >
+                            <ChevronLeft className={styles.navigationIcon} />
+                        </button>
+        
+                        {/* Título do mês/ano */}
+                        <h3 className={styles.monthYear}>
+                            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                            {/* Ex: "Agosto 2025" */}
+                        </h3>
+        
+                        {/* Botão próximo mês */}
+                        <button
+                            type="button"
+                            onClick={() => navigateMonth(1)} // +1 = próximo mês
+                            className={styles.navigationButton}
+                            aria-label="Próximo mês" // Acessibilidade
+                        >
+                            <ChevronRight className={styles.navigationIcon} />
+                        </button>
+                    </div>
+                    {/* SUBSEÇÃO 2: DIAS DA SEMANA - Cabeçalho do calendário */}
+                    <div className={styles.weekDays}>
+                        {weekDays.map((day: string) => ( // Para cada dia da semana
+                            <div key={day} className={styles.weekDay}>
+                                {day} {/* Dom, Seg, Ter... */}
                             </div>
-                            {/* Botão Hoje */}
+                        ))}
+                    </div>
+                    {/* SUBSEÇÃO 3: GRID DE DIAS - O calendário propriamente dito */}
+                    <div className={styles.calendarGrid}>
+                        {getDaysInMonth(currentMonth).map((calendarDay: CalendarDay, index: number) => {
+                            return (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    onClick={() => handleDateClick(calendarDay)} // Seleciona o dia
+                                    className={getDayButtonClasses(calendarDay)} // Classes CSS dinâmicas
+                                    aria-label={ // Acessibilidade
+                                        calendarDay.day
+                                            ? `Selecionar dia ${calendarDay.day}`
+                                            : undefined
+                                    }
+                                >
+                                    {calendarDay.day} {/* 1, 2, 3... ou vazio */}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    {/* SUBSEÇÃO 4: FOOTER - Botões de ação */}
+                    <div className={styles.footer}>
+                        <div className={styles.footerLeft}>
+                            {/* Botão Cancelar */}
                             <button 
                                 type="button"
-                                onClick={handleTodayClick} // Seleciona hoje
-                                className={`${styles.footerButton} ${styles.todayButton}`}
+                                onClick={() => setIsOpen(false)} // Apenas fecha, não muda nada
+                                className={`${styles.footerButton} ${styles.cancelButton}`}
                             >
-                                Hoje
+                                Cancelar
+                            </button>
+                            {/* Botão Limpar */}
+                            <button 
+                                type="button"
+                                onClick={handleClearClick} // Limpa a seleção
+                                className={styles.clearButton}
+                            >
+                                Limpar
                             </button>
                         </div>
+                        {/* Botão Hoje */}
+                        <button 
+                            type="button"
+                            onClick={handleTodayClick} // Seleciona hoje
+                            className={`${styles.footerButton} ${styles.todayButton}`}
+                        >
+                            Hoje
+                        </button>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
-    );
-}
+    )}
 
 // ========== PARTE 10: EXPORT ==========
-export default GeralDatePicker; // Permite importar como default
+export default CreateOrderDatePicker; // Permite importar como default

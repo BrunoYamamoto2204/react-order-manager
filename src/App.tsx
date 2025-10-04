@@ -10,6 +10,7 @@ import "./styles/theme.css";
 import { CreateProdutos } from "./pages/Produtos/createProdutos";
 import { MessageContainer } from "./components/Messages/MessageContainer";
 import { CreateCliente } from "./pages/Clientes/createCliente";
+import { CreatePedido } from "./pages/Pedidos/createPedido";
 
 export function App(){
   return (
@@ -23,6 +24,7 @@ export function App(){
             <Route path="/produtos" element={<Produtos />} />
             <Route path="/produtos/criar" element={<CreateProdutos />} />
             <Route path="/clientes/criar" element={<CreateCliente />} />
+            <Route path="/pedidos/novo" element={<CreatePedido/>} />
           </Routes>
         </MessageContainer>
     </BrowserRouter>

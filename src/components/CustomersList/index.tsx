@@ -1,11 +1,63 @@
 import { CheckLineIcon, CircleXIcon, Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
 
-type CustomersListProps = {
-    customersList: object
+type Customer = {
+    id: number,
+    name: string,
+    phone: string,
+    email: string,
+    pendingOrders: boolean,
 }
 
-export function CustomersList({ customersList } : CustomersListProps) {
+type CustomersListProps = {
+    customersList: Customer[]
+    removeCustomer: (filteredCustomer: Customer) => void
+}
+
+export function CustomersList({ customersList, removeCustomer } : CustomersListProps) {
+    return (
+        <>
+            {customersList.map((customer, index) => {
+                return (
+                    <tr key={`${customer.name}_${index}`}>
+                        {/* Name */}
+                        <td>
+                            {customer.name}
+                        </td>
+
+                        {/* Phone */}
+                        <td>
+                            {customer.phone}
+                        </td>
+
+                        {/* E-mail */}
+                        <td>
+                            {customer.email}
+                        </td>
+
+                        {/* Completed orders */}
+                        {customer.pendingOrders 
+                            ? <td className={styles.pendingOrders}><CheckLineIcon/></td> 
+                            : <td className={styles.noPendingOrders}><CircleXIcon/></td>
+                        }
+
+                        {/* Ações  */}
+                        <td key="actions">
+                            <div className={styles.actions}>
+                                <button className={styles.editIcon}><Edit2Icon /></button>
+                                <button 
+                                    className={styles.deleteIcon}
+                                    onClick={() => removeCustomer(customer)}>
+                                    <TrashIcon />
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                )
+            })}
+        </>
+    )
+
     // Contruir cada cliente (<td>)
     const buildCustomer = (customer : object) => {
         const valuesList = Object.entries(customer).map(([k, v]) => {

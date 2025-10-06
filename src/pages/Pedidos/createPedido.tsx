@@ -29,7 +29,7 @@ export function CreatePedido() {
         {
             product: "Brigadeiro",  
             quantity: 1,
-            price: 5.00
+            price: 1.50
         },
     ])
 
@@ -49,6 +49,7 @@ export function CreatePedido() {
         return sum + (order.quantity * order.price)
     }, 0)
 
+    // Define o total 
     useEffect(() => {
         const calculatedDiscountAmount  = () => {
             if(discountType === "%"){
@@ -61,11 +62,11 @@ export function CreatePedido() {
             }
         }
 
-        const currentTotalBruto = orders.reduce((sum, order) => 
+        const currentTotalGross = orders.reduce((sum, order) => 
             sum + (order.quantity * order.price), 0);
         const currentDiscountAmount = calculatedDiscountAmount();
-        const totalLiquido = Math.max(0, currentTotalBruto - currentDiscountAmount);
-        setTotal(totalLiquido); 
+        const subtotal = Math.max(0, currentTotalGross - currentDiscountAmount);
+        setTotal(subtotal); 
     }, [orders, discountValue, discountType, grossValue]); 
 
     // Troca o tipo de Desconto
@@ -88,25 +89,15 @@ export function CreatePedido() {
 
     const [date, setDate] = useState(formatDateString(new Date())) 
    
-    // Adiociona produto no pedido
-    const handleNewProduct = () => {
-        Messages.dismiss()
+    // Excluir o item 
+    const removeProduct = (listItem: Product) => {
+        const currentOrderList = [...orders]
 
-        if (!product) {
-            Messages.error("Selecione um produto");
-            return;
-        }
+        const newOrder = currentOrderList.filter(order => 
+            order.product !==  listItem.product
+        )
 
-        const newOrder = {
-            product: product,  
-            quantity: Number(quantity),
-            price: Number(price)
-        };
-
-        setOrders([...orders, newOrder]);
-        Messages.sucess("Produto adicionado")
-        
-        setProduct("");
+        setOrders(newOrder)
     }
 
     // Cria Pedido
@@ -124,15 +115,17 @@ export function CreatePedido() {
         } 
 
         setName("");
+        setDescription("");
         setOrders([]);
         
-        Messages.sucess("Pedido criado com sucesso")
+        Messages.success("Pedido criado com sucesso")
 
         console.log({
             name: name,
             price: price,
             total: total,
             discount: discount,
+            orderList: orders,
             description: description
         }) 
 
@@ -141,6 +134,7 @@ export function CreatePedido() {
             orders: orders,
             total: total,
             discount: discount,
+            orderList: orders,
             description: description
         } 
     }
@@ -156,15 +150,25 @@ export function CreatePedido() {
         )
     }
 
-    // Excluir o item 
-    const removeProduct = (listItem: Product) => {
-        const currentOrder = [...orders]
+    // Adiociona produto no pedido
+    const handleNewProduct = () => {
+        Messages.dismiss()
 
-        const newOrder = currentOrder.filter(order => 
-            order.product !==  listItem.product
-        )
+        if (!product) {
+            Messages.error("Selecione um produto");
+            return;
+        }
 
-        setOrders(newOrder)
+        const newOrder = {
+            product: product,  
+            quantity: Number(quantity),
+            price: Number(price)
+        };
+
+        setOrders([...orders, newOrder]);
+        Messages.success("Produto adicionado")
+        
+        setProduct("");
     }
 
     return(
@@ -290,8 +294,12 @@ export function CreatePedido() {
                                 <div className={styles.discountInputBox}>
                                     <input 
                                         className={styles.discountInput}
-                                        onChange={e => setDiscountValue(e.target.value)}
+                                        onChange={e => {
+                                            const value = Math.max(0, Number(e.target.value))
+                                            setDiscountValue(value.toString())
+                                        }}
                                         value={discountValue}
+                                        type="number"
                                     />    
                                     <button 
                                         type="button" 

@@ -4,29 +4,50 @@ import { MainTemplate } from "../../templates/MainTemplate";
 
 import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { PlusIcon } from "lucide-react";
+import { Messages } from "../../components/Messages";
 
 export function Produtos() {
+    type Product = {
+        id: number,
+        product: string
+        price: number
+        category: string
+        unity: string
+    }
+
     const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Produtos - Comanda"
     },[])
 
-    const produtos = [
-        { produto: "Brigadeiro", preco: 1.99, categoria: "Docinho", unidade: "UN" },
-        { produto: "Beijinho", preco: 1.99, categoria: "Docinho", unidade: "UN" },
-        { produto: "Coxinha", preco: 4.50, categoria: "Salgado", unidade: "UN" },
-        { produto: "Quibe", preco: 4.00, categoria: "Salgado", unidade: "UN" },
-        { produto: "Bolo Chocolate", preco: 25.00, categoria: "Bolo", unidade: "KG" },
-        { produto: "Bolo Cenoura", preco: 22.00, categoria: "Bolo", unidade: "KG" },
-        { produto: "Torta de Limão", preco: 30.00, categoria: "Torta", unidade: "UN" },
-        { produto: "Mousse Chocolate", preco: 35.00, categoria: "Sobremesa", unidade: "KG" },
-        { produto: "Pão de Mel", preco: 5.00, categoria: "Docinho", unidade: "UN" },
-        { produto: "Empada Frango", preco: 6.00, categoria: "Salgado", unidade: "UN" },
-    ];
+    const [ products, setProducts ] = useState<Product[]> ([
+        { id: 1, product: "Brigadeiro", price: 1.99, category: "Docinho", unity: "UN" },
+        { id: 2, product: "Beijinho", price: 1.99, category: "Docinho", unity: "UN" },
+        { id: 3, product: "Coxinha", price: 4.50, category: "Salgado", unity: "UN" },
+        { id: 4, product: "Quibe", price: 4.00, category: "Salgado", unity: "UN" },
+        { id: 5, product: "Bolo Chocolate", price: 25.00, category: "Bolo", unity: "KG" },
+        { id: 6, product: "Bolo Cenoura", price: 22.00, category: "Bolo", unity: "KG" },
+        { id: 7, product: "Torta de Limão", price: 30.00, category: "Torta", unity: "UN" },
+        { id: 8, product: "Mousse Chocolate", price: 35.00, category: "Sobremesa", unity: "KG" },
+        { id: 9, product: "Pão de Mel", price: 5.00, category: "Docinho", unity: "UN" },
+        { id: 10, product: "Empada Frango", price: 6.00, category: "Salgado", unity: "UN" },
+    ]);
+
+    const deleteProduct = (filteredProduct: Product) => {
+        const currentProducts = [ ...products ]
+        const newProductList = currentProducts.filter(product => 
+            filteredProduct.id !== product.id
+        )
+        
+        setProducts(newProductList)
+
+        Messages.dismiss()
+        Messages.success("Produto excluído com sucesso")
+    }
 
     return(
        <MainTemplate>
@@ -50,7 +71,10 @@ export function Produtos() {
                             </tr>
                         </thead>
                         <tbody>
-                            <ProductsList productsList={produtos}/>
+                            <ProductsList 
+                                productsList={products}
+                                deleteProduct = {deleteProduct}
+                            />
                         </tbody>
                     </table>
                 </div>

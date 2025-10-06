@@ -1,51 +1,59 @@
 import { Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Produtos/Produtos.module.css"
 
-type ProductsListProps = {
-    productsList: object[]
+type Product = {
+    id: number,
+    product: string
+    price: number
+    category: string
+    unity: string
 }
 
-export function ProductsList({ productsList } : ProductsListProps) {
-    const tdProduct = (product : object) => {
-        const valuesList = Object.entries(product).map(([k, v]) => {
-            let displayValue;
-            let classCategory;
+type ProductsListProps = {
+    productsList: Product[]
+    deleteProduct: (product: Product) => void
+}
 
-            if (typeof(v) === "number"){
-                displayValue = `R$ ${v.toFixed(2).replace(".",",")}`;
-            }
-            else if (k === "categoria") {
-                classCategory = styles.categoryColumn
-                displayValue = <span className={styles.category}>{v}</span>
-            }
-            else {
-                displayValue = v
-            }
-
-            return <td key={k} className={classCategory}>{displayValue}</td>
-        })
-
-        valuesList.push(
-            <td key="actions"> 
-                <div className={styles.actions}>
-                    <a className={styles.editIcon} href=""><Edit2Icon /></a>
-                    <a className={styles.deleteIcon} href=""><TrashIcon /></a>
-                </div>
-            </td>
-        )
-
-        return valuesList
-    }
-
-    const allProducts = (products : object[]) => {
-        return products.map((p, i) => {
-            // Futuramente mudar a key p/ o id do produto
-            return <tr key={i}>{tdProduct(p)}</tr> 
-        })
-    }
-
-
+export function ProductsList({ productsList, deleteProduct } : ProductsListProps) {
     return (
-       allProducts(productsList)
+        <>
+            {productsList.map((order, index) => {
+                return (
+                    <tr key={`${order.product}_${index}`}>
+                        {/* Name */}
+                        <td>
+                            {order.product}
+                        </td>
+
+                        {/* Price */}
+                        <td>
+                            R$ {order.price.toFixed(2).replace(".",",")}
+                        </td>
+
+                        {/* Category */}
+                        <td>
+                            <span className={styles.category}>{order.category}</span>
+                        </td>
+
+                        {/* Unity */}
+                        <td>
+                            {order.unity}
+                        </td>
+
+                        {/* Actions */}
+                        <td key="actions"> 
+                            <div className={styles.actions}>
+                                <button className={styles.editIcon}><Edit2Icon /></button>
+                                <button 
+                                    onClick={() => deleteProduct(order)}
+                                    className={styles.deleteIcon}>
+                                    <TrashIcon />
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                )
+            })}
+        </>
     )
 }

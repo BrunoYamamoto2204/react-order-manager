@@ -5,22 +5,33 @@ import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useNavigate } from "react-router";
+import { Messages } from "../../components/Messages";
 
 export function Pedidos() {
-    const navigate = useNavigate();
+    type Order = {
+        id: number,
+        name: string,
+        date: string,
+        products: string[],
+        value: string,
+        status: string
+    }
 
+    const navigate = useNavigate();
+    
     useEffect(() => {
         document.title = "Comanda - Pedidos"
     },[])
 
-    const pedidos = [
+    const [ orders, setOrders ] = useState<Order[]>([
         {
-            nome: "Cliente 1",
-            data: "31/08/2025",
-            produtos: [
+            id: 1,
+            name: "Cliente 1",
+            date: "31/08/2025",
+            products: [
                 "1Kg Bolo",
                 "30 Brigadeiros",
                 "40 Coxinhas",
@@ -30,33 +41,46 @@ export function Pedidos() {
                 "30 Brigadeiros",
                 "40 Risoles Carne"
             ],
-            valor: "R$ 399,59",
+            value: "R$ 399,59",
             status: "Pendente"
         },
         {
-            nome: "Cliente 2",
-            data: "30/08/2025",
-            produtos: [
+            id: 2,
+            name: "Cliente 2",
+            date: "30/08/2025",
+            products: [
                 "1Kg Torta",
                 "30 Dois Amores",
                 "20 Esfihas",
                 "1 Torta Doce"
             ],
-            valor: "R$ 299,59",
+            value: "R$ 299,59",
             status: "Pendente"
         },
         {
-            nome: "Cliente 3",
-            data: "29/08/2025",
-            produtos: [
+            id: 3,
+            name: "Cliente 3",
+            date: "29/08/2025",
+            products: [
                 "1Kg Mousse",
                 "30 Brigadeiros",
                 "40 Risoles Carne"
             ],
-            valor: "R$ 199,59",
+            value: "R$ 199,59",
             status: "Concluído"
         }
-    ];
+    ]);
+
+
+    const removeOrder = (filteredOrder: Order) => {
+        const currentOrders = [ ...orders ]
+        const newOrders = currentOrders.filter(order => 
+            filteredOrder.id !== order.id
+        )
+
+        setOrders(newOrders)
+        Messages.success("Pedido Excluido")
+    }
 
     return (
         <MainTemplate>
@@ -76,11 +100,15 @@ export function Pedidos() {
                                 <th>Produtos</th>
                                 <th>Valor</th>
                                 <th>Status</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         
                         <tbody>
-                            <OrdersList orders={pedidos}/>                                
+                            <OrdersList 
+                                ordersList={orders}
+                                removeOrders={removeOrder}
+                            />                                
                         </tbody>
                     </table>
                 </div>

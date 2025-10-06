@@ -10,7 +10,7 @@
 
 .orderTable table {
     display: grid;
-    grid-template-columns: 1fr 1fr 2fr 1fr 1fr; 
+    grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr; 
     border-collapse: collapse;
 }
 
@@ -131,5 +131,35 @@
 
 .liList {
     margin-left: 2rem;
+}
+
+/* Actions */
+.actions{
+    display: flex;
+    gap: 2rem;
+}
+
+.actions button{
+    background-color: inherit;
+    border: none;
+    color: inherit;
+}
+
+.actions button svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: all 0.2s ease;
+}
+
+.editIcon:hover svg{
+    color: var(--primary);
+    font-weight: bold;
+    transform: scale(1.2);
+}
+
+.deleteIcon:hover svg {
+    color: var(--error);
+    font-weight: bold;
+    transform: scale(1.2);
 }
 

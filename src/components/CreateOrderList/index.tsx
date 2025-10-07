@@ -8,8 +8,9 @@ type CreateOrderListProps = {
 }
 
 type Product = {
+    id: number,
     product: string;
-    price: number;
+    price: string;
     quantity: number;
 }
 
@@ -17,7 +18,7 @@ export function CreateOrderList({ orderList, changeQuantity, removeProduct} : Cr
     return (
         <>
             {orderList.map((order, index) => {
-                const total = order.quantity * order.price
+                const total = order.quantity * Number(order.price)
 
                 return (
                     <tr key={`${order.product}_${index}`}>

@@ -1,13 +1,27 @@
 import { useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
 import { Edit2Icon, TrashIcon } from "lucide-react";
+import { useNavigate } from "react-router";
+
+type Product = {
+    id: number;
+    product: string;
+    price: string;
+    quantity: number;
+}
 
 type Order = {
     id: number,
     name: string,
     date: string,
-    products: string[],
+    productsStrings: string[],
+    products: Product[],
     value: string,
+    discount: string,
+    discountValue: string,
+    discountType: string,
+    totalGross: string,
+    obs: string,
     status: string
 }
 
@@ -17,10 +31,11 @@ type OrderListProps = {
 }
 
 // Junta a lista de produtos em 1 <ul> (pronto para inserir dentro de <td>)
-const OrderProducts = ({ products }: { products: string[] }) => {
+const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
+
     const [showAll, setShowAll] = useState(false);
 
-    const list = showAll ? products : products.slice(0,3)
+    const list = showAll ? productsStrings : productsStrings.slice(0,3)
     const showButton = showAll ? "Ver menos..." : "Ver mais..."
 
     // A lista de produtos
@@ -29,7 +44,7 @@ const OrderProducts = ({ products }: { products: string[] }) => {
     })
 
     // Botão de Ver Mais/Ver Menos 
-    if (products.length > 3){
+    if (productsStrings.length > 3){
         formatList.push(
             <li key="show" className={styles.seeMore}>
                 <button onClick={() => setShowAll(!showAll)}>{showButton}</button>
@@ -43,6 +58,8 @@ const OrderProducts = ({ products }: { products: string[] }) => {
 }
 
 export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
+    const navigate = useNavigate();
+
     return (
         <>
             {ordersList.map((order) => {
@@ -60,7 +77,7 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
 
                         {/* Products */}
                         <td>
-                            <OrderProducts products={order.products} />
+                            <OrderProducts productsStrings={order.productsStrings} />
                         </td>
 
                         {/* Value */}
@@ -76,7 +93,11 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                         {/* Actions */}
                         <td key="actions"> 
                             <div className={styles.actions}>
-                                <button className={styles.editIcon}><Edit2Icon /></button>
+                                <button 
+                                    onClick={() => navigate(`/pedidos/editar/${order.id}`)}
+                                    className={styles.editIcon}>
+                                    <Edit2Icon />
+                                </button>
                                 <button 
                                     onClick={() => removeOrders(order)}
                                     className={styles.deleteIcon}>
@@ -90,52 +111,5 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
             })}
         </>
     )
-
-    // Transforma todas as chaves em <td>
-    // const buildOrder = (order : object) => {
-    //     const tdOrder = Object.entries(order).map(([k, v]) => {
-            
-    //         if (k === "status"){
-    //             if (v === "Pendente"){
-    //                 return (
-    //                     <td key={`${k}_${v}`}>
-    //                         <div className={styles.pending}>
-    //                             {v}
-    //                             <a href="#"><InfoIcon /></a>
-    //                         </div>
-    //                     </td>
-    //                 )
-    //             }
-    //             else {
-    //                 return (
-    //                     <td key={`${k}_${v}`}>
-    //                         <div className={styles.completed}>
-    //                             {v}
-    //                             <a href="#"><InfoIcon /></a>
-    //                         </div>
-    //                     </td>
-    //                 )
-    //             }
-    //         }
-    //         else if (k !== "produtos") {
-    //             return <td key={`${k}_${v}`}>{v}</td>
-    //         } 
-    //         // Produtos: toda a lista <ul> em um td
-    //         else{
-    //             return <td key={`${k}_${v}`}>{OrderProducts(v)}</td>
-    //         }
-    //     })
-
-    //     return tdOrder
-    // }
-
-    // // Junta todos os grupos de <td> de cada pedido em um <tr>
-    // const buildAllOrders = ( orderList : object[]) => {
-    //     return orderList.map((p, i) => {
-    //         return <tr key={i}>{buildOrder(p)}</tr>
-    //     })
-    // }
-
-    // return buildAllOrders(orders)
 }
     

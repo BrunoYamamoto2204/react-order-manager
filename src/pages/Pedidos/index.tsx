@@ -11,66 +11,76 @@ import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 
 export function Pedidos() {
+    type Product = {
+        id: number,
+        product: string;
+        price: string;
+        quantity: number;
+    }
+
     type Order = {
         id: number,
         name: string,
         date: string,
-        products: string[],
+        productsStrings: string[],
+        products: Product[],
         value: string,
+        discount: string,
+        discountValue: string,
+        discountType: string,
+        totalGross: string,
+        obs: string,
         status: string
     }
 
     const navigate = useNavigate();
     
     useEffect(() => {
-        document.title = "Comanda - Pedidos"
+        document.title = "Pedidos - Comanda"
     },[])
 
-    const [ orders, setOrders ] = useState<Order[]>([
+    // Pedido inicial caso não tenha
+    const client1Products: Product[] = [
+        { id: 101, product: "Bolo", quantity: 1, price: "60.00" },
+        { id: 102, product: "Brigadeiros", quantity: 30, price: "1.50" },
+        { id: 103, product: "Coxinhas", quantity: 40, price: "2.00" },
+        { id: 104, product: "Esfihas", quantity: 20, price: "2.50" },
+        { id: 105, product: "Torta Doce", quantity: 1, price: "45.00" },
+    ];
+
+    const totalGross = client1Products.reduce((sum, p) => sum + (p.quantity * Number(p.price)), 0);
+    const discount = 10.00; 
+    const finalValue = totalGross - discount;
+
+    const initialOrders: Order[] = [
         {
-            id: 1,
+            id: Date.now(),
             name: "Cliente 1",
             date: "31/08/2025",
-            products: [
-                "1Kg Bolo",
-                "30 Brigadeiros",
-                "40 Coxinhas",
-                "20 Esfihas",
-                "1 Torta Doce",
-                "1Kg Mousse",
-                "30 Brigadeiros",
-                "40 Risoles Carne"
-            ],
-            value: "R$ 399,59",
+            productsStrings: client1Products.map(p => `${p.quantity} ${p.product}`),
+            products: client1Products, 
+            value: `R$ ${finalValue.toFixed(2)}`,
+            discount: discount.toString(),
+            discountValue: discount.toFixed(2),
+            discountType: "R$",
+            totalGross: totalGross.toFixed(2),
+            obs: "Entrega agendada para 14h.",
             status: "Pendente"
         },
-        {
-            id: 2,
-            name: "Cliente 2",
-            date: "30/08/2025",
-            products: [
-                "1Kg Torta",
-                "30 Dois Amores",
-                "20 Esfihas",
-                "1 Torta Doce"
-            ],
-            value: "R$ 299,59",
-            status: "Pendente"
-        },
-        {
-            id: 3,
-            name: "Cliente 3",
-            date: "29/08/2025",
-            products: [
-                "1Kg Mousse",
-                "30 Brigadeiros",
-                "40 Risoles Carne"
-            ],
-            value: "R$ 199,59",
-            status: "Concluído"
-        }
-    ]);
 
+    ];
+
+    const getOrders = () => {
+        const currentOrdersString = localStorage.getItem("orders");
+
+        const orders = currentOrdersString 
+            ? JSON.parse(currentOrdersString) 
+            : localStorage.setItem("orders", JSON.stringify(initialOrders))
+
+        return orders
+    }
+
+    const [ orders, setOrders ] = useState<Order[]>(getOrders());
 
     const removeOrder = (filteredOrder: Order) => {
         const currentOrders = [ ...orders ]
@@ -79,6 +89,8 @@ export function Pedidos() {
         )
 
         setOrders(newOrders)
+        localStorage.setItem("orders", JSON.stringify(newOrders))
+        
         Messages.success("Pedido Excluido")
     }
 

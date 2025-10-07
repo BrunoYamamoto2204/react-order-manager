@@ -4,49 +4,92 @@ import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreatePedido.module.css";
 import { PlusCircleIcon, RefreshCwIcon, SaveIcon, SearchIcon } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
 
-export function CreatePedido() {
-    type Product = {
-        id: number;
-        product: string;
-        price: string;
-        quantity: number;
-    }
+type Product = {
+    id: number;
+    product: string;
+    price: string;
+    quantity: number;
+}
 
-    useEffect(() => {
-        document.title = "Novo Pedido - Comanda"
-    },[])
+type Order = {
+    id: number,
+    name: string,
+    date: string,
+    productsStrings: string[],
+    products: Product[],
+    value: string,
+    discount: string,
+    discountValue: string,
+    discountType: string,
+    totalGross: string,
+    obs: string,
+    status: string
+}
 
+export function EditPedido() {
     const navigate = useNavigate();
 
+    const [ orders ] = useState<Order[]>(JSON.parse(localStorage.getItem("orders") || "[]"));
+    const [ order, setOrder ] = useState<Order | null>(null);
+
+    // Input Values
     const [ discountType, setDiscountType ] = useState("%")
     const [ discountValue, setDiscountValue ] = useState("0")
     const [ noRegister, setNoRegister ] = useState(false);
-    const [ productList, setProductList ] = useState<Product[]>([
-        {
-            id: 1,
-            product: "Brigadeiro",  
-            quantity: 1,
-            price: "1.50"
-        },
-    ])
+    const [ productList, setProductList ] = useState<Product[]>([])
 
-    // Input Values
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
+    const [ date, setDate ] = useState("")
 
-    const [ total, setTotal ] = useState(0)
+    const [ total, setTotal ] = useState("")
     const [ totalGross, setTotalGross] = useState("")
     const [ discount, setDiscount ] = useState(0)
 
     const [ product, setProduct] = useState("");
     const [ quantity ] = useState("1");
     const [ price ] = useState("10.5");
-    
+
+    const { id } = useParams<{ id: string }>();
+
+    useEffect(() => {
+        document.title = "Editar Pedido - Comanda"
+
+        const updatedOrders = orders.find(currentOrder => currentOrder.id === Number(id))
+        setOrder(updatedOrders ?? null)
+    },[id, orders])
+
+   useEffect(() => {
+        if (order) {
+            setDiscountType(order.discountType);
+            setDiscountValue(order.discountValue);
+            setProductList(order.products);
+            setDiscountType(order.discountType);
+
+            setName(order.name)
+            setDescription(order.obs)
+
+            const convertDateFormat = (dateStr: string) => {
+                if (!dateStr || !dateStr.includes('/')) {
+                    return new Date().toISOString().split('T')[0];
+                }
+                const [ day, month, year ] = dateStr.split("/")
+                return `${year}-${month}-${day}`
+            };
+
+            setDate(convertDateFormat(order.date))
+            
+            setTotal(order.value)
+            setTotalGross(order.totalGross)
+            setDiscount(Number(order.discount))
+        }
+    }, [order]); 
+
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
         return sum + (order.quantity * Number(order.price))
@@ -71,7 +114,7 @@ export function CreatePedido() {
             sum + (order.quantity * Number(order.price)), 0);
         const currentDiscountAmount = calculatedDiscountAmount();
         const subtotal = Math.max(0, currentTotalGross - currentDiscountAmount);
-        setTotal(subtotal); 
+        setTotal(subtotal.toString()); 
     }, [productList, discountValue, discountType, grossValue]); 
 
     // Troca o tipo de Desconto
@@ -87,13 +130,6 @@ export function CreatePedido() {
         return `${day}/${month}/${year}`
     }
 
-    // Converte a data em YYYY-MM-dd
-    const formatDateString = (date : Date) => {
-        return date.toISOString().split("T")[0];
-    }
-
-    const [date, setDate] = useState(formatDateString(new Date())) // YYYY-MM-dd
-   
     // Excluir o item 
     const removeProduct = (listItem: Product) => {
         const currentOrderList = [...productList]
@@ -122,15 +158,21 @@ export function CreatePedido() {
         const formattedProducts = productList.map(p => 
             `${p.quantity} ${p.product}`
         );
+
+        // Converte YYYY-MM-DD para dd/MM/yyyy
+        const formatDateToDisplay = (dateStr: string) => {
+            const [year, month, day] = dateStr.split("-");
+            return `${day}/${month}/${year}`;
+        };
     
         const newOrder = ({
             id: Number(Date.now()),
             name: name,
-            date: formatDate(new Date()),
+            date: formatDateToDisplay(date),
             productsStrings: formattedProducts,
             products: productList,
-            value: `R$ ${total.toFixed(2)}`,        
-            discount: discount.toFixed(2),
+            value: `R$ ${Number(total).toFixed(2)}`,        
+            discount: Number(discount).toFixed(2),
             discountValue: discountValue,
             totalGross: totalGross,
             discountType: discountType,
@@ -141,8 +183,10 @@ export function CreatePedido() {
         const currentOrdersString = localStorage.getItem("orders");
         const currentOrders = currentOrdersString ? JSON.parse(currentOrdersString) : [];
 
-        const updatedOrders = [ ...currentOrders, newOrder ]
-
+        const updatedOrders = currentOrders.map((editedOrder: Order) => 
+            editedOrder.id === Number(id) ? editedOrder = newOrder : editedOrder
+        )
+        
         localStorage.setItem("orders", JSON.stringify(updatedOrders))
 
         setName("");
@@ -150,7 +194,7 @@ export function CreatePedido() {
         setProductList([]);
         setDiscountValue("0");
 
-        Messages.success("Pedido criado com sucesso")
+        Messages.success("Pedido eidtado com sucesso")
         navigate("/pedidos");
 
         return newOrder;
@@ -176,8 +220,9 @@ export function CreatePedido() {
             return;
         }
 
+        
         const newProduct = {
-            id: Date.now(),
+            id: Number(Date.now()),
             product: product,  
             quantity: Number(quantity),
             price: price
@@ -339,7 +384,7 @@ export function CreatePedido() {
                                 <div className={styles.statsValueBox}>
                                     <label>Desconto</label> 
                                     <p style={{color:"var(--error)"}}>
-                                        - R$ {discount.toFixed(2)}
+                                        - R$ {Number(discount).toFixed(2)}
                                     </p>
                                 </div>
 
@@ -347,7 +392,7 @@ export function CreatePedido() {
                                 <div className={styles.statsValueBox}>
                                     <label>Total</label> 
                                     <p style={{ color: 'var(--primary)' }}>
-                                        R$ {total.toFixed(2)}
+                                        R$ {Number(total).toFixed(2)}
                                     </p>
                                 </div>
 

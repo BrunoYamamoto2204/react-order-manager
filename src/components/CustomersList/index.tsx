@@ -1,12 +1,21 @@
 import { CheckLineIcon, CircleXIcon, Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
+import { useNavigate } from "react-router"
 
 type Customer = {
     id: number,
     name: string,
+    cpfCnpj: string,
     phone: string,
     email: string,
     pendingOrders: boolean,
+    road?: string,
+    num?: string,
+    neighborhood?: string, 
+    city?: string,
+    state?: string,
+    cep?: string,
+    obs: string
 }
 
 type CustomersListProps = {
@@ -15,6 +24,8 @@ type CustomersListProps = {
 }
 
 export function CustomersList({ customersList, removeCustomer } : CustomersListProps) {
+    const navigate = useNavigate()
+    
     return (
         <>
             {customersList.map((customer, index) => {
@@ -44,7 +55,11 @@ export function CustomersList({ customersList, removeCustomer } : CustomersListP
                         {/* Ações  */}
                         <td key="actions">
                             <div className={styles.actions}>
-                                <button className={styles.editIcon}><Edit2Icon /></button>
+                                <button 
+                                    onClick={() => navigate(`/clientes/editar/${customer.id}`)}
+                                    className={styles.editIcon}>
+                                    <Edit2Icon />
+                                </button>
                                 <button 
                                     className={styles.deleteIcon}
                                     onClick={() => removeCustomer(customer)}>
@@ -57,37 +72,4 @@ export function CustomersList({ customersList, removeCustomer } : CustomersListP
             })}
         </>
     )
-
-    // Contruir cada cliente (<td>)
-    const buildCustomer = (customer : object) => {
-        const valuesList = Object.entries(customer).map(([k, v]) => {
-            if (k === "pedidosPendentes") {
-                if (v > 0) {
-                    return <td className={styles.pendingOrders} key={k}><CheckLineIcon/></td>
-                }
-                else return <td className={styles.noPendingOrders} key={k}><CircleXIcon/></td>
-            }
-            else  return <td key={k}>{v}</td>
-        })
-        
-        valuesList.push(
-            <td key="actions">
-                <div className={styles.actions}>
-                    <a className={styles.editIcon} href=""><Edit2Icon /></a>
-                    <a className={styles.deleteIcon} href=""><TrashIcon /></a>
-                </div>
-            </td>
-        )
-
-        return valuesList
-    }
-
-    // Colocar todos os clientes em <tr>
-    const buildAllCustomer = (customers : object) => {
-        return Object.entries(customers).map(([k, v]) => {
-            return <tr key={k}>{buildCustomer(v)}</tr>
-        })
-    }
-    
-    return buildAllCustomer(customersList)
 }

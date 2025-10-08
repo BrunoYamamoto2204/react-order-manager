@@ -57,8 +57,8 @@ export function CreateProdutos() {
             description: description
         } 
 
-        const currentProductString = localStorage.getItem("products")
-        const currentProduct = currentProductString ? JSON.parse(currentProductString) : []
+        const currentProductString = JSON.parse(localStorage.getItem("products") || "[]")
+        const currentProduct = currentProductString
         const updatedProducts = [ ...currentProduct, newProduct ]
 
         localStorage.setItem("products", JSON.stringify(updatedProducts))
@@ -70,6 +70,7 @@ export function CreateProdutos() {
         setSelectUn("Selecione uma unidade");
         
         Messages.success("Produto criado com sucesso")
+        navigate("/produtos")
     }
 
     return(

@@ -4,14 +4,57 @@ import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreateCliente.module.css";
 import { SaveIcon } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 
-export function CreateCliente() {
+export function EditCliente() {
+    const navigate = useNavigate();
+
+    type Customer = {
+        id: number,
+        name: string,
+        cpfCnpj: string,
+        phone: string,
+        email: string,
+        pendingOrders: boolean,
+        road?: string,
+        num?: string,
+        neighborhood?: string, 
+        city?: string,
+        state?: string,
+        cep?: string,
+        obs: string
+    }
+
+    const [ customers ] = useState<Customer[]>(JSON.parse(
+        localStorage.getItem("customers") || "[]"
+    ));
+    const [ customer, setCustomer ] = useState<Customer>();
+
+    const { id } = useParams<{id: string}>();
+
     useEffect(() => {
         document.title = "Novo Cliente - Comanda"
-    },[])
-    const navigate = useNavigate();
+
+        const currentCustomers = customers.find(editedCustomer => editedCustomer.id === Number(id))
+        setCustomer(currentCustomers)
+    },[customers, id])
+
+    useEffect(() => {
+        if (customer){
+            setName(customer.name)
+            setcpfCnpj(customer.cpfCnpj)
+            setPhone(customer.phone)
+            setEmail(customer.email)
+            setRoad(customer.road || "" )
+            setNum(customer.num || "" )
+            setNeighborhood(customer.neighborhood || "" )
+            setState(customer.state || "" )
+            setCep(customer.cep || "" )
+            setObs(customer.obs || "" )
+        }
+            
+    }, [customer])
 
     // Input Values
     const [name, setName] = useState("");
@@ -40,7 +83,8 @@ export function CreateCliente() {
             return
         }
 
-        const newCustomer = {
+        const editedCustomer = {
+            id: Number(id),
             name, 
             cpfCnpj, 
             phone, 
@@ -55,9 +99,11 @@ export function CreateCliente() {
             obs            
         }
 
-        const currentCustomers = JSON.parse(localStorage.getItem("customers") || "[]")
-        const updatedCustomers = [ ...currentCustomers, newCustomer]
-        localStorage.setItem("customers", JSON.stringify(updatedCustomers))
+        const currentCustomers = customers.map((currentCustomer: Customer) => 
+            currentCustomer.id === Number(id) ? currentCustomer = editedCustomer : currentCustomer
+        )
+
+        localStorage.setItem("customers", JSON.stringify(currentCustomers))
 
         setName("");
         setcpfCnpj("");
@@ -72,6 +118,7 @@ export function CreateCliente() {
         setNeighborhood("");
 
         Messages.success("Produto criado com sucesso")
+        navigate("/clientes")
     }
 
     return(

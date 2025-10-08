@@ -38,8 +38,8 @@ export function EditProdutos() {
     useEffect(() => {
         document.title = "Editar Produto - Comanda"
 
-        const currentProducts = products.find(currentProduct => currentProduct.id === Number(id))
-        setProduct(currentProducts)
+        const currentProduct = products.find(editedProduct => editedProduct.id === Number(id))
+        setProduct(currentProduct)
     },[id, products])
 
     useEffect(() => {

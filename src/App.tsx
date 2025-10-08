@@ -13,6 +13,7 @@ import { CreateCliente } from "./pages/Clientes/createCliente";
 import { CreatePedido } from "./pages/Pedidos/createPedido";
 import { EditPedido } from "./pages/Pedidos/editPedido";
 import { EditProdutos } from "./pages/Produtos/editProdutos";
+import { EditCliente } from "./pages/Clientes/editCliente";
 
 export function App(){
   return (
@@ -29,6 +30,7 @@ export function App(){
             <Route path="/pedidos/novo" element={<CreatePedido/>} />
             <Route path="/pedidos/editar/:id" element={<EditPedido />} />
             <Route path="/produtos/editar/:id" element={<EditProdutos />} />
+            <Route path="/clientes/editar/:id" element={<EditCliente />} />
           </Routes>
         </MessageContainer>
     </BrowserRouter>

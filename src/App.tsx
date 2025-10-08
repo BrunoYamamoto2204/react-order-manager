@@ -12,6 +12,7 @@ import { MessageContainer } from "./components/Messages/MessageContainer";
 import { CreateCliente } from "./pages/Clientes/createCliente";
 import { CreatePedido } from "./pages/Pedidos/createPedido";
 import { EditPedido } from "./pages/Pedidos/editPedido";
+import { EditProdutos } from "./pages/Produtos/editProdutos";
 
 export function App(){
   return (
@@ -27,6 +28,7 @@ export function App(){
             <Route path="/clientes/criar" element={<CreateCliente />} />
             <Route path="/pedidos/novo" element={<CreatePedido/>} />
             <Route path="/pedidos/editar/:id" element={<EditPedido />} />
+            <Route path="/produtos/editar/:id" element={<EditProdutos />} />
           </Routes>
         </MessageContainer>
     </BrowserRouter>

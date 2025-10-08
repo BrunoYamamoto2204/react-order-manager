@@ -1,5 +1,6 @@
 import { Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Produtos/Produtos.module.css"
+import { useNavigate } from "react-router"
 
 type Product = {
     id: number,
@@ -16,6 +17,8 @@ type ProductsListProps = {
 }
 
 export function ProductsList({ productsList, deleteProduct } : ProductsListProps) {
+    const navigate = useNavigate()
+    
     return (
         <>
             {productsList.map((order, index) => {
@@ -44,7 +47,11 @@ export function ProductsList({ productsList, deleteProduct } : ProductsListProps
                         {/* Actions */}
                         <td key="actions"> 
                             <div className={styles.actions}>
-                                <button className={styles.editIcon}><Edit2Icon /></button>
+                                <button 
+                                    onClick={() => navigate(`/produtos/editar/${order.id}`)}
+                                    className={styles.editIcon}>
+                                    <Edit2Icon />
+                                </button>
                                 <button 
                                     onClick={() => deleteProduct(order)}
                                     className={styles.deleteIcon}>

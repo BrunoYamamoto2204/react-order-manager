@@ -166,7 +166,7 @@ export function EditPedido() {
         };
     
         const newOrder = ({
-            id: Number(Date.now()),
+            id: Number(id),
             name: name,
             date: formatDateToDisplay(date),
             productsStrings: formattedProducts,

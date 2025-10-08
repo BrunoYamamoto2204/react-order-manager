@@ -48,29 +48,28 @@ export function CreateProdutos() {
             return
         }
 
+        const newProduct = {
+            id: Number(Date.now()),
+            product: name,
+            price: Number(price),
+            category: selectCategory,
+            unit: selectUn,
+            description: description
+        } 
+
+        const currentProductString = localStorage.getItem("products")
+        const currentProduct = currentProductString ? JSON.parse(currentProductString) : []
+        const updatedProducts = [ ...currentProduct, newProduct ]
+
+        localStorage.setItem("products", JSON.stringify(updatedProducts))
+            
         setName("");
         setPrice("");
         setDescription("");
         setSelectCategory("Selecione uma categoria");
         setSelectUn("Selecione uma unidade");
         
-        Messages.sucess("Produto criado com sucesso")
-
-        console.log({
-            name: name,
-            price: price,
-            category: selectCategory,
-            unit: selectUn,
-            description: description
-        }) 
-
-        return{
-            name: name,
-            price: price,
-            category: selectCategory,
-            unit: selectUn,
-            description: description
-        } 
+        Messages.success("Produto criado com sucesso")
     }
 
     return(

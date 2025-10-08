@@ -6,7 +6,8 @@ type Product = {
     product: string
     price: number
     category: string
-    unity: string
+    unit: string,
+    description: string
 }
 
 type ProductsListProps = {
@@ -37,7 +38,7 @@ export function ProductsList({ productsList, deleteProduct } : ProductsListProps
 
                         {/* Unity */}
                         <td>
-                            {order.unity}
+                            {order.unit}
                         </td>
 
                         {/* Actions */}

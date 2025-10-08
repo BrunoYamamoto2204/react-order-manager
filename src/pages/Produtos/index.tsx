@@ -15,7 +15,8 @@ export function Produtos() {
         product: string
         price: number
         category: string
-        unity: string
+        unit: string,
+        description: string
     }
 
     const navigate = useNavigate();
@@ -24,18 +25,27 @@ export function Produtos() {
         document.title = "Produtos - Comanda"
     },[])
 
-    const [ products, setProducts ] = useState<Product[]> ([
-        { id: 1, product: "Brigadeiro", price: 1.99, category: "Docinho", unity: "UN" },
-        { id: 2, product: "Beijinho", price: 1.99, category: "Docinho", unity: "UN" },
-        { id: 3, product: "Coxinha", price: 4.50, category: "Salgado", unity: "UN" },
-        { id: 4, product: "Quibe", price: 4.00, category: "Salgado", unity: "UN" },
-        { id: 5, product: "Bolo Chocolate", price: 25.00, category: "Bolo", unity: "KG" },
-        { id: 6, product: "Bolo Cenoura", price: 22.00, category: "Bolo", unity: "KG" },
-        { id: 7, product: "Torta de Limão", price: 30.00, category: "Torta", unity: "UN" },
-        { id: 8, product: "Mousse Chocolate", price: 35.00, category: "Sobremesa", unity: "KG" },
-        { id: 9, product: "Pão de Mel", price: 5.00, category: "Docinho", unity: "UN" },
-        { id: 10, product: "Empada Frango", price: 6.00, category: "Salgado", unity: "UN" },
-    ]);
+    const initialProducts: Product[] = [
+        { id: 1, product: "Brigadeiro", price: 1.99, category: "Docinho", unit: "UN",description: "" },
+        { id: 2, product: "Beijinho", price: 1.99, category: "Docinho", unit: "UN",description: "" },
+        { id: 3, product: "Coxinha", price: 4.50, category: "Salgado", unit: "UN",description: "" },
+        { id: 4, product: "Quibe", price: 4.00, category: "Salgado", unit: "UN",description: "" },
+        { id: 5, product: "Bolo Chocolate", price: 25.00, category: "Bolo", unit: "KG",description: "" },
+        { id: 6, product: "Bolo Cenoura", price: 22.00, category: "Bolo", unit: "KG",description: "" },
+        { id: 7, product: "Torta de Limão", price: 30.00, category: "Torta", unit: "UN",description: "" },
+        { id: 8, product: "Mousse Chocolate", price: 35.00, category: "Sobremesa", unit: "KG",description: "" },
+        { id: 9, product: "Empada Frango", price: 6.00, category: "Salgado", unit: "UN",description: "" },
+    ];
+
+    const getProducts = () => {
+        const currentProductsString = localStorage.getItem("products")
+
+        const products = currentProductsString 
+            ? JSON.parse(currentProductsString) 
+            : localStorage.setItem("products", JSON.stringify(initialProducts))
+        
+        return products
+    }   
 
     const deleteProduct = (filteredProduct: Product) => {
         const currentProducts = [ ...products ]
@@ -43,11 +53,14 @@ export function Produtos() {
             filteredProduct.id !== product.id
         )
         
+        localStorage.setItem("products", JSON.stringify(newProductList))
         setProducts(newProductList)
 
         Messages.dismiss()
         Messages.success("Produto excluído com sucesso")
     }
+
+    const [ products, setProducts ] = useState<Product[]>(getProducts())
 
     return(
        <MainTemplate>

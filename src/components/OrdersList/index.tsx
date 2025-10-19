@@ -1,29 +1,8 @@
 import { useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
-import { Edit2Icon, TrashIcon } from "lucide-react";
+import { Edit2Icon, InfoIcon, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router";
-
-type Product = {
-    id: number;
-    product: string;
-    price: string;
-    quantity: number;
-}
-
-type Order = {
-    id: number,
-    name: string,
-    date: string,
-    productsStrings: string[],
-    products: Product[],
-    value: string,
-    discount: string,
-    discountValue: string,
-    discountType: string,
-    totalGross: string,
-    obs: string,
-    status: string
-}
+import type { Order } from "../../services/ordersApi"
 
 type OrderListProps = {
     ordersList: Order[],
@@ -34,7 +13,6 @@ type OrderListProps = {
 const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
 
     const [showAll, setShowAll] = useState(false);
-
     const list = showAll ? productsStrings : productsStrings.slice(0,3)
     const showButton = showAll ? "Ver menos..." : "Ver mais..."
 
@@ -60,11 +38,23 @@ const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
 export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
     const navigate = useNavigate();
 
+    const status = (status : string) => {
+        if (status === "Pendente"){
+            return styles.pending
+        } 
+        else if (status === "Concluído"){
+            return styles.completed
+        }
+        else{
+            return styles.canceled
+        }
+    }
+
     return (
         <>
             {ordersList.map((order) => {
                 return( 
-                    <tr key={order.id}>
+                    <tr key={order._id}>
                         {/* Name */}
                         <td>
                             {order.name}
@@ -86,15 +76,15 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                         </td>
 
                         {/* Status */}
-                        <td>
-                            {order.status}
+                        <td className={`${styles.status} ${status(order.status)}`}>
+                            {order.status} <InfoIcon />
                         </td>
 
                         {/* Actions */}
                         <td key="actions"> 
                             <div className={styles.actions}>
                                 <button 
-                                    onClick={() => navigate(`/pedidos/editar/${order.id}`)}
+                                    onClick={() => navigate(`/pedidos/editar/${order._id}`)}
                                     className={styles.editIcon}>
                                     <Edit2Icon />
                                 </button>

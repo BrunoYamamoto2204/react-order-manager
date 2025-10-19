@@ -12,6 +12,7 @@ type Product = {
     product: string;
     price: string;
     quantity: number;
+    unit: string
 }
 
 export function CreateOrderList({ orderList, changeQuantity, removeProduct} : CreateOrderListProps) {

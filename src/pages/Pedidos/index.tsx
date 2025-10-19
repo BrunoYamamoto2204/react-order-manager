@@ -1,5 +1,7 @@
 import { Container } from "../../components/Container";
 import { MainTemplate } from "../../templates/MainTemplate";
+import { getOrders, deleteOrder } from "../../services/ordersApi"
+import type { Order } from "../../services/ordersApi"
 
 // import styles from "../../components/OrdersList/OrdersList.module.css"
 import styles from "./Pedidos.module.css"
@@ -11,87 +13,54 @@ import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 
 export function Pedidos() {
-    type Product = {
-        id: number,
-        product: string;
-        price: string;
-        quantity: number;
-    }
-
-    type Order = {
-        id: number,
-        name: string,
-        date: string,
-        productsStrings: string[],
-        products: Product[],
-        value: string,
-        discount: string,
-        discountValue: string,
-        discountType: string,
-        totalGross: string,
-        obs: string,
-        status: string
-    }
-
     const navigate = useNavigate();
+    const [ orders, setOrders ] = useState<Order[]>([]);
+    const [ loading, setLoading ] = useState(true);
     
     useEffect(() => {
         document.title = "Pedidos - Comanda"
+        loadOrders()
     },[])
 
-    // Pedido inicial caso não tenha
-    const client1Products: Product[] = [
-        { id: 101, product: "Bolo", quantity: 1, price: "60.00" },
-        { id: 102, product: "Brigadeiros", quantity: 30, price: "1.50" },
-        { id: 103, product: "Coxinhas", quantity: 40, price: "2.00" },
-        { id: 104, product: "Esfihas", quantity: 20, price: "2.50" },
-        { id: 105, product: "Torta Doce", quantity: 1, price: "45.00" },
-    ];
-
-    const totalGross = client1Products.reduce((sum, p) => sum + (p.quantity * Number(p.price)), 0);
-    const discount = 10.00; 
-    const finalValue = totalGross - discount;
-
-    const initialOrders: Order[] = [
-        {
-            id: Date.now(),
-            name: "Cliente 1",
-            date: "31/08/2025",
-            productsStrings: client1Products.map(p => `${p.quantity} ${p.product}`),
-            products: client1Products, 
-            value: `R$ ${finalValue.toFixed(2)}`,
-            discount: discount.toString(),
-            discountValue: discount.toFixed(2),
-            discountType: "R$",
-            totalGross: totalGross.toFixed(2),
-            obs: "Entrega agendada para 14h.",
-            status: "Pendente"
-        },
-
-    ];
-
-    const getOrders = () => {
-        const currentOrdersString = localStorage.getItem("orders");
-
-        const orders = currentOrdersString 
-            ? JSON.parse(currentOrdersString) 
-            : localStorage.setItem("orders", JSON.stringify(initialOrders))
-
-        return orders
+    const loadOrders = async () => {
+        try{
+            setLoading(true)
+            const data = await getOrders()
+            setOrders(data)
+        } catch (error) {
+            console.error('[-] Erro ao carregar pedidos:', error);
+            Messages.error("Erro ao carregar pedidos");
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const [ orders, setOrders ] = useState<Order[]>(getOrders());
+    const removeOrder = async (filteredOrder: Order) => {
+        try {
+            if(!filteredOrder._id) {
+                console.log("❌ Pedido sem _id:", filteredOrder);
+            return;
+        };
+            await deleteOrder(filteredOrder._id);
 
-    const removeOrder = (filteredOrder: Order) => {
-        const currentOrders = [ ...orders ]
-        const newOrders = currentOrders.filter(order => 
-            filteredOrder.id !== order.id
-        )
+            setOrders(orders.filter(order => order._id !== filteredOrder._id))
+            Messages.success("Pedido excluido")
+        } catch (error) {
+            console.log("[-] Erro ao remover pedido!", error)
+            Messages.error("Não foi possível remover o pedido")
+        }
+    }
 
-        setOrders(newOrders)
-        localStorage.setItem("orders", JSON.stringify(newOrders))
-        
-        Messages.success("Pedido Excluido")
+    if (loading) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        Carregando pedidos...
+                    </div>
+                </Container>
+            </MainTemplate>
+        );
     }
 
     return (
@@ -115,12 +84,19 @@ export function Pedidos() {
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        
                         <tbody>
-                            <OrdersList 
-                                ordersList={orders}
-                                removeOrders={removeOrder}
-                            />                                
+                            {orders.length > 0 ? (
+                                <OrdersList 
+                                    ordersList={orders}
+                                    removeOrders={removeOrder}
+                                />
+                            ) : (
+                                <tr>
+                                    <td className={styles.noOrders}>
+                                        <p>Sem Pedidos disponíveis</p>
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

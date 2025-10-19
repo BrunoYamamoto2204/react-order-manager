@@ -8,32 +8,23 @@ import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
+import { createOrder } from "../../services/ordersApi";
+
+type Product = {
+    id: number;
+    product: string;
+    price: string;
+    quantity: number;
+    unit: string;
+}
 
 export function CreatePedido() {
-    type Product = {
-        id: number;
-        product: string;
-        price: string;
-        quantity: number;
-    }
-
-    useEffect(() => {
-        document.title = "Novo Pedido - Comanda"
-    },[])
-
     const navigate = useNavigate();
 
     const [ discountType, setDiscountType ] = useState("%")
     const [ discountValue, setDiscountValue ] = useState("0")
     const [ noRegister, setNoRegister ] = useState(false);
-    const [ productList, setProductList ] = useState<Product[]>([
-        {
-            id: 1,
-            product: "Brigadeiro",  
-            quantity: 1,
-            price: "1.50"
-        },
-    ])
+    const [ productList, setProductList ] = useState<Product[]>([])
 
     // Input Values
     const [ name, setName ] = useState("");
@@ -44,9 +35,14 @@ export function CreatePedido() {
     const [ discount, setDiscount ] = useState(0)
 
     const [ product, setProduct] = useState("");
+    const [ unit ] = useState("UN"); 
     const [ quantity ] = useState("1");
     const [ price ] = useState("10.5");
     
+    useEffect(() => {
+        document.title = "Novo Pedido - Comanda"
+    },[])
+
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
         return sum + (order.quantity * Number(order.price))
@@ -67,10 +63,8 @@ export function CreatePedido() {
             }
         }
 
-        const currentTotalGross = productList.reduce((sum, order) => 
-            sum + (order.quantity * Number(order.price)), 0);
         const currentDiscountAmount = calculatedDiscountAmount();
-        const subtotal = Math.max(0, currentTotalGross - currentDiscountAmount);
+        const subtotal = Math.max(0, grossValue - currentDiscountAmount);
         setTotal(subtotal); 
     }, [productList, discountValue, discountType, grossValue]); 
 
@@ -97,16 +91,14 @@ export function CreatePedido() {
     // Excluir o item 
     const removeProduct = (listItem: Product) => {
         const currentOrderList = [...productList]
-
         const newOrder = currentOrderList.filter(order => 
             order.product !== listItem.product
         )
-
         setProductList(newOrder)
     }
 
     // Cria Pedido
-    const handleSubmit = (e : React.FormEvent) => {
+    const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         Messages.dismiss()
 
@@ -120,11 +112,10 @@ export function CreatePedido() {
         } 
 
         const formattedProducts = productList.map(p => 
-            `${p.quantity} ${p.product}`
+            `${p.quantity}${p.unit === "UN" ? "" : p.unit} ${p.product}`
         );
     
         const newOrder = ({
-            id: Number(Date.now()),
             name: name,
             date: formatDate(new Date()),
             productsStrings: formattedProducts,
@@ -138,22 +129,20 @@ export function CreatePedido() {
             status: "Pendente",
         }) 
 
-        const currentOrdersString = localStorage.getItem("orders");
-        const currentOrders = currentOrdersString ? JSON.parse(currentOrdersString) : [];
+        try{
+            await createOrder(newOrder)
 
-        const updatedOrders = [ ...currentOrders, newOrder ]
+            setName("");
+            setDescription("");
+            setProductList([]);
+            setDiscountValue("0");
 
-        localStorage.setItem("orders", JSON.stringify(updatedOrders))
-
-        setName("");
-        setDescription("");
-        setProductList([]);
-        setDiscountValue("0");
-
-        Messages.success("Pedido criado com sucesso")
-        navigate("/pedidos");
-
-        return newOrder;
+            Messages.success("Pedido criado com sucesso")
+            navigate("/pedidos");
+        } catch (error) {
+            console.error("[-] Erro ao criar pedido: ", error)
+            Messages.error("Erro ao criar pedido")
+        }
     }
 
     // Mudar o changeQuantity
@@ -180,7 +169,8 @@ export function CreatePedido() {
             id: Date.now(),
             product: product,  
             quantity: Number(quantity),
-            price: price
+            price: price,
+            unit: unit
         };
 
         setProductList([...productList, newProduct]);

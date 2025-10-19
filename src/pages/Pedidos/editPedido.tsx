@@ -8,34 +8,20 @@ import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
+import { getOrderById, updateOrders } from "../../services/ordersApi";
 
 type Product = {
     id: number;
     product: string;
     price: string;
     quantity: number;
-}
-
-type Order = {
-    id: number,
-    name: string,
-    date: string,
-    productsStrings: string[],
-    products: Product[],
-    value: string,
-    discount: string,
-    discountValue: string,
-    discountType: string,
-    totalGross: string,
-    obs: string,
-    status: string
+    unit: string;
 }
 
 export function EditPedido() {
     const navigate = useNavigate();
-
-    const [ orders ] = useState<Order[]>(JSON.parse(localStorage.getItem("orders") || "[]"));
-    const [ order, setOrder ] = useState<Order | null>(null);
+    const { id } = useParams<{ id: string }>();
+    const [ loading, setLoading ] = useState(true);
 
     // Input Values
     const [ discountType, setDiscountType ] = useState("%")
@@ -52,43 +38,44 @@ export function EditPedido() {
     const [ discount, setDiscount ] = useState(0)
 
     const [ product, setProduct] = useState("");
+    const [ unit ] = useState("UN");
     const [ quantity ] = useState("1");
     const [ price ] = useState("10.5");
 
-    const { id } = useParams<{ id: string }>();
-
+    // Identifica qual order será modificada 
     useEffect(() => {
         document.title = "Editar Pedido - Comanda"
 
-        const updatedOrders = orders.find(currentOrder => currentOrder.id === Number(id))
-        setOrder(updatedOrders ?? null)
-    },[id, orders])
+        // Atualiza os dados com essa order 
+        const loadOrder = async () => {
+            if (!id) return 
 
-   useEffect(() => {
-        if (order) {
-            setDiscountType(order.discountType);
-            setDiscountValue(order.discountValue);
-            setProductList(order.products);
-            setDiscountType(order.discountType);
+            try {
+                setLoading(true)
+                const order = await getOrderById(id)
+                
+                setDiscountType(order.discountType);
+                setDiscountValue(order.discountValue);
+                setProductList(order.products);
+                setDiscountType(order.discountType);
 
-            setName(order.name)
-            setDescription(order.obs)
+                setName(order.name)
+                setDescription(order.obs)
+                setDate(convertDateFormat(order.date))
+                
+                setTotal(order.value)
+                setTotalGross(order.totalGross)
+                setDiscount(Number(order.discount))  
+            } catch (error){
+                console.error("[-] Erro ao editar  pedido: ", error)
+                Messages.error("Erro ao editar pedido")
+            } finally {
+                setLoading(false)
+            }
+        }; 
 
-            const convertDateFormat = (dateStr: string) => {
-                if (!dateStr || !dateStr.includes('/')) {
-                    return new Date().toISOString().split('T')[0];
-                }
-                const [ day, month, year ] = dateStr.split("/")
-                return `${year}-${month}-${day}`
-            };
-
-            setDate(convertDateFormat(order.date))
-            
-            setTotal(order.value)
-            setTotalGross(order.totalGross)
-            setDiscount(Number(order.discount))
-        }
-    }, [order]); 
+        loadOrder()
+    },[id])
 
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
@@ -110,12 +97,19 @@ export function EditPedido() {
             }
         }
 
-        const currentTotalGross = productList.reduce((sum, order) => 
-            sum + (order.quantity * Number(order.price)), 0);
         const currentDiscountAmount = calculatedDiscountAmount();
-        const subtotal = Math.max(0, currentTotalGross - currentDiscountAmount);
+        const subtotal = Math.max(0, grossValue - currentDiscountAmount);
         setTotal(subtotal.toString()); 
     }, [productList, discountValue, discountType, grossValue]); 
+
+    // Formtar data: dd/MM/YYYY - YYYY-MM-dd
+    const convertDateFormat = (dateStr: string) => {
+        if (!dateStr || !dateStr.includes('/')) {
+            return new Date().toISOString().split('T')[0];
+        }
+        const [ day, month, year ] = dateStr.split("/")
+        return `${year}-${month}-${day}`
+    };
 
     // Troca o tipo de Desconto
     const changeDiscountType = () => {
@@ -142,7 +136,7 @@ export function EditPedido() {
     }
 
     // Cria Pedido
-    const handleSubmit = (e : React.FormEvent) => {
+    const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         Messages.dismiss()
 
@@ -156,7 +150,7 @@ export function EditPedido() {
         } 
 
         const formattedProducts = productList.map(p => 
-            `${p.quantity} ${p.product}`
+            `${p.quantity}${p.unit} ${p.product}`
         );
 
         // Converte YYYY-MM-DD para dd/MM/yyyy
@@ -165,8 +159,7 @@ export function EditPedido() {
             return `${day}/${month}/${year}`;
         };
     
-        const newOrder = ({
-            id: Number(id),
+        const updatedOrder = ({
             name: name,
             date: formatDateToDisplay(date),
             productsStrings: formattedProducts,
@@ -180,24 +173,18 @@ export function EditPedido() {
             status: "Pendente",
         }) 
 
-        const currentOrdersString = localStorage.getItem("orders");
-        const currentOrders = currentOrdersString ? JSON.parse(currentOrdersString) : [];
+        // Enviar para o banco de dados
+        try {
+            if(!id) return
 
-        const updatedOrders = currentOrders.map((editedOrder: Order) => 
-            editedOrder.id === Number(id) ? editedOrder = newOrder : editedOrder
-        )
-        
-        localStorage.setItem("orders", JSON.stringify(updatedOrders))
+            await updateOrders(id, updatedOrder)
 
-        setName("");
-        setDescription("");
-        setProductList([]);
-        setDiscountValue("0");
-
-        Messages.success("Pedido eidtado com sucesso")
-        navigate("/pedidos");
-
-        return newOrder;
+            Messages.success("Pedido eidtado com sucesso")
+            navigate("/pedidos");
+        } catch (error){
+            console.error("[-] Erro ao Editar Pedido: ", error)
+            Messages.error("Erro ao Editar Pedido")
+        }
     }
 
     // Mudar o changeQuantity
@@ -220,18 +207,30 @@ export function EditPedido() {
             return;
         }
 
-        
         const newProduct = {
             id: Number(Date.now()),
             product: product,  
             quantity: Number(quantity),
-            price: price
+            price: price,
+            unit: unit
         };
 
         setProductList([...productList, newProduct]);
         Messages.success("Produto adicionado")
         
         setProduct("");
+    }
+
+    if (loading) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        Carregando pedido...
+                    </div>
+                </Container>
+            </MainTemplate>
+        );
     }
 
     return(

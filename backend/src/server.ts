@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/database";
 import cors from "cors";
 import orderRoutes from "./routes/orderRoutes"
+import productRoutes from "./routes/productRoutes"
 
 dotenv.config();
 
@@ -16,5 +17,6 @@ connectDB()
 
 app.use(express.json())
 app.use("/api/orders", orderRoutes)
+app.use("/api/products", productRoutes)
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`))

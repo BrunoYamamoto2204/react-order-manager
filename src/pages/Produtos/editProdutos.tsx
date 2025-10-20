@@ -6,18 +6,10 @@ import styles from "./CreateProduto.module.css";
 import { ChevronDownIcon, SaveIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
+import { getProductById, updateProduct } from "../../services/productsApi";
 
 export function EditProdutos() {
     const navigate = useNavigate();
-
-    type Product = {
-        id: number,
-        product: string
-        price: number
-        category: string
-        unit: string,
-        description: string
-    }
 
     // Input Values
     const [name, setName] = useState("");
@@ -30,28 +22,34 @@ export function EditProdutos() {
     const [selectCategory, setSelectCategory] = useState("Selecione uma categoria");
     const [selectUn, setSelectUn] = useState("Selecione uma unidade");
 
-    const [ products ] = useState<Product[]>(JSON.parse(localStorage.getItem("products") || "[]"))
-    const [ product, setProduct ] = useState<Product>();
-
     const { id } = useParams<{id: string}>();
+    const [ loading, setLoading] = useState(true);
 
     useEffect(() => {
         document.title = "Editar Produto - Comanda"
 
-        const currentProduct = products.find(editedProduct => editedProduct.id === Number(id))
-        setProduct(currentProduct)
-    },[id, products])
-
-    useEffect(() => {
-        if (product){
-            setName(product.product)
-            setPrice(product.price.toString())
-            setDescription(product.description)
-            setSelectCategory(product.category)
-            setSelectUn(product.unit)
-        }
+        if(!id) return 
         
-    }, [product, products])
+        try{
+            setLoading(true)
+            const loadProducts = async () => {
+                const product = await getProductById(id)
+
+                setName(product.product)
+                setPrice(product.price.toFixed(2).toString())
+                setDescription(product.description)
+                setSelectCategory(product.category)
+                setSelectUn(product.unit)
+            }
+
+            loadProducts()
+        } catch(error) {
+            console.log(`[-] Erro carregar produto ${id}: `, error)
+            Messages.error("Erro ao carregar produto")
+        } finally {
+            setLoading(false)
+        }
+    },[id])
 
     const selectOption = (option : string, type : string) => {
         if (type === "category") {
@@ -64,7 +62,7 @@ export function EditProdutos() {
         }
     }
 
-    const handleSubmit = (e : React.FormEvent) => {
+    const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         Messages.dismiss()
 
@@ -86,29 +84,37 @@ export function EditProdutos() {
             description: description
         } 
 
-        const currentProductString = JSON.parse(localStorage.getItem("products") || "[]")
-        const updatedProducts = currentProductString.map((currentProduct: Product) => 
-           currentProduct.id === Number(id) ? currentProduct = editedProduct : currentProduct
-        )
+        try {
+            if(!id) return
 
-        localStorage.setItem("products", JSON.stringify(updatedProducts))
-            
-        setName("");
-        setPrice("");
-        setDescription("");
-        setSelectCategory("Selecione uma categoria");
-        setSelectUn("Selecione uma unidade");
-        
-        Messages.success("Produto criado com sucesso");
-        navigate("/produtos");
+            await updateProduct(id, editedProduct)
+
+            Messages.success("Produto criado com sucesso");
+            navigate("/produtos");
+        } catch(error) {
+            console.log("[-] Erro ao editar produto: ", error)
+            Messages.error("Erro ao editar produto")
+        }
+    }
+
+    if (loading) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        Carregando produto...
+                    </div>
+                </Container>
+            </MainTemplate>
+        );
     }
 
     return(
         <MainTemplate>
             <Container>
                 <Title 
-                    title="Novo Produto" 
-                    subtitle="Preencha os dados para cadastrar um novo produto"
+                    title="Editar Produto" 
+                    subtitle="Edite os dados do produto antes de salvar as alterações"
                 />
 
                 <div className={styles.formContent}>

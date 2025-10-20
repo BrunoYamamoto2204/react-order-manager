@@ -6,6 +6,7 @@ import styles from "./CreateProduto.module.css";
 import { ChevronDownIcon, SaveIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
+import { createProduct } from "../../services/productsApi";
 
 export function CreateProdutos() {
     useEffect(() => {
@@ -35,7 +36,7 @@ export function CreateProdutos() {
         }
     }
 
-    const handleSubmit = (e : React.FormEvent) => {
+    const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         Messages.dismiss()
 
@@ -49,7 +50,6 @@ export function CreateProdutos() {
         }
 
         const newProduct = {
-            id: Number(Date.now()),
             product: name,
             price: Number(price),
             category: selectCategory,
@@ -57,20 +57,21 @@ export function CreateProdutos() {
             description: description
         } 
 
-        const currentProductString = JSON.parse(localStorage.getItem("products") || "[]")
-        const currentProduct = currentProductString
-        const updatedProducts = [ ...currentProduct, newProduct ]
-
-        localStorage.setItem("products", JSON.stringify(updatedProducts))
+        try{
+            await createProduct(newProduct)
             
-        setName("");
-        setPrice("");
-        setDescription("");
-        setSelectCategory("Selecione uma categoria");
-        setSelectUn("Selecione uma unidade");
-        
-        Messages.success("Produto criado com sucesso")
-        navigate("/produtos")
+            setName("");
+            setPrice("");
+            setDescription("");
+            setSelectCategory("Selecione uma categoria");
+            setSelectUn("Selecione uma unidade");
+            
+            Messages.success("Produto criado com sucesso")
+            navigate("/produtos")
+        } catch(error) {
+            console.log("Erro ao criar produto: ", error)
+            Messages.error("Erro ao criar produto")
+        }
     }
 
     return(

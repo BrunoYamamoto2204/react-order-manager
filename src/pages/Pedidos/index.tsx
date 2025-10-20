@@ -39,8 +39,8 @@ export function Pedidos() {
         try {
             if(!filteredOrder._id) {
                 console.log("❌ Pedido sem _id:", filteredOrder);
-            return;
-        };
+                return;
+            };
             await deleteOrder(filteredOrder._id);
 
             setOrders(orders.filter(order => order._id !== filteredOrder._id))

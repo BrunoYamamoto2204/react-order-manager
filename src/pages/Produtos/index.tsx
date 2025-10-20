@@ -8,59 +8,61 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { PlusIcon } from "lucide-react";
 import { Messages } from "../../components/Messages";
+import { deleteProduct, getProducts } from "../../services/productsApi";
+import type { Product } from "../../services/productsApi";
 
 export function Produtos() {
-    type Product = {
-        id: number,
-        product: string
-        price: number
-        category: string
-        unit: string,
-        description: string
-    }
-
     const navigate = useNavigate();
+    const [ loading, setLoading ] = useState(true);
+    const [ products, setProducts ] = useState<Product[]>([])
 
     useEffect(() => {
         document.title = "Produtos - Comanda"
+        loadProducts()
     },[])
 
-    const initialProducts: Product[] = [
-        { id: 1, product: "Brigadeiro", price: 1.99, category: "Docinho", unit: "UN",description: "" },
-        { id: 2, product: "Beijinho", price: 1.99, category: "Docinho", unit: "UN",description: "" },
-        { id: 3, product: "Coxinha", price: 4.50, category: "Salgado", unit: "UN",description: "" },
-        { id: 4, product: "Quibe", price: 4.00, category: "Salgado", unit: "UN",description: "" },
-        { id: 5, product: "Bolo Chocolate", price: 25.00, category: "Bolo", unit: "KG",description: "" },
-        { id: 6, product: "Bolo Cenoura", price: 22.00, category: "Bolo", unit: "KG",description: "" },
-        { id: 7, product: "Torta de Limão", price: 30.00, category: "Torta", unit: "UN",description: "" },
-        { id: 8, product: "Mousse Chocolate", price: 35.00, category: "Sobremesa", unit: "KG",description: "" },
-        { id: 9, product: "Empada Frango", price: 6.00, category: "Salgado", unit: "UN",description: "" },
-    ];
+    const loadProducts = async () => {
+        try{
+            setLoading(true)
+            const data = await getProducts()
+            setProducts(data)
+        } catch(error){
+            console.log("Erro ao carregar os produtos:", error)
+            Messages.error("Erro ao carregar os produtos")
+        } finally {
+            setLoading(false)
+        }
+    } 
 
-    const getProducts = () => {
-        const currentProductsString = localStorage.getItem("products")
+    const removeOrder = async (filteredProduct: Product) => {
+        try{
+            if (!filteredProduct._id) {
+                console.log("❌ Produto sem _id:", filteredProduct);
+                return 
+            }
+            await deleteProduct(filteredProduct._id)
 
-        const products = currentProductsString 
-            ? JSON.parse(currentProductsString) 
-            : localStorage.setItem("products", JSON.stringify(initialProducts))
-        
-        return products
-    }   
+            Messages.success("Produto excluído com sucesso")
+        } catch(error) {
+            console.log("Erro ao excluir os produtos:", error)
+            Messages.error("Erro ao excluir os produtos")
+        }
 
-    const deleteProduct = (filteredProduct: Product) => {
-        const currentProducts = [ ...products ]
-        const newProductList = currentProducts.filter(product => 
-            filteredProduct.id !== product.id
-        )
-        
-        localStorage.setItem("products", JSON.stringify(newProductList))
-        setProducts(newProductList)
-
-        Messages.dismiss()
+        setProducts(products.filter(product => product._id !== filteredProduct._id))
         Messages.success("Produto excluído com sucesso")
     }
 
-    const [ products, setProducts ] = useState<Product[]>(getProducts())
+    if (loading) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        Carregando produtos...
+                    </div>
+                </Container>
+            </MainTemplate>
+        );
+    }
 
     return(
        <MainTemplate>
@@ -84,10 +86,18 @@ export function Produtos() {
                             </tr>
                         </thead>
                         <tbody>
-                            <ProductsList 
-                                productsList={products}
-                                deleteProduct = {deleteProduct}
-                            />
+                            {products.length > 0 ? (
+                                <ProductsList 
+                                    productsList={products}
+                                    deleteProduct = {removeOrder}
+                                />
+                            ): (
+                                <tr>
+                                    <td className={styles.noProducts}>
+                                        <p>Sem Produtos disponíveis</p>
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

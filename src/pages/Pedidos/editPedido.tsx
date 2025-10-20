@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
-import { getOrderById, updateOrders } from "../../services/ordersApi";
+import { getOrderById, updateOrder } from "../../services/ordersApi";
 
 type Product = {
     id: number;
@@ -67,7 +67,7 @@ export function EditPedido() {
                 setTotalGross(order.totalGross)
                 setDiscount(Number(order.discount))  
             } catch (error){
-                console.error("[-] Erro ao editar  pedido: ", error)
+                console.error(`[-] Erro ao carregar pedido ${id}: `, error)
                 Messages.error("Erro ao editar pedido")
             } finally {
                 setLoading(false)
@@ -177,9 +177,9 @@ export function EditPedido() {
         try {
             if(!id) return
 
-            await updateOrders(id, updatedOrder)
+            await updateOrder(id, updatedOrder)
 
-            Messages.success("Pedido eidtado com sucesso")
+            Messages.success("Pedido editado com sucesso")
             navigate("/pedidos");
         } catch (error){
             console.error("[-] Erro ao Editar Pedido: ", error)
@@ -237,8 +237,8 @@ export function EditPedido() {
         <MainTemplate>
             <Container>
                 <Title 
-                    title="Novo Pedido" 
-                    subtitle="Preencha os dados para criar um novo pedido"
+                    title="Editar Pedido" 
+                    subtitle="Edite os dados do pedido antes de salvar as alterações"
                 />
 
                 <div className={styles.formContent}>

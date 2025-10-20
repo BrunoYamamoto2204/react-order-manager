@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 type Product = {
   id: number;
@@ -50,7 +50,7 @@ export async function createOrder(order: Order): Promise<Order>{
 }
 
 // PUT - Atualizar o pedido
-export async function updateOrders(id: string, order: Order): Promise<Order> {
+export async function updateOrder(id: string, order: Order): Promise<Order> {
     const response = await fetch(`${API_URL}/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json"},

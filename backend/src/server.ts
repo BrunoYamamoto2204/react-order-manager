@@ -4,6 +4,7 @@ import { connectDB } from "./config/database";
 import cors from "cors";
 import orderRoutes from "./routes/orderRoutes"
 import productRoutes from "./routes/productRoutes"
+import customerRouter from "./routes/customerRouter"
 
 dotenv.config();
 
@@ -18,5 +19,6 @@ connectDB()
 app.use(express.json())
 app.use("/api/orders", orderRoutes)
 app.use("/api/products", productRoutes)
+app.use("/api/customers", customerRouter)
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`))

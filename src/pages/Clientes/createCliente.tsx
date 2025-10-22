@@ -6,6 +6,7 @@ import styles from "./CreateCliente.module.css";
 import { SaveIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
+import { createCustomer } from "../../services/customersApi";
 
 export function CreateCliente() {
     useEffect(() => {
@@ -26,7 +27,7 @@ export function CreateCliente() {
     const [cep, setCep] = useState("");
     const [obs, setObs] = useState("");
 
-    const handleSubmit = (e : React.FormEvent) => {
+    const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         Messages.dismiss()
 
@@ -45,7 +46,7 @@ export function CreateCliente() {
             cpfCnpj, 
             phone, 
             email,
-            pendingOrders: false,
+            pendingOrders: true,
             road,
             num,
             neighborhood, 
@@ -54,24 +55,28 @@ export function CreateCliente() {
             cep,
             obs            
         }
+        
+        try {
+            await createCustomer(newCustomer)
 
-        const currentCustomers = JSON.parse(localStorage.getItem("customers") || "[]")
-        const updatedCustomers = [ ...currentCustomers, newCustomer]
-        localStorage.setItem("customers", JSON.stringify(updatedCustomers))
+            setName("");
+            setcpfCnpj("");
+            setPhone("");
+            setRoad("");
+            setNum("");
+            setCity("");
+            setState("");
+            setCep("");
+            setObs("");
+            setEmail("");
+            setNeighborhood("");
 
-        setName("");
-        setcpfCnpj("");
-        setPhone("");
-        setRoad("");
-        setNum("");
-        setCity("");
-        setState("");
-        setCep("");
-        setObs("");
-        setEmail("");
-        setNeighborhood("");
-
-        Messages.success("Produto criado com sucesso")
+            Messages.success("Produto criado com sucesso")
+            navigate("/clientes")
+        } catch(error) {
+            console.log("Erro ao criar cliente: ", error)
+            Messages.error("Erro ao cadastrar cliente")
+        }
     }
 
     return(

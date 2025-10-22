@@ -3,7 +3,7 @@
     margin-top: 6rem;
     color: var(--gray-100);
     overflow: hidden;
-    border-radius: 2rem; 
+    border-radius: 1rem; 
     border: none;
     background-color: var(--gray-800);
 }
@@ -31,7 +31,6 @@
 
 .customersTable td {
     padding: 3rem;
-    border-top: 2px solid var(--gray-500); 
     transition: background-color 0.3s ease; 
     display: flex;
     align-items: center;
@@ -124,7 +123,11 @@
     height: 3rem;
 }
 
-
+/* Sem Clientes */
+.noCustomers{
+    grid-column: 1 / -1;
+    margin: auto;
+}
 
 
 

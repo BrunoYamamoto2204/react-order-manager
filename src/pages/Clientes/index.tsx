@@ -8,134 +8,59 @@ import styles from "./Clientes.module.css"
 import { useNavigate } from "react-router"
 import { PlusIcon } from "lucide-react"
 import { Messages } from "../../components/Messages"
-
-
+import { deleteCustomer, getCustomers, type Customer } from "../../services/customersApi"
 
 export function Clientes() {
     const navigate = useNavigate();
-
-    type Customer = {
-        id: number,
-        name: string,
-        cpfCnpj: string,
-        phone: string,
-        email: string,
-        pendingOrders: boolean,
-        road?: string,
-        num?: string,
-        neighborhood?: string, 
-        city?: string,
-        state?: string,
-        cep?: string,
-        obs: string
-    }
-
-
+    const [ customers, setCustomers ] = useState<Customer[]>([])
+    const [ loading, setLoading ] = useState(true)
+    
     useEffect(() => {
         document.title = "Clientes - Comanda"
+        loadCustomers()
     },[])
 
-     
-    const newCustomers = [
-        {
-            id: 1,
-            name: "Maria Silva",
-            cpfCnpj: "123.456.789-01", 
-            phone: "(11) 99999-1111",
-            email: "maria.silva@email.com",
-            pendingOrders: false,
-            road: "R. EXEMPLO 1",
-            num: "100",
-            neighborhood: "Bairro 1", 
-            city: "Curitiba",
-            state: "PR", 
-            cep: "80000-000", 
-            obs: "Cliente antigo, prefere retirada."
-        },
-        {
-            id: 2, 
-            name: "João Santos",
-            cpfCnpj: "987.654.321-09", 
-            phone: "(11) 98888-2222",
-            email: "joao.santos@email.com",
-            pendingOrders: true,
-            road: "R. EXEMPLO 2",
-            num: "200",
-            neighborhood: "Bairro 2", 
-            city: "Curitiba",
-            state: "PR",
-            cep: "81000-000",
-            obs: "Ligar 30 minutos antes de entregar."
-        },
-        {
-            id: 3,
-            name: "Ana Costa",
-            cpfCnpj: "11.222.333/0001-44", 
-            phone: "(11) 97777-3333",
-            email: "ana.costa@email.com",
-            pendingOrders: true,
-            road: "R. EXEMPLO 3",
-            num: "300",
-            neighborhood: "Bairro 3", 
-            city: "Curitiba",
-            state: "PR",
-            cep: "82000-000",
-            obs: "Empresa de eventos, grande volume de pedidos."
-        },
-        {
-            id: 4,
-            name: "Carlos Oliveira",
-            cpfCnpj: "456.789.123-45", 
-            phone: "(11) 96666-4444",
-            email: "carlos.oliveira@email.com",
-            pendingOrders: false,
-            road: "R. EXEMPLO 4",
-            num: "400",
-            neighborhood: "Bairro 4", 
-            city: "Curitiba",
-            state: "PR",
-            cep: "83000-000",
-            obs: "Novo cliente."
-        },
-        {
-            id: 5,
-            name: "Fernanda Lima",
-            cpfCnpj: "555.444.333-22", 
-            phone: "(11) 95555-5555",
-            email: "fernanda.lima@email.com",
-            pendingOrders: false,
-            road: "R. EXEMPLO 5",
-            num: "500",
-            neighborhood: "Bairro 5", 
-            city: "Curitiba",
-            state: "PR",
-            cep: "84000-000",
-            obs: "Não ligar antes das 10h."
+    const loadCustomers = async () => {
+        try{
+            const customers = await getCustomers()
+            setCustomers(customers)
+        } catch(error) {
+            console.log(`Erro ao buscar clientes`, error)
+            Messages.error("Erro ao buscar clientes")
+        } finally {
+            setLoading(false)
         }
-    ];
-
-    const getCustomers = () => {
-        const currentCustomersString = localStorage.getItem("customers")
-        const currentCustomers = currentCustomersString 
-            ? JSON.parse(currentCustomersString)
-            : localStorage.setItem("customers", JSON.stringify(newCustomers))
-
-        return currentCustomers
     }
 
-    const [customers, setCustomers ] = useState(getCustomers())
+    const removeCustomer = async (filteredCustomer: Customer) => {
+        try {
+            if (!filteredCustomer._id) {
+                console.log("❌ Produto sem _id:", filteredCustomer);
+                return 
+            }  
 
-    const removeCustomer = (filteredCustomer: Customer) => {
-        const currentCustomers = [ ...customers ]
-        
-        const newCustomers = currentCustomers.filter(customer => 
-            filteredCustomer.id !== customer.id
-        )
+            await deleteCustomer(filteredCustomer._id)
 
-        setCustomers(newCustomers)
-        localStorage.setItem("customers", JSON.stringify(newCustomers))
+            setCustomers(prevCustomers => prevCustomers.filter(customer => 
+                filteredCustomer._id !== customer._id
+            ))
+            Messages.success("Cliente excluído com sucesso")
+        } catch(error) {
+            console.log(`Não foi possível excluir o cliente ${filteredCustomer._id}:`, error)
+            Messages.error("Erro ao excluir cliente")
+        }
+    }
 
-        Messages.success("Cliente excluído com sucesso")
+    if (loading) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        Carregando clientes...
+                    </div>
+                </Container>
+            </MainTemplate>
+        );
     }
 
     return(
@@ -161,10 +86,19 @@ export function Clientes() {
                         </thead>
                         
                         <tbody>
-                            <CustomersList 
-                                customersList={customers}
-                                removeCustomer={removeCustomer}
-                            />                               
+                            {customers.length > 0 ? (
+                                <CustomersList 
+                                    customersList={customers}
+                                    removeCustomer={removeCustomer}
+                                />   
+                            ) : (
+                                <tr>
+                                    <td className={styles.noCustomers}>
+                                        <p>Sem Produtos disponíveis</p>
+                                    </td>
+                                </tr>
+                            )}
+                                                        
                         </tbody>
                     </table>
                 </div>

@@ -6,55 +6,10 @@ import styles from "./CreateCliente.module.css";
 import { SaveIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
+import { getCustomerById, updateCustomer, type Customer } from "../../services/customersApi"
 
 export function EditCliente() {
     const navigate = useNavigate();
-
-    type Customer = {
-        id: number,
-        name: string,
-        cpfCnpj: string,
-        phone: string,
-        email: string,
-        pendingOrders: boolean,
-        road?: string,
-        num?: string,
-        neighborhood?: string, 
-        city?: string,
-        state?: string,
-        cep?: string,
-        obs: string
-    }
-
-    const [ customers ] = useState<Customer[]>(JSON.parse(
-        localStorage.getItem("customers") || "[]"
-    ));
-    const [ customer, setCustomer ] = useState<Customer>();
-
-    const { id } = useParams<{id: string}>();
-
-    useEffect(() => {
-        document.title = "Novo Cliente - Comanda"
-
-        const currentCustomers = customers.find(editedCustomer => editedCustomer.id === Number(id))
-        setCustomer(currentCustomers)
-    },[customers, id])
-
-    useEffect(() => {
-        if (customer){
-            setName(customer.name)
-            setcpfCnpj(customer.cpfCnpj)
-            setPhone(customer.phone)
-            setEmail(customer.email)
-            setRoad(customer.road || "" )
-            setNum(customer.num || "" )
-            setNeighborhood(customer.neighborhood || "" )
-            setState(customer.state || "" )
-            setCep(customer.cep || "" )
-            setObs(customer.obs || "" )
-        }
-            
-    }, [customer])
 
     // Input Values
     const [name, setName] = useState("");
@@ -69,7 +24,45 @@ export function EditCliente() {
     const [cep, setCep] = useState("");
     const [obs, setObs] = useState("");
 
-    const handleSubmit = (e : React.FormEvent) => {
+    const [ customers ] = useState<Customer[]>([]);
+    
+    const { id } = useParams<{id: string}>();
+    const [ loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        document.title = "Novo Cliente - Comanda"
+
+        const loadCustomer = async () => {
+            if(!id) {
+                console.log(`[-] Erro ao buscar cliente ${id}`)
+                return
+            }
+
+            try {
+                const currentCustomers = await getCustomerById(id)
+
+                setName(currentCustomers.name)
+                setcpfCnpj(currentCustomers.cpfCnpj)
+                setPhone(currentCustomers.phone)
+                setEmail(currentCustomers.email)
+                setRoad(currentCustomers.road || "" )
+                setNum(currentCustomers.num || "" )
+                setNeighborhood(currentCustomers.neighborhood || "" )
+                setState(currentCustomers.state || "" )
+                setCep(currentCustomers.cep || "" )
+                setObs(currentCustomers.obs || "" )
+            } catch(error) {
+                console.log(`[-] Erro ao carregar cliente ${id}: `, error)
+                Messages.error("Erro ao carregar cliente")
+            } finally{
+                setLoading(false)
+            }
+        }
+
+        loadCustomer()
+    },[customers, id])
+
+    const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         Messages.dismiss()
 
@@ -84,7 +77,6 @@ export function EditCliente() {
         }
 
         const editedCustomer = {
-            id: Number(id),
             name, 
             cpfCnpj, 
             phone, 
@@ -99,26 +91,31 @@ export function EditCliente() {
             obs            
         }
 
-        const currentCustomers = customers.map((currentCustomer: Customer) => 
-            currentCustomer.id === Number(id) ? currentCustomer = editedCustomer : currentCustomer
-        )
+        if(!id) {
+            console.log(`Erro ao editar cliente ${id}`)
+            return 
+        } 
+        
+        try{
+            await updateCustomer(id, editedCustomer)
+            Messages.success("Produto editado com sucesso")
+            navigate("/clientes")
+        } catch(error) {
+            console.log(`[-] Erro ao editar cliente ${id}: `, error)
+            Messages.error("Erro ao editar cliente")
+        }
+    }
 
-        localStorage.setItem("customers", JSON.stringify(currentCustomers))
-
-        setName("");
-        setcpfCnpj("");
-        setPhone("");
-        setRoad("");
-        setNum("");
-        setCity("");
-        setState("");
-        setCep("");
-        setObs("");
-        setEmail("");
-        setNeighborhood("");
-
-        Messages.success("Produto criado com sucesso")
-        navigate("/clientes")
+    if (loading) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        Carregando produto...
+                    </div>
+                </Container>
+            </MainTemplate>
+        );
     }
 
     return(

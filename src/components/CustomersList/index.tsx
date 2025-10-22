@@ -1,22 +1,7 @@
 import { CheckLineIcon, CircleXIcon, Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
 import { useNavigate } from "react-router"
-
-type Customer = {
-    id: number,
-    name: string,
-    cpfCnpj: string,
-    phone: string,
-    email: string,
-    pendingOrders: boolean,
-    road?: string,
-    num?: string,
-    neighborhood?: string, 
-    city?: string,
-    state?: string,
-    cep?: string,
-    obs: string
-}
+import { type Customer } from "../../services/customersApi"
 
 type CustomersListProps = {
     customersList: Customer[]
@@ -48,15 +33,15 @@ export function CustomersList({ customersList, removeCustomer } : CustomersListP
 
                         {/* Completed orders */}
                         {customer.pendingOrders 
-                            ? <td className={styles.pendingOrders}><CheckLineIcon/></td> 
-                            : <td className={styles.noPendingOrders}><CircleXIcon/></td>
+                            ? <td className={styles.noPendingOrders}><CircleXIcon/></td>
+                            : <td className={styles.pendingOrders}><CheckLineIcon/></td> 
                         }
 
                         {/* Ações  */}
                         <td key="actions">
                             <div className={styles.actions}>
                                 <button 
-                                    onClick={() => navigate(`/clientes/editar/${customer.id}`)}
+                                    onClick={() => navigate(`/clientes/editar/${customer._id}`)}
                                     className={styles.editIcon}>
                                     <Edit2Icon />
                                 </button>

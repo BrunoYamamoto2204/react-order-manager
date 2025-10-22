@@ -10,7 +10,7 @@ import { getProductById, updateProduct } from "../../services/productsApi";
 
 export function EditProdutos() {
     const navigate = useNavigate();
-
+    
     // Input Values
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");

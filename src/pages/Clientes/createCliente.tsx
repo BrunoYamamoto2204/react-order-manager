@@ -7,6 +7,8 @@ import { SaveIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { createCustomer } from "../../services/customersApi";
+import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
+import { formatPhone } from "../../utils/format-phone";
 
 export function CreateCliente() {
     useEffect(() => {
@@ -16,7 +18,7 @@ export function CreateCliente() {
 
     // Input Values
     const [name, setName] = useState("");
-    const [cpfCnpj, setcpfCnpj] = useState("");
+    const [cpfCnpj, setCpfCnpj] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [road, setRoad] = useState("");
@@ -55,12 +57,12 @@ export function CreateCliente() {
             cep,
             obs            
         }
-        
+
         try {
             await createCustomer(newCustomer)
 
             setName("");
-            setcpfCnpj("");
+            setCpfCnpj("");
             setPhone("");
             setRoad("");
             setNum("");
@@ -70,7 +72,7 @@ export function CreateCliente() {
             setObs("");
             setEmail("");
             setNeighborhood("");
-
+            
             Messages.success("Produto criado com sucesso")
             navigate("/clientes")
         } catch(error) {
@@ -100,25 +102,27 @@ export function CreateCliente() {
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Ex: João Silva"/>
                             </div>
-                            {/* Celular */}
+                            {/* CPF/CNPJ */}
                             <div className={styles.inputBox}>
                                 <label htmlFor="cpf-cnpj">CPF/CNPJ *</label>
                                 <input
                                     id="cpf-cnpj"
                                     autoComplete="off"
                                     value={cpfCnpj}
-                                    onChange={(e) => setcpfCnpj(e.target.value)}
-                                    placeholder="000.000.000-00 ou 00.000.000/0000-00"/>
+                                    onChange={(e) => setCpfCnpj(formatCpfCpnj(e.target.value))}
+                                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                                    maxLength={18}/>
                             </div>
-                            {/* Email */}
+                            {/* Telefone */}
                             <div className={styles.inputBox}>
                                 <label htmlFor="telefone">Telefone *</label>
                                 <input
                                     id="telefone"
                                     autoComplete="off"
                                     value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    placeholder="(41) 90000-0000"/>
+                                    onChange={(e) => setPhone(formatPhone(e.target.value))}
+                                    placeholder="(41) 90000-0000"
+                                    maxLength={15}/>
                             </div>
                             {/* Email */}
                             <div className={styles.inputBox}>
@@ -134,7 +138,7 @@ export function CreateCliente() {
 
                         {/* Endereço */}
                         <div className={`${styles.inputBox} ${styles.addressGroup}`}>
-                            <span className={styles.label}>Endereço</span>
+                            <span className={styles.label}>Endereço (Opcional)</span>
                             <div className={`${styles.addressBox} ${styles.roadBox}`}>
                                 <label htmlFor="rua">Rua</label>
                                 <input

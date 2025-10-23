@@ -7,6 +7,7 @@ import { SaveIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getCustomerById, updateCustomer, type Customer } from "../../services/customersApi"
+import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
 
 export function EditCliente() {
     const navigate = useNavigate();
@@ -139,17 +140,18 @@ export function EditCliente() {
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Ex: João Silva"/>
                             </div>
-                            {/* Celular */}
+                            {/* CPF/CNPJ */}
                             <div className={styles.inputBox}>
                                 <label htmlFor="cpf-cnpj">CPF/CNPJ *</label>
                                 <input
                                     id="cpf-cnpj"
                                     autoComplete="off"
                                     value={cpfCnpj}
-                                    onChange={(e) => setcpfCnpj(e.target.value)}
-                                    placeholder="000.000.000-00 ou 00.000.000/0000-00"/>
+                                    onChange={(e) => setcpfCnpj(formatCpfCpnj(e.target.value))}
+                                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                                    maxLength={18}/>
                             </div>
-                            {/* Email */}
+                            {/* Telefone */}
                             <div className={styles.inputBox}>
                                 <label htmlFor="telefone">Telefone *</label>
                                 <input

@@ -27,7 +27,7 @@ const customerSchema = new Schema<ICustomer>({
     city: {type: String, required: false},
     state: {type: String, required: false},
     cep: {type: String, required: false},
-    obs: {type: String, required: true}
+    obs: {type: String, required: false}
 }, {
     timestamps: true
 })

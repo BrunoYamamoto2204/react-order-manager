@@ -7,6 +7,7 @@ import styles from './CustomDatePicker.module.css'; // Estilos CSS Modules
 
 // Define o que o componente espera receber como props
 interface CustomDatePickerProps {
+    displayValue : (date : string) => string
     value: string;                    // Data selecionada (formato "YYYY-MM-DD")
     onChange: (date: string) => void; // Função chamada quando data muda
     placeholder?: string;             // Texto quando não há data (opcional)
@@ -28,6 +29,7 @@ interface CalendarDay {
 
 // ========== PARTE 3: DECLARAÇÃO DO COMPONENTE ==========
 export function CustomDatePicker({
+    displayValue,
     value,                           // Data atual selecionada
     onChange,                        // Função para mudar a data
     placeholder = "Selecione a data", // Valor padrão se não informado
@@ -52,8 +54,7 @@ export function CustomDatePicker({
     // Converte "2025-08-31" para "31/08/2025" (para mostrar ao usuário)
     const formatDateForDisplay = (dateString: string): string => {
         if (!dateString) return placeholder; // Se vazio, mostra placeholder
-        const [year, month, day] = dateString.split('-'); // Divide a string
-        return `${day}/${month}/${year}`; // Reconstrói no formato brasileiro
+        return displayValue(dateString)
     };
 
     // Verifica se uma data deve estar desabilitada
@@ -151,9 +152,7 @@ export function CustomDatePicker({
 
     // Seleciona a data de hoje
     const handleTodayClick = (): void => {
-        const today = new Date().toISOString().split('T')[0]; 
-        // today.setDate(today.getDate() - 1)
-        // const correctDate = today.toISOString().split('T')[0]
+        const today = new Date().toLocaleDateString("sv-SE"); 
         onChange(today);  // Atualiza a data selecionada
         setIsOpen(false); // Fecha o calendário
     };

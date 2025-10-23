@@ -6,6 +6,7 @@ import styles from "./Analises.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
 import {  ChartColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, DollarSignIcon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
 import { AnalysisList } from "../../components/AnalysisList"
+import { formatDate } from "../../utils/format-date"
 
 export function Analises() {
     useEffect(() => {
@@ -14,7 +15,7 @@ export function Analises() {
 
     // Converte p/ string
     const formatDateString = (date : Date) => {
-        return date.toISOString().split("T")[0];
+        return date.toLocaleDateString('sv-SE');
     }
 
     // Data em tipo Date
@@ -54,6 +55,7 @@ export function Analises() {
                     <div className={styles.period}>
                         <div>
                             <CustomDatePicker
+                                displayValue={formatDate}
                                 value={startDate}
                                 onChange={setStartDate}
                                 placeholder="Selecione a data inicial"
@@ -64,6 +66,7 @@ export function Analises() {
                         <div className={styles.midText}>até</div>
                         <div>
                             <CustomDatePicker
+                                displayValue={formatDate}
                                 value={endDate}
                                 onChange={setEndDate}
                                 placeholder="Selecione a data final"

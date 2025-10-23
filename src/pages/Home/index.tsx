@@ -6,27 +6,16 @@ import styles from "./Home.module.css"
 import { Title } from "../../components/Title";
 import GeralDatePicker from "../../components/GeralDatePicker";
 import { CircleCheckIcon, ClipboardListIcon, HourglassIcon } from "lucide-react";
+import { formatBrDate } from "../../utils/format-date";
 
 
 export function Home() {
     // Converte p/ string
     const formatDateString = (date : Date) => {
-        return date.toISOString().split("T")[0];
+        return date.toLocaleDateString('sv-SE');
     }
 
-    const formatDate = (date : Date) => {
-        date.setDate(date.getDate() + 1)
-
-        return date.toLocaleDateString("pt-BR", 
-            {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }
-        )
-    }
-
+    // String yyyy-MM-dd
     const [date, setDate] = useState(formatDateString(new Date())) 
     
     return (
@@ -37,7 +26,7 @@ export function Home() {
 
                     <h2 className={styles.date}>
                         <GeralDatePicker
-                            displayValue={formatDate}
+                            displayValue={formatBrDate}
                             value={date}
                             onChange={setDate}
                             placeholder="Selecione uma data"

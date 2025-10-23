@@ -10,7 +10,7 @@ interface GeralDatePickerProps {
     value: string;                    // Data selecionada (formato "YYYY-MM-DD")
     onChange: (date: string) => void; // Função chamada quando data muda
     placeholder: string;             // Texto quando não há data (opcional)
-    displayValue : (date : Date) => string
+    displayValue : (date : string) => string
     disabled?: boolean;               // Se o componente está desabilitado (opcional)
     dateName? : string
     className?: string;               // Classes CSS extras (opcional)
@@ -43,8 +43,12 @@ export function GeralDatePicker({
     
     // Verifica se uma data é hoje
     const isToday = (date: Date): boolean => {
-        const today = new Date(); // Data atual
-        return date.toDateString() === today.toDateString();
+        const today = new Date(); 
+        return (
+            date.getDate() === today.getDate() &&
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear()
+        );
     };
 
     // FUNÇÃO MAIS COMPLEXA: Gera todos os dias do calendário
@@ -77,7 +81,7 @@ export function GeralDatePicker({
         // ETAPA 2: Adiciona os dias reais do mês (1, 2, 3... 31)
         for (let day = 1; day <= daysInMonth; day++) {
             // Cria objeto Date para este dia específico
-            const currentDate = new Date(year, month, day);
+            const currentDate = new Date(year, month, day, 12, 0, 0);
             const dateString = currentDate.toISOString().split('T')[0];
             
             days.push({
@@ -119,10 +123,7 @@ export function GeralDatePicker({
 
     // Seleciona a data de hoje
     const handleTodayClick = (): void => {
-        const today = new Date().toISOString().split('T')[0]; 
-        // const today = new Date(); 
-        // today.setDate(today.getDate() - 1)
-        // const correctDate = today.toISOString().split('T')[0]
+        const today = new Date().toLocaleDateString('sv-SE') 
         onChange(today);  // Atualiza a data selecionada
         setIsOpen(false); // Fecha o calendário
     };
@@ -197,7 +198,7 @@ export function GeralDatePicker({
                 >
                     <span className={styles.inputText}>
                         <CalendarIcon className={getCalendarIconClasses()}/>
-                        {value ? displayValue(new Date(value)) : placeholder}
+                        {value ? displayValue(value) : placeholder}
                     </span>
                 </div>
 

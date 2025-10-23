@@ -10,7 +10,7 @@
 
 .productTable table {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr; 
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; 
     border-collapse: collapse;
 }
 
@@ -75,7 +75,6 @@
     cursor: pointer;
 }
 
-
 .actions{
     display: flex;
     gap: 2rem;
@@ -108,8 +107,8 @@
 .category {
     background-color: var(--gray-600);
     color: inherit;
-    padding: 1rem;
-    border-radius: 1.2rem;
+    padding: 1.2rem 2rem;
+    border-radius: 1rem;
     transition: all 0.2s ease-in-out;
 }
 

@@ -71,22 +71,44 @@
 
 
 /* Ver o status detalhado do pedido */
-.status{
+.status button{
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    font-size: inherit;
+    border: 1px solid var(--gray-400);
+    padding: 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+
+
+tr:hover .status button {
+    background-color: var(--primary-light);
+    color: var(--gray-700);
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+}
+
+tr:hover .status button:hover{
+    color: white;
+    background-color: var(--primary-dark);
 }
 
 .status.pending svg{
     color: var(--warning);
 }
 
-.status.canceled svg{
-    color: var(--error);
+.status.completed svg{
+    color: var(--primary);
 }
 
 .status.canceled svg{
-    color: var(--primary);
+    color: var(--error);
 }
 
 

@@ -30,7 +30,7 @@ export function Analises() {
     const [isOpen, setIsOpen] = useState(false)
     const [optionSelected, setOptionSelected] = useState("Escolha uma opção");
 
-    const selectOption = (option :  string) => {
+    const selectOption = (option : string) => {
         setOptionSelected(option)
         setIsOpen(!isOpen)
     }

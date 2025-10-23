@@ -46,7 +46,7 @@ export function CreateCliente() {
             cpfCnpj, 
             phone, 
             email,
-            pendingOrders: true,
+            pendingOrders: false,
             road,
             num,
             neighborhood, 

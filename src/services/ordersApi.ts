@@ -10,6 +10,7 @@ type Product = {
 
 export type Order = {
     _id?: string; 
+    customerId?: string;
     name: string;
     date: string;
     productsStrings: string[];

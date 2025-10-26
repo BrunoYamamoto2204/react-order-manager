@@ -9,6 +9,9 @@ import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
 import { createOrder } from "../../services/ordersApi";
+import { formatDate } from "../../utils/format-date";
+import CustomerSearch from "../../components/CustomerSearch";
+import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
 type Product = {
     id: number;
@@ -27,8 +30,10 @@ export function CreatePedido() {
     const [ productList, setProductList ] = useState<Product[]>([])
 
     // Input Values
+    const [ customerId, setCustomerId ] = useState("")
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
+    const [ customerSelected, setCustomerSelected ] = useState(false);
 
     const [ total, setTotal ] = useState(0)
     const [ totalGross, setTotalGross] = useState("")
@@ -73,14 +78,6 @@ export function CreatePedido() {
         return discountType == "%" ? setDiscountType("R$") : setDiscountType("%")
     }
 
-    // Formata a data em dd/MM/YYYY
-    const formatDate =  (date : Date) => {
-        const StringDate = date.toISOString().split("T")[0].split("-")  
-
-        const [year, month, day] = StringDate
-        return `${day}/${month}/${year}`
-    }
-
     // Converte a data em YYYY-MM-dd
     const formatDateString = (date : Date) => {
         return date.toISOString().split("T")[0];
@@ -88,6 +85,29 @@ export function CreatePedido() {
 
     const [date, setDate] = useState(formatDateString(new Date())) // YYYY-MM-dd
    
+    // Adiociona produto no pedido
+    const handleNewProduct = () => {
+        Messages.dismiss()
+
+        if (!product) {
+            Messages.error("Selecione um produto");
+            return;
+        }
+
+        const newProduct = {
+            id: Date.now(),
+            product: product,  
+            quantity: Number(quantity),
+            price: price,
+            unit: unit
+        };
+
+        setProductList([...productList, newProduct]);
+        Messages.success("Produto adicionado")
+        
+        setProduct("");
+    }
+
     // Excluir o item 
     const removeProduct = (listItem: Product) => {
         const currentOrderList = [...productList]
@@ -102,11 +122,19 @@ export function CreatePedido() {
         e.preventDefault()
         Messages.dismiss()
 
-        if(!name) {
-            Messages.error("Selecione um cliente");
+        if (noRegister) {
+            if(!name){
+                Messages.error("Insira o nome do cliente");
+                return;
+            }
+        }
+
+        else if(!customerSelected) {
+            Messages.error("Selecione um cliente exitente");
             return;
         } 
-        if (productList.length <= 0) {
+
+        else if (productList.length <= 0) {
             Messages.error("Adiocione itens ao pedido");
             return;
         } 
@@ -116,8 +144,9 @@ export function CreatePedido() {
         );
     
         const newOrder = ({
+            customerId: customerId,
             name: name,
-            date: formatDate(new Date()),
+            date: formatDate(formatDateString(new Date())),
             productsStrings: formattedProducts,
             products: productList,
             value: `R$ ${total.toFixed(2)}`,        
@@ -128,9 +157,14 @@ export function CreatePedido() {
             obs: description,
             status: "Pendente",
         }) 
-
+        
         try{
             await createOrder(newOrder)
+
+            if (!noRegister){
+                const chosenCustomer = await getCustomerById(customerId)
+                await updateCustomer(customerId, {...chosenCustomer, pendingOrders: true})
+            }
 
             setName("");
             setDescription("");
@@ -156,29 +190,6 @@ export function CreatePedido() {
         )
     }
 
-    // Adiociona produto no pedido
-    const handleNewProduct = () => {
-        Messages.dismiss()
-
-        if (!product) {
-            Messages.error("Selecione um produto");
-            return;
-        }
-
-        const newProduct = {
-            id: Date.now(),
-            product: product,  
-            quantity: Number(quantity),
-            price: price,
-            unit: unit
-        };
-
-        setProductList([...productList, newProduct]);
-        Messages.success("Produto adicionado")
-        
-        setProduct("");
-    }
-
     return(
         <MainTemplate>
             <Container>
@@ -193,16 +204,13 @@ export function CreatePedido() {
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
                                 <label htmlFor="nome">Cliente</label>
-                                <div className={styles.inputWithIcon}>
-                                    <SearchIcon className={styles.searchIcon} />
-                                    <input 
-                                        id="nome" 
-                                        autoComplete="off"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)} 
-                                        placeholder="Buscar Cliente"
-                                    />
-                                </div>
+                                <CustomerSearch 
+                                    value={name}
+                                    customerSelected={setCustomerSelected}
+                                    onChange={setName}
+                                    setCustomerId={setCustomerId}
+                                    placeholder="Buscar Cliente"
+                                />
                                 <div className={styles.withouRegister}>
                                     <label htmlFor="noName">Sem cadastro</label>
                                     <input 

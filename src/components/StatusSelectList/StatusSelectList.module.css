@@ -1,0 +1,64 @@
+.statusSelectContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.statusOptions {
+    position: absolute;
+    top: 200%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    z-index: 9999;
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-in-out;
+    width: inherit;
+    
+    background-color: var(--gray-800);
+    border-radius: 0.8rem;
+    min-width: 150px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.statusOptions.isOpen {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.options {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background-color: transparent;
+    color: var(--gray-100);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    font-size: inherit;
+    text-align: left;
+}
+
+.statusOptions.isOpen .options {
+    background-color: inherit;
+    color: var(--gray-100);
+}
+
+.options:not(:last-child) {
+    margin-bottom: 0.3rem;
+}
+
+.turnArrowDown {
+    transform: rotate(0deg);
+    transition: all 0.3s ease-in-out;
+}
+
+.turnArrowUp {
+    transform: rotate(180deg);
+    transition: all 0.3s ease-in-out;
+}
+

@@ -9,6 +9,7 @@ import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
 import { getOrderById, updateOrder } from "../../services/ordersApi";
+import { formatDate } from "../../utils/format-date";
 
 type Product = {
     id: number;
@@ -114,14 +115,6 @@ export function EditPedido() {
     // Troca o tipo de Desconto
     const changeDiscountType = () => {
         return discountType == "%" ? setDiscountType("R$") : setDiscountType("%")
-    }
-
-    // Formata a data em dd/MM/YYYY
-    const formatDate =  (date : Date) => {
-        const StringDate = date.toISOString().split("T")[0].split("-")  
-
-        const [year, month, day] = StringDate
-        return `${day}/${month}/${year}`
     }
 
     // Excluir o item 

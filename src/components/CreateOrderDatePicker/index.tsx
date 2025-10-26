@@ -1,5 +1,5 @@
 // ========== PARTE 1: IMPORTS E DEPENDÊNCIAS ==========
-import { useState } from 'react';           // Hook para gerenciar estado
+import { useEffect, useRef, useState } from 'react';           // Hook para gerenciar estado
 import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react'; // Ícones
 import styles from "./CreateOrderDatePicker.module.css" // Estilos CSS Modules
 
@@ -10,7 +10,7 @@ interface CreateOrderDatePickerProps {
     value: string;                    // Data selecionada (formato "YYYY-MM-DD")
     onChange: (date: string) => void; // Função chamada quando data muda
     placeholder: string;             // Texto quando não há data (opcional)
-    displayValue : (date : Date) => string
+    displayValue : (date : string) => string
     disabled?: boolean;               // Se o componente está desabilitado (opcional)
     dateName? : string
     className?: string;               // Classes CSS extras (opcional)
@@ -119,10 +119,7 @@ export function CreateOrderDatePicker({
 
     // Seleciona a data de hoje
     const handleTodayClick = (): void => {
-        const today = new Date().toISOString().split('T')[0]; 
-        // const today = new Date(); 
-        // today.setDate(today.getDate() - 1)
-        // const correctDate = today.toISOString().split('T')[0]
+        const today = new Date().toLocaleDateString("sV-SE") 
         onChange(today);  // Atualiza a data selecionada
         setIsOpen(false); // Fecha o calendário
     };
@@ -184,6 +181,21 @@ export function CreateOrderDatePicker({
         return classes;
     };
 
+    const calendarRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if(
+                calendarRef.current &&
+                !calendarRef.current.contains(event.target as Node)
+            ) {
+                setIsOpen(false)
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside)
+    }, [])
+
     // ========== PARTE 9: RENDER (O QUE APARECE NA TELA) ==========
     return (
         <div className={`${styles.container} ${className}`}>
@@ -194,14 +206,14 @@ export function CreateOrderDatePicker({
                 className={getInputDisplayClasses()}
             >
                 <span className={styles.inputText}>
-                    {value ? displayValue(new Date(value)) : placeholder}
+                    {value ? displayValue(value) : placeholder}
                     <CalendarIcon className={getCalendarIconClasses()}/>
                 </span>
             </div>
 
             {/* SEÇÃO 2: DROPDOWN - O calendário que aparece quando abre */}
             {isOpen && !disabled && ( // Só renderiza se estiver aberto E não desabilitado
-                <div className={styles.dropdown}>
+                <div ref={calendarRef} className={styles.dropdown}>
         
                     {/* SUBSEÇÃO 1: HEADER - Navegação de mês/ano */}
                     <div className={styles.header}>

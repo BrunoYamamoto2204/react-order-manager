@@ -1,0 +1,45 @@
+.inputWithIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputWithIcon input {
+    padding-left: 5rem; 
+    width: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 2rem;
+    color: var(--gray-300);
+    width: 2rem;
+    height: 2rem;
+    pointer-events: none; 
+    top: 32%;
+}
+
+.customerSearch {
+  position: relative;
+}
+
+.suggestions{
+    position: absolute;
+    top: 100%; 
+    width: 100%; 
+    border: 1px solid var(--gray-200);
+    z-index: 10; 
+}
+
+.choseItem{
+    background-color: var(--gray-800);
+    padding: 1rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.choseItem:hover{
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+    font-weight: bold;
+    cursor: pointer;
+}

@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getCustomerById, updateCustomer, type Customer } from "../../services/customersApi"
 import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
+import { formatPhone } from "../../utils/format-phone";
 
 export function EditCliente() {
     const navigate = useNavigate();
@@ -158,8 +159,9 @@ export function EditCliente() {
                                     id="telefone"
                                     autoComplete="off"
                                     value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    placeholder="(41) 90000-0000"/>
+                                    onChange={(e) => setPhone(formatPhone(e.target.value))}
+                                    placeholder="(41) 90000-0000"
+                                    maxLength={15}/>
                             </div>
                             {/* Email */}
                             <div className={styles.inputBox}>

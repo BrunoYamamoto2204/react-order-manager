@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
-import { Edit2Icon, InfoIcon, TrashIcon } from "lucide-react";
+import { Edit2Icon, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { updateOrder, type Order } from "../../services/ordersApi"
+import { StatusSelectList } from "../StatusSelectList/indes";
+import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
 type OrderListProps = {
     ordersList: Order[],
@@ -56,12 +58,24 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
         }
     }
 
-    const changeStatus = async (order: Order) => { 
+     const changeStatus = async (order: Order, status: string, customerId: string) => { 
         let newStatus = ""; 
-        if (order.status === "Pendente") newStatus = "Concluído"; 
-        else if (order.status === "Concluído") newStatus = "Cancelado"; 
-        else newStatus = "Pendente"; 
-        
+        if (status === "Pendente"){ 
+            newStatus = "Pendente"; 
+            const customer = await getCustomerById(customerId)
+            await updateCustomer(customerId, {...customer, pendingOrders: true})
+        }
+        else if (status === "Concluído") {
+            newStatus = "Concluído"; 
+            const customer = await getCustomerById(customerId)
+            await updateCustomer(customerId, {...customer, pendingOrders: false})
+        }
+        else {
+            newStatus = "Cancelado"; 
+            const customer = await getCustomerById(customerId)
+            await updateCustomer(customerId, {...customer, pendingOrders: false})
+        }
+
         if(order._id) { 
             const updatedOrder = {...order, status: newStatus} 
             await updateOrder(order._id, updatedOrder) 
@@ -99,9 +113,12 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
 
                         {/* Status */}
                         <td className={`${styles.status} ${statusStyle(order.status)}`}>
-                            <button onClick={() => changeStatus(order)}>
-                                {order.status} <InfoIcon />
-                            </button>
+                            <StatusSelectList 
+                                customerId={order.customerId ? order.customerId : ""}
+                                status={order.status}
+                                changeStatus={changeStatus}
+                                order={order}
+                            />
                         </td>
 
                         {/* Actions */}

@@ -7,8 +7,9 @@ type CustomerSearchProps ={
     value: string;
     customerSelected: (selected: boolean) => void;
     onChange: (name: string) => void;
-    setCustomerId: (id: string) => void;
+    setCustomerId: (id: string | null) => void;
     placeholder?: string;
+    setNoRegister: (noRegister: boolean) => void
 }
 
 export default function CustomerSearch({ 
@@ -16,7 +17,8 @@ export default function CustomerSearch({
     customerSelected, 
     onChange,
     setCustomerId,
-    placeholder
+    placeholder,
+    setNoRegister
 }: CustomerSearchProps ) {
     const [ customers, setCustomers] = useState<Customer[]>([])
     const [ filteredCustomers, setFilteredCustomers] = useState<Customer[]>([])
@@ -73,11 +75,18 @@ export default function CustomerSearch({
                 .includes(normalizeText(input).toLocaleLowerCase())
         )
 
-        const match = customers.some(customer => (
-          normalizeText(customer.name).toLowerCase() === normalizeText(input).toLowerCase()
-        ))
-        customerSelected(match)
-        
+        const matchedCustomer = customers.find(customer =>
+            normalizeText(customer.name).toLowerCase() === normalizeText(input).toLowerCase()
+        );
+
+        if (matchedCustomer) {
+            customerSelected(true);
+            if (matchedCustomer._id) setCustomerId(matchedCustomer._id);
+        } else {
+            customerSelected(false);
+            setCustomerId(null);
+        }
+
         setShowSuggetions(filteredList.length > 0)
         setFilteredCustomers(filteredList)
     } 
@@ -87,6 +96,7 @@ export default function CustomerSearch({
         customerSelected(true)
         if (customer._id) setCustomerId(customer._id)
         setShowSuggetions(false)
+        setNoRegister(false)
     }
     
     return (

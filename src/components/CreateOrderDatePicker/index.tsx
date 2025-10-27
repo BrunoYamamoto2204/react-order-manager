@@ -78,7 +78,7 @@ export function CreateOrderDatePicker({
         for (let day = 1; day <= daysInMonth; day++) {
             // Cria objeto Date para este dia específico
             const currentDate = new Date(year, month, day);
-            const dateString = currentDate.toISOString().split('T')[0];
+            const dateString = currentDate.toLocaleDateString("sv-SE");
             
             days.push({
                 day,                                    // 1, 2, 3... 31
@@ -104,7 +104,7 @@ export function CreateOrderDatePicker({
         const selectedDate = new Date(year, month, calendarDay.day); // Nova data
         
         // Converte para formato string que o input entende
-        const formattedDate = selectedDate.toISOString().split('T')[0]; // "2025-08-15"
+        const formattedDate = selectedDate.toLocaleDateString("sv-SE"); // "2025-08-15"
         
         onChange(formattedDate); // Chama função do componente pai
         setIsOpen(false);        // Fecha o calendário

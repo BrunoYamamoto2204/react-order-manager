@@ -10,6 +10,7 @@ export function formatBrDate(rawDate: string): string {
     })
 }
 
+// "yyyy-MM-dd" --> "dd/MM/yyyy"
 export function formatDate(rawDate: string): string {
     const [year, month, day] = rawDate.split('-').map(Number);
     const date = new Date(year, month - 1, day); 

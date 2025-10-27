@@ -12,6 +12,7 @@ export type Order = {
     _id?: string; 
     customerId?: string;
     name: string;
+    noRegister: boolean;
     date: string;
     productsStrings: string[];
     products: Product[];

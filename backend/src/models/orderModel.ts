@@ -19,6 +19,7 @@ const ProductSchema = new Schema<IProduct>({
 export interface IOrder extends Document {
     customerId?: string;
     name: string,
+    noRegister: boolean,
     date: string,
     productsStrings: string[],
     products: IProduct[],
@@ -36,6 +37,7 @@ export interface IOrder extends Document {
 const OrderSchema = new Schema<IOrder>({
     customerId: { type: String },
     name: {type: String, required: true, trim: true },
+    noRegister: {type: Boolean, required: true},
     date: {type: String, required: true },
     productsStrings: [{ type: String }],
     products: [ProductSchema],

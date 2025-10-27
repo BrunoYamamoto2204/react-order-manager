@@ -10,6 +10,8 @@ import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
 import { getOrderById, updateOrder } from "../../services/ordersApi";
 import { formatDate } from "../../utils/format-date";
+import CustomerSearch from "../../components/CustomerSearch";
+import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
 type Product = {
     id: number;
@@ -25,6 +27,7 @@ export function EditPedido() {
     const [ loading, setLoading ] = useState(true);
 
     // Input Values
+    const [ customerId, setCustomerId ] = useState<string | null>(null)
     const [ discountType, setDiscountType ] = useState("%")
     const [ discountValue, setDiscountValue ] = useState("0")
     const [ noRegister, setNoRegister ] = useState(false);
@@ -32,6 +35,7 @@ export function EditPedido() {
 
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
+    const [ customerSelected, setCustomerSelected ] = useState(false);
     const [ date, setDate ] = useState("")
 
     const [ total, setTotal ] = useState("")
@@ -55,10 +59,11 @@ export function EditPedido() {
                 setLoading(true)
                 const order = await getOrderById(id)
                 
+                setCustomerId(order.customerId ? order.customerId : null)
                 setDiscountType(order.discountType);
                 setDiscountValue(order.discountValue);
+                setNoRegister(order.noRegister)
                 setProductList(order.products);
-                setDiscountType(order.discountType);
 
                 setName(order.name)
                 setDescription(order.obs)
@@ -128,58 +133,6 @@ export function EditPedido() {
         setProductList(newOrder)
     }
 
-    // Cria Pedido
-    const handleSubmit = async (e : React.FormEvent) => {
-        e.preventDefault()
-        Messages.dismiss()
-
-        if(!name) {
-            Messages.error("Selecione um cliente");
-            return;
-        } 
-        if (productList.length <= 0) {
-            Messages.error("Adiocione itens ao pedido");
-            return;
-        } 
-
-        const formattedProducts = productList.map(p => 
-            `${p.quantity}${p.unit} ${p.product}`
-        );
-
-        // Converte YYYY-MM-DD para dd/MM/yyyy
-        const formatDateToDisplay = (dateStr: string) => {
-            const [year, month, day] = dateStr.split("-");
-            return `${day}/${month}/${year}`;
-        };
-    
-        const updatedOrder = ({
-            name: name,
-            date: formatDateToDisplay(date),
-            productsStrings: formattedProducts,
-            products: productList,
-            value: `R$ ${Number(total).toFixed(2)}`,        
-            discount: Number(discount).toFixed(2),
-            discountValue: discountValue,
-            totalGross: totalGross,
-            discountType: discountType,
-            obs: description,
-            status: "Pendente",
-        }) 
-
-        // Enviar para o banco de dados
-        try {
-            if(!id) return
-
-            await updateOrder(id, updatedOrder)
-
-            Messages.success("Pedido editado com sucesso")
-            navigate("/pedidos");
-        } catch (error){
-            console.error("[-] Erro ao Editar Pedido: ", error)
-            Messages.error("Erro ao Editar Pedido")
-        }
-    }
-
     // Mudar o changeQuantity
     const changeQuantity = (newQuantity : number, productName: string) => {
         setProductList(currentProducts => 
@@ -214,6 +167,67 @@ export function EditPedido() {
         setProduct("");
     }
 
+    // Cria Pedido
+    const handleSubmit = async (e : React.FormEvent) => {
+        e.preventDefault()
+        Messages.dismiss()
+
+        if (noRegister) {
+            if(!name){
+                Messages.error("Insira o nome do cliente");
+                return;
+            }
+        }
+
+        else if(!customerSelected) {
+            Messages.error("Selecione um cliente exitente");
+            return;
+        } 
+
+        else if (productList.length <= 0) {
+            Messages.error("Adiocione itens ao pedido");
+            return;
+        } 
+
+        const formattedProducts = productList.map(p => 
+            `${p.quantity}${p.unit} ${p.product}`
+        );
+    
+        const updatedOrder = ({
+            customerId: customerId ?? undefined,
+            name: name,
+            noRegister: noRegister,
+            date: formatDate(date),
+            productsStrings: formattedProducts,
+            products: productList,
+            value: `R$ ${Number(total).toFixed(2)}`,        
+            discount: Number(discount).toFixed(2),
+            discountValue: discountValue,
+            totalGross: totalGross,
+            discountType: discountType,
+            obs: description,
+            status: "Pendente",
+        }) 
+
+        // Enviar para o banco de dados
+        try {
+            if(!id) return
+
+            await updateOrder(id, updatedOrder)
+
+            if (!noRegister && customerId){
+                const chosenCustomer = await getCustomerById(customerId)
+                await updateCustomer(customerId, {...chosenCustomer, pendingOrders: true})
+            }
+
+            Messages.success("Pedido editado com sucesso")
+            navigate("/pedidos");
+        } catch (error){
+            console.error("[-] Erro ao Editar Pedido: ", error)
+            Messages.error("Erro ao Editar Pedido")
+        }
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -240,16 +254,14 @@ export function EditPedido() {
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
                                 <label htmlFor="nome">Cliente</label>
-                                <div className={styles.inputWithIcon}>
-                                    <SearchIcon className={styles.searchIcon} />
-                                    <input 
-                                        id="nome" 
-                                        autoComplete="off"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)} 
-                                        placeholder="Buscar Cliente"
-                                    />
-                                </div>
+                                <CustomerSearch 
+                                    value={name}
+                                    customerSelected={setCustomerSelected}
+                                    onChange={setName}
+                                    setCustomerId={setCustomerId}
+                                    placeholder="Buscar Cliente"
+                                    setNoRegister={setNoRegister}
+                                />
                                 <div className={styles.withouRegister}>
                                     <label htmlFor="noName">Sem cadastro</label>
                                     <input 

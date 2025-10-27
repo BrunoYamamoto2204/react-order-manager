@@ -30,9 +30,10 @@ export function CreatePedido() {
     const [ productList, setProductList ] = useState<Product[]>([])
 
     // Input Values
-    const [ customerId, setCustomerId ] = useState("")
+    const [ customerId, setCustomerId ] = useState<string | null>(null)
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
+    const [date, setDate] = useState(new Date().toLocaleDateString("sv-SE")) 
     const [ customerSelected, setCustomerSelected ] = useState(false);
 
     const [ total, setTotal ] = useState(0)
@@ -78,12 +79,6 @@ export function CreatePedido() {
         return discountType == "%" ? setDiscountType("R$") : setDiscountType("%")
     }
 
-    // Converte a data em YYYY-MM-dd
-    const formatDateString = (date : Date) => {
-        return date.toISOString().split("T")[0];
-    }
-
-    const [date, setDate] = useState(formatDateString(new Date())) // YYYY-MM-dd
    
     // Adiociona produto no pedido
     const handleNewProduct = () => {
@@ -144,9 +139,10 @@ export function CreatePedido() {
         );
     
         const newOrder = ({
-            customerId: customerId,
+            customerId: customerId ?? undefined,
             name: name,
-            date: formatDate(formatDateString(new Date())),
+            noRegister: noRegister,
+            date: formatDate(date),
             productsStrings: formattedProducts,
             products: productList,
             value: `R$ ${total.toFixed(2)}`,        
@@ -161,9 +157,9 @@ export function CreatePedido() {
         try{
             await createOrder(newOrder)
 
-            if (!noRegister){
-                const chosenCustomer = await getCustomerById(customerId)
-                await updateCustomer(customerId, {...chosenCustomer, pendingOrders: true})
+            if (!noRegister && customerId) {
+                const chosenCustomer = await getCustomerById(customerId);
+                await updateCustomer(customerId, { ...chosenCustomer, pendingOrders: true });
             }
 
             setName("");
@@ -210,6 +206,7 @@ export function CreatePedido() {
                                     onChange={setName}
                                     setCustomerId={setCustomerId}
                                     placeholder="Buscar Cliente"
+                                    setNoRegister={setNoRegister}
                                 />
                                 <div className={styles.withouRegister}>
                                     <label htmlFor="noName">Sem cadastro</label>

@@ -3,7 +3,7 @@ import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreatePedido.module.css";
-import { PlusCircleIcon, RefreshCwIcon, SaveIcon, SearchIcon } from "lucide-react";
+import { PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
@@ -12,9 +12,11 @@ import { createOrder } from "../../services/ordersApi";
 import { formatDate } from "../../utils/format-date";
 import CustomerSearch from "../../components/CustomerSearch";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
+import { ProductSearch } from "../../components/ProductSearch";
 
-type Product = {
-    id: number;
+export type OrderProduct = {
+    uniqueId: number
+    productId: string;
     product: string;
     price: string;
     quantity: number;
@@ -27,27 +29,27 @@ export function CreatePedido() {
     const [ discountType, setDiscountType ] = useState("%")
     const [ discountValue, setDiscountValue ] = useState("0")
     const [ noRegister, setNoRegister ] = useState(false);
-    const [ productList, setProductList ] = useState<Product[]>([])
+    const [ productList, setProductList ] = useState<OrderProduct[]>([])
 
     // Input Values
     const [ customerId, setCustomerId ] = useState<string | null>(null)
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
-    const [date, setDate] = useState(new Date().toLocaleDateString("sv-SE")) 
+    const [ date, setDate] = useState(new Date().toLocaleDateString("sv-SE")) 
     const [ customerSelected, setCustomerSelected ] = useState(false);
 
     const [ total, setTotal ] = useState(0)
     const [ totalGross, setTotalGross] = useState("")
     const [ discount, setDiscount ] = useState(0)
 
-    const [ product, setProduct] = useState("");
-    const [ unit ] = useState("UN"); 
-    const [ quantity ] = useState("1");
-    const [ price ] = useState("10.5");
-    
+    const [ productId, setProductId] = useState<string | null>(null)
+    const [ productName, setProductName] = useState("")
+    const [ product, setProduct ] = useState<OrderProduct>();
+
     useEffect(() => {
         document.title = "Novo Pedido - Comanda"
-    },[])
+        console.log(productList)
+    },[productList])
 
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
@@ -83,28 +85,19 @@ export function CreatePedido() {
     // Adiociona produto no pedido
     const handleNewProduct = () => {
         Messages.dismiss()
-
+        
         if (!product) {
             Messages.error("Selecione um produto");
             return;
         }
 
-        const newProduct = {
-            id: Date.now(),
-            product: product,  
-            quantity: Number(quantity),
-            price: price,
-            unit: unit
-        };
-
-        setProductList([...productList, newProduct]);
+        setProductName("")
+        setProductList([...productList, product]);
         Messages.success("Produto adicionado")
-        
-        setProduct("");
     }
 
     // Excluir o item 
-    const removeProduct = (listItem: Product) => {
+    const removeProduct = (listItem: OrderProduct) => {
         const currentOrderList = [...productList]
         const newOrder = currentOrderList.filter(order => 
             order.product !== listItem.product
@@ -162,6 +155,11 @@ export function CreatePedido() {
                 await updateCustomer(customerId, { ...chosenCustomer, pendingOrders: true });
             }
 
+            // Futuramente: Adicionar a quantidade de produtos nas análises 
+            if (productId){
+                console.log(productId)
+            }
+
             setName("");
             setDescription("");
             setProductList([]);
@@ -176,10 +174,10 @@ export function CreatePedido() {
     }
 
     // Mudar o changeQuantity
-    const changeQuantity = (newQuantity : number, productName: string) => {
+    const changeQuantity = (newQuantity : number, productId: string) => {
         setProductList(currentProducts => 
             currentProducts.map(product => 
-                product.product === productName 
+                product.uniqueId.toString() === productId 
                     ? {...product, quantity: newQuantity}
                     : product
             )
@@ -270,19 +268,20 @@ export function CreatePedido() {
                             {/* Adicionar Produto */}
                             <h3 className={styles.addProducth3}>Adicionar Produto</h3>
                             <div className={styles.inputWithIcon} >
-                                <SearchIcon className={styles.searchIcon} />
-                                <input
-                                    onChange={e => setProduct(e.target.value)}
-                                    value={product}
-                                    className={styles.addProductInput}
-                                    placeholder= "Buscar produto para adicionar ao pedido..."
+                                <ProductSearch 
+                                    productName={productName}
+                                    onChangeName={setProductName}
+                                    setProduct={setProduct}
+                                    setProductId={setProductId}
+                                    placeholder="Buscar produto para adicionar ao pedido..." 
                                 />
                             </div>
                             <button
-                                onClick={handleNewProduct} 
+                                onClick={() => handleNewProduct()} 
                                 className={styles.addItemButton}
-                                type="button">
-                                <PlusCircleIcon/> Adicionar Produto
+                                type="button"
+                            >
+                                <PlusCircleIcon /> Adicionar Produto
                             </button>
                         </div>
 

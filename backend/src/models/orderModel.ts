@@ -1,7 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose"
 
 type IProduct = {
-    id: number;
+    uniqueId: number
+    productId: string;
     product: string;
     price: string;
     quantity: number;
@@ -9,7 +10,8 @@ type IProduct = {
 }
 
 const ProductSchema = new Schema<IProduct>({
-    id: { type: Number, required: true },
+    uniqueId: { type: Number, required: true },
+    productId: { type: String, required: true },
     product: { type: String, required: true },
     price: { type: String, required: true },
     quantity: { type: Number, required: true },

@@ -22,7 +22,7 @@ export default function CustomerSearch({
 }: CustomerSearchProps ) {
     const [ customers, setCustomers] = useState<Customer[]>([])
     const [ filteredCustomers, setFilteredCustomers] = useState<Customer[]>([])
-    const [ showSuggetions, setShowSuggetions] = useState(false)
+    const [ showSuggestions, setShowSuggetions] = useState(false)
     const [ loading, setLoading] = useState(true)
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -79,15 +79,15 @@ export default function CustomerSearch({
             normalizeText(customer.name).toLowerCase() === normalizeText(input).toLowerCase()
         );
 
-        if (matchedCustomer) {
+        if (matchedCustomer && matchedCustomer._id) {
             customerSelected(true);
-            if (matchedCustomer._id) setCustomerId(matchedCustomer._id);
+            setCustomerId(matchedCustomer._id);
         } else {
             customerSelected(false);
             setCustomerId(null);
         }
 
-        setShowSuggetions(filteredList.length > 0)
+        setShowSuggetions(true)
         setFilteredCustomers(filteredList)
     } 
 
@@ -112,28 +112,30 @@ export default function CustomerSearch({
                     placeholder={placeholder}
                 />
 
-                {showSuggetions && (
-                <div ref={dropDownRef} className={styles.suggestions}>
-                    {loading ? (
-                        <div>...Carregando</div>
-                    ) : (
-                        filteredCustomers.length > 0 ? (
-                            filteredCustomers.map(customer => (
-                                <div 
-                                    key={customer._id} 
-                                    onClick={() => choseCustomer(customer)}
-                                >
-                                    <div className={styles.choseItem}>
-                                        {customer.name} - {customer.phone}
-                                    </div>
-                                </div>
-                            ))
+                {showSuggestions && (
+                    <div ref={dropDownRef} className={styles.suggestions}>
+                        {loading ? (
+                            <div>...Carregando</div>
                         ) : (
-                            <div>Nenhum cliente encontrado</div>
-                        )
-                    )}
-                </div>
-            )}
+                            filteredCustomers.length > 0 ? (
+                                filteredCustomers.map(customer => (
+                                    <div 
+                                        key={customer._id} 
+                                        onClick={() => choseCustomer(customer)}
+                                    >
+                                        <div className={styles.choseItem}>
+                                            {customer.name} - {customer.phone}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className={styles.choseItem}>
+                                    Nenhum cliente encontrado
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     )

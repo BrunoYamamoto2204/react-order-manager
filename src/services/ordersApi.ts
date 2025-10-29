@@ -1,11 +1,12 @@
 const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 type Product = {
-  id: number;
-  product: string;
-  price: string;
-  quantity: number;
-  unit: string;
+    uniqueId: number
+    productId: string;
+    product: string;
+    price: string;
+    quantity: number;
+    unit: string;
 }
 
 export type Order = {

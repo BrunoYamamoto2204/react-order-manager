@@ -259,6 +259,7 @@
     color: var(--primary);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    margin-top: 2rem
 }
 
 .addItemButton:hover {

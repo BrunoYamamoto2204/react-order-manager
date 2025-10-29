@@ -1,19 +1,15 @@
 import { TrashIcon } from "lucide-react"
 import styles from "../../pages/Pedidos/CreatePedido.module.css"
+import type { OrderProduct } from "../../pages/Pedidos/createPedido"
+
 
 type CreateOrderListProps = {
-    orderList : Product[]
-    changeQuantity : (newQuantity : number, productName: string) => void
-    removeProduct: (listItem: Product) => void
+    orderList : OrderProduct[]
+    changeQuantity : (newQuantity : number, productId: string) => void
+    removeProduct: (listItem: OrderProduct) => void
 }
 
-type Product = {
-    id: number,
-    product: string;
-    price: string;
-    quantity: number;
-    unit: string
-}
+
 
 export function CreateOrderList({ orderList, changeQuantity, removeProduct} : CreateOrderListProps) {
     return (
@@ -34,7 +30,7 @@ export function CreateOrderList({ orderList, changeQuantity, removeProduct} : Cr
                                 onChange={e => {
                                     const newQuantity = e.target.value
                                     const validateQuantity = Math.max(0, Number(newQuantity))
-                                    changeQuantity(validateQuantity, order.product)
+                                    changeQuantity(validateQuantity, order.uniqueId.toString())
                                 }}
                                 value={order.quantity}
                                 type="number"

@@ -78,21 +78,18 @@ export const deleteOrder = async (req: Request, res: Response) => {
                 message: `Erro ao excluir pedido ${req.body.id}`
             })
         }
-            
-        const customerId = order.customerId
 
-        
+        const customer = await Customer.findById(order.customerId)
 
-        if(customerId) {
-            const validateCustomerStatus = await Order.findOne({
-                status: "Pendente",
-                customerId: customerId
+        if(customer) {
+            const validateCustomer = await Order.findOne({
+                customerId: order.customerId,
+                status: "Pendente"
             })
 
-            await Customer.findByIdAndUpdate(customerId, {
-                    pendingOrders: !!validateCustomerStatus
-                }
-            )
+            await Customer.findByIdAndUpdate(order.customerId, {
+                pendingOrders: !!validateCustomer
+            })
         }
 
         res.json({ message: 'Pedido deletado com sucesso' });

@@ -52,7 +52,8 @@ export function StatusSelectList({
                         className={styles.options}
                     >
                         Concluído <InfoIcon style={{ color: "var(--primary)" }} />
-                    </button><button
+                    </button>
+                    <button
                         onClick={() => handleStatusChange("Cancelado")}
                         className={styles.options}
                     >

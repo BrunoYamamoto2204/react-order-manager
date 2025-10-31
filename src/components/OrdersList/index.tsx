@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
 import { Edit2Icon, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router";
-import { updateOrder, type Order } from "../../services/ordersApi"
+import { getOrders, updateOrder, type Order } from "../../services/ordersApi"
 import { StatusSelectList } from "../StatusSelectList/indes";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
@@ -67,13 +67,35 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
         }
         else if (status === "Concluído") {
             newStatus = "Concluído"; 
-            const customer = await getCustomerById(customerId)
-            await updateCustomer(customerId, {...customer, pendingOrders: false})
+
+            if(order._id) await updateOrder(order._id, { ...order, status: newStatus });
+
+            const orders = await getOrders()
+            const pendingOrder = orders.some(order => (
+                order.customerId === customerId && 
+                order.status === "Pendente"
+            ))
+
+            if (!pendingOrder) {
+                const customer = await getCustomerById(customerId)
+                await updateCustomer(customerId, {...customer, pendingOrders: false})
+            }
         }
         else {
             newStatus = "Cancelado"; 
-            const customer = await getCustomerById(customerId)
-            await updateCustomer(customerId, {...customer, pendingOrders: false})
+
+            if(order._id) await updateOrder(order._id, { ...order, status: newStatus });
+            
+            const orders = await getOrders()
+            const pendingOrder = orders.some(order => (
+                order.customerId === customerId && 
+                order.status === "Pendente"
+            ))
+
+            if (!pendingOrder) {
+                const customer = await getCustomerById(customerId)
+                await updateCustomer(customerId, {...customer, pendingOrders: false})
+            }
         }
 
         if(order._id) { 

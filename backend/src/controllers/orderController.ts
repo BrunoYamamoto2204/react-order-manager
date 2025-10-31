@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Order from '../models/orderModel';
+import Customer from '../models/customerModel';
 
 export const getOrders = async (req: Request, res: Response) => {
     try {
@@ -69,11 +70,30 @@ export const updateOrder = async (req: Request, res: Response) => {
 
 export const deleteOrder = async (req: Request, res: Response) => {
     try{
+        const order = await Order.findById(req.params.id)
         const deletedOrder = await Order.findByIdAndDelete(req.params.id)
 
         if (!deletedOrder) {
-            return res.status(404).json({message: `Pedido ${req.params.id} não encontrado`})
-        } 
+            res.status(400).json({
+                message: `Erro ao excluir pedido ${req.body.id}`
+            })
+        }
+            
+        const customerId = order.customerId
+
+        
+
+        if(customerId) {
+            const validateCustomerStatus = await Order.findOne({
+                status: "Pendente",
+                customerId: customerId
+            })
+
+            await Customer.findByIdAndUpdate(customerId, {
+                    pendingOrders: !!validateCustomerStatus
+                }
+            )
+        }
 
         res.json({ message: 'Pedido deletado com sucesso' });
     } catch (error) {

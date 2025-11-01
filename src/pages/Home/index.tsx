@@ -48,20 +48,26 @@ export function Home() {
         , 0)
     }
 
-    // const categoryCount = () => {
-    //     let docesCount = 0;
-    //     let salgadosCount = 0;
-    //     let bolosCount = 0;
-    //     let sobremesasCount = 0;
+    const categoryCount = () => {
+        let docesCount = 0;
+        let salgadosCount = 0;
+        let bolosCount = 0;
+        let sobremesasCount = 0;
 
-    //     orders.map(order => (
-    //         order.products.map(product => (
-    //             product.
-    //         ))
-    //     ))
-    // }
+        orders.map(order => (
+            order.products.map(product => {
+                if (product.category === "Doce") docesCount += product.quantity
+                if (product.category === "Salgado") salgadosCount += product.quantity
+                if (product.category === "Bolo")  bolosCount += product.quantity
+                if (product.category === "Sobremesa") sobremesasCount += product.quantity
+            })
+        ))
+
+        return { docesCount, salgadosCount, bolosCount, sobremesasCount }
+    }
 
     const { countPending, concluedCounter } = countPendingOrders()
+    const { docesCount, salgadosCount, bolosCount, sobremesasCount } = categoryCount()
 
     // String yyyy-MM-dd
     const [ date, setDate ] = useState(formatDateString(new Date())) 
@@ -91,22 +97,22 @@ export function Home() {
                         <div className={styles.categories}>
                             <div className={styles.category}>
                                 <h2>Bolos</h2>
-                                <h3 className={styles.quantity}>12</h3>
+                                <h3 className={styles.quantity}>{bolosCount}</h3>
                                 <h4>unidades hoje</h4>
                             </div>
                             <div className={styles.category}>
                                 <h2>Salgados</h2>
-                                <h3 className={styles.quantity}>120</h3>
+                                <h3 className={styles.quantity}>{salgadosCount}</h3>
                                 <h4>unidades hoje</h4>
                             </div>
                             <div className={styles.category}>
                                 <h2>Doces</h2>
-                                <h3 className={styles.quantity}>125</h3>
+                                <h3 className={styles.quantity}>{docesCount}</h3>
                                 <h4>unidades hoje</h4>
                             </div>
                             <div className={styles.category}>
                                 <h2>Sobremesas</h2>
-                                <h3 className={styles.quantity}>10</h3>
+                                <h3 className={styles.quantity}>{sobremesasCount}</h3>
                                 <h4>unidades hoje</h4>
                             </div>
                         </div>

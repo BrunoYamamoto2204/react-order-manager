@@ -77,6 +77,7 @@ export function ProductSearch({
             normalizeText(product.product).toLowerCase() === normalizeText(name).toLowerCase()
         ))
 
+        // Captura o product pela escrita manual do nome do produto 
         if(matchProduct && matchProduct._id) {
             if (matchProduct._id) setProductId(matchProduct._id)
 
@@ -86,6 +87,7 @@ export function ProductSearch({
                     product: matchProduct.product,
                     price: matchProduct.price.toString(),
                     quantity: 1,
+                    category: matchProduct.category,
                     unit: matchProduct.unit
                 }
                 setProduct(formattedProduct)
@@ -97,6 +99,7 @@ export function ProductSearch({
         setShowSuggestions(true)
     }
 
+    // Captura o product pela escolha da recomendação 
     const choseProduct = (product: Product) => {
         if (!product._id) return 
 
@@ -106,6 +109,7 @@ export function ProductSearch({
             product: product.product,
             price: product.price.toString(),
             quantity: 1,
+            category: product.category,
             unit: product.unit
         }
 

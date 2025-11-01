@@ -6,6 +6,7 @@ type IProduct = {
     product: string;
     price: string;
     quantity: number;
+    category: string,
     unit: string;
 }
 
@@ -15,6 +16,7 @@ const ProductSchema = new Schema<IProduct>({
     product: { type: String, required: true },
     price: { type: String, required: true },
     quantity: { type: Number, required: true },
+    category: { type: String, required: true },
     unit: { type: String, required: true }
 }, { _id: false });
 

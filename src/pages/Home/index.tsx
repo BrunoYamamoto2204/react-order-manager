@@ -42,6 +42,25 @@ export function Home() {
         return {countPending, concluedCounter}
     }
 
+    const totalOrdersValue = () => {
+        return orders.reduce((total, order) => 
+            total += Number(order.value.split(" ")[1])
+        , 0)
+    }
+
+    // const categoryCount = () => {
+    //     let docesCount = 0;
+    //     let salgadosCount = 0;
+    //     let bolosCount = 0;
+    //     let sobremesasCount = 0;
+
+    //     orders.map(order => (
+    //         order.products.map(product => (
+    //             product.
+    //         ))
+    //     ))
+    // }
+
     const { countPending, concluedCounter } = countPendingOrders()
 
     // String yyyy-MM-dd
@@ -67,7 +86,7 @@ export function Home() {
 
                     
                     <div className={styles.summary}>
-                        <h2>Receita total: <span>R$ 5553,50</span></h2>
+                        <h2>Receita total: <span>R$ {totalOrdersValue().toFixed(2).replace(".",",")}</span></h2>
 
                         <div className={styles.categories}>
                             <div className={styles.category}>

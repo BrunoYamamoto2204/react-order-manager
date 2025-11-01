@@ -20,6 +20,7 @@ export type OrderProduct = {
     product: string;
     price: string;
     quantity: number;
+    category: string,
     unit: string;
 }
 
@@ -160,10 +161,10 @@ export function CreatePedido() {
                 console.log(productId)
             }
 
-            setName("");
-            setDescription("");
-            setProductList([]);
-            setDiscountValue("0");
+            // setName("");
+            // setDescription("");
+            // setProductList([]);
+            // setDiscountValue("0");
 
             Messages.success("Pedido criado com sucesso")
             navigate("/pedidos");

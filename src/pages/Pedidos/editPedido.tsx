@@ -20,6 +20,7 @@ export type OrderProduct = {
     product: string;
     price: string;
     quantity: number;
+    category: string,
     unit: string;
 }
 
@@ -37,7 +38,7 @@ export function EditPedido() {
 
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
-    const [ customerSelected, setCustomerSelected ] = useState(false);
+    const [ customerSelected, setCustomerSelected ] = useState(true);
     const [ date, setDate ] = useState("")
 
     const [ total, setTotal ] = useState("")
@@ -160,6 +161,7 @@ export function EditPedido() {
             product: product.product,
             price: product.price,
             quantity: product.quantity,
+            category: product.category,
             unit: product.unit,
         };
 

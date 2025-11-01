@@ -6,6 +6,7 @@ type Product = {
     product: string;
     price: string;
     quantity: number;
+    category: string,
     unit: string;
 }
 

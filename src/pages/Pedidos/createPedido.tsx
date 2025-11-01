@@ -101,7 +101,7 @@ export function CreatePedido() {
     const removeProduct = (listItem: OrderProduct) => {
         const currentOrderList = [...productList]
         const newOrder = currentOrderList.filter(order => 
-            order.product !== listItem.product
+            order.uniqueId !== listItem.uniqueId
         )
         setProductList(newOrder)
     }

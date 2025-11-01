@@ -6,7 +6,7 @@ import styles from "./Home.module.css"
 import { Title } from "../../components/Title";
 import GeralDatePicker from "../../components/GeralDatePicker";
 import { CircleCheckIcon, ClipboardListIcon, HourglassIcon } from "lucide-react";
-import { formatBrDate } from "../../utils/format-date";
+import { formatBrDate, formatDate } from "../../utils/format-date";
 import { getOrders, type Order } from "../../services/ordersApi";
 
 
@@ -16,20 +16,29 @@ export function Home() {
         return date.toLocaleDateString('sv-SE');
     }
 
+    // String yyyy-MM-dd
+    const [ date, setDate ] = useState(formatDateString(new Date())) 
     const [ orders, setOrders ] = useState<Order[]>([])
 
     useEffect(() => {
         const loadOrders = async () => {
             try{
-                const orderData = await getOrders()
-                setOrders(orderData)
+                const ordersData = await getOrders()
+
+                const filteredOrdersByDate = () => (
+                    ordersData.filter(order => (
+                        order.date === formatDate(date)
+                    ))
+                )
+
+                setOrders(filteredOrdersByDate())
             } catch (error) {
                 console.log("[500] - Erro ao carregar produtos: ", error)
             } 
         }
 
         loadOrders()
-    }, [])
+    }, [date])
 
     const countPendingOrders = () => {
         let countPending = 0;
@@ -68,9 +77,6 @@ export function Home() {
 
     const { countPending, concluedCounter } = countPendingOrders()
     const { docesCount, salgadosCount, bolosCount, sobremesasCount } = categoryCount()
-
-    // String yyyy-MM-dd
-    const [ date, setDate ] = useState(formatDateString(new Date())) 
     
     return (
         

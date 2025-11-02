@@ -12,7 +12,7 @@ type Product = {
 
 export type Order = {
     _id?: string; 
-    customerId?: string;
+    customerId?: string | null;
     name: string;
     noRegister: boolean;
     date: string;

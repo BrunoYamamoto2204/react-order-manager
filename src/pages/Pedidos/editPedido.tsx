@@ -197,7 +197,7 @@ export function EditPedido() {
         );
     
         const updatedOrder = ({
-            customerId: customerId ?? undefined,
+            customerId: noRegister ? null : customerId,
             name: name,
             noRegister: noRegister,
             date: formatDate(date),
@@ -215,6 +215,11 @@ export function EditPedido() {
         // Enviar para o banco de dados
         try {
             if(!id) return
+
+            // Caso agora for marcado sem registro, retira o vinculo do id com o cliente antigo 
+            if (noRegister) {
+                setCustomerId(null)
+            }
 
             await updateOrder(id, updatedOrder)
 

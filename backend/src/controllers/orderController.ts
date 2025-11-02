@@ -46,7 +46,13 @@ export const createOrder = async (req: Request, res: Response) => {
 
 export const updateOrder = async (req: Request, res: Response) => {
     try {
-        const updatedOrder = await Order.findByIdAndUpdate(
+        const oldOrder = await Order.findById(req.params.id)
+
+        if (!oldOrder) {
+            res.status(404).json({message: `Erro ao buscar pedido: ${req.params.id}}`}) 
+        }
+
+        const newOrder = await Order.findByIdAndUpdate(
             req.params.id, 
             req.body,
             {
@@ -55,11 +61,36 @@ export const updateOrder = async (req: Request, res: Response) => {
             }
         )
         
-        if (!updatedOrder) {
+        if (!newOrder) {
             return res.status(404).json({message: `Erro ao editar pedido ${req.body.id}`})
         }
 
-        res.json(updatedOrder)
+        const oldCustomerId = oldOrder.customerId
+        const newCustomerId = newOrder.customerId
+
+        if(oldCustomerId && oldCustomerId !== newCustomerId) {
+            const validateStatus = await Order.findOne({
+                customerId: oldCustomerId,
+                status: "Pendente" 
+            })
+
+            await Customer.findByIdAndUpdate(oldCustomerId, {
+                pendingOrders: !!validateStatus
+            })
+        }
+
+        if(newCustomerId) {
+            const validateStatus = await Order.findOne({
+                customerId: newCustomerId,
+                status: "Pendente" 
+            })
+
+            await Customer.findByIdAndUpdate(newCustomerId, {
+                pendingOrders: !!validateStatus
+            })
+        }
+
+        res.json(newOrder)
     } catch(error) {
         res.status(400).json({
             message: `Erro ao buscar pedidos`,

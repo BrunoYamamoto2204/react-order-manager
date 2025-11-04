@@ -1,0 +1,71 @@
+/* Tabela de produtos */
+.productTable {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px); /* desfoca o que está atrás */
+    -webkit-backdrop-filter: blur(8px); /* compatibilidade com Safari */
+    color: var(--gray-100);
+    z-index: 999;
+    border-radius: 1rem;
+    padding: 5rem;
+}
+
+.productTable table{
+    width: 100%;
+}
+
+.productTable table{
+    display: grid;
+    grid-template-columns: 0.8fr 1.5fr 1fr 1fr; 
+    border-collapse: collapse;
+    font-size: 2.5rem;
+}
+
+.productTable table th{
+    padding: 1rem;
+    text-align: start;
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 3rem;
+}
+
+.productTable table th {
+    border-bottom: 0.2rem var(--gray-300) solid;
+    margin-bottom: 1.5rem;
+}
+
+.productTable thead, 
+.productTable tbody, 
+.productTable tr {
+    display: contents; 
+}
+
+h3.seeMore{
+    display: block;
+    margin-top: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+h3.seeMore:hover{
+    color: var(--secondary-text);
+    cursor: pointer;
+}
+
+.backButton{
+    padding: 1rem 2rem;
+    border: none;
+    background-color: var(--gray-700);
+    color: var(--gray-100);
+    border-radius: 0.5rem;
+    font-size: 2rem;
+    margin-top: 5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.backButton:hover {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    transform: scale(0.95);
+}

@@ -7,6 +7,7 @@ import CustomDatePicker from "../../components/CustomDatePicker"
 import {  ChartColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, DollarSignIcon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
 import { AnalysisList } from "../../components/AnalysisList"
 import { formatDate } from "../../utils/format-date"
+import { AnalisysProductTable } from "../../components/AnalysisProductTable"
 
 export function Analises() {
     useEffect(() => {
@@ -30,6 +31,16 @@ export function Analises() {
     const [isOpen, setIsOpen] = useState(false)
     const [optionSelected, setOptionSelected] = useState("Escolha uma opção");
 
+    const [ showProducts, setShowProducts ] = useState(false);
+    
+    useEffect(() => {
+        const mainElement = document.querySelector('main');
+        if (mainElement) {
+            mainElement.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }, [showProducts])
+
+
     const selectOption = (option : string) => {
         setOptionSelected(option)
         setIsOpen(!isOpen)
@@ -46,6 +57,10 @@ export function Analises() {
     return (
         <MainTemplate>
             <Container >
+                {showProducts && (
+                    <AnalisysProductTable handleShowProducts={setShowProducts}/>
+                )}
+
                 <Title 
                     title="Análises" 
                     subtitle="Analise os resultados e gere insights para o seu negócio"
@@ -166,7 +181,12 @@ export function Analises() {
                                     <AnalysisList productsList={productList}/>
                                 </tbody>
                             </table>
-                            <h3 className={styles.seeMore}>Ver mais...</h3>
+                            <h3 
+                                className={styles.seeMore} 
+                                onClick={() => setShowProducts(true)}
+                            >
+                                Ver mais...
+                            </h3>
                         </div>
                         <div className={styles.orderChart}>
                             <h2>

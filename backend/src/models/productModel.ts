@@ -5,7 +5,7 @@ interface IProduct extends Document {
     price: number,
     category: string,
     unit: string,
-    description: string
+    description?: string
 }
 
 const ProductSchema = new Schema<IProduct> ({
@@ -13,7 +13,7 @@ const ProductSchema = new Schema<IProduct> ({
     price: { type: Number, required: true}, 
     category: { type: String, required: true} ,
     unit: { type: String, required: true} ,
-    description: { type: String, required: true} ,
+    description: { type: String, required: false } ,
 })
 
 const Product = mongoose.models.Products 

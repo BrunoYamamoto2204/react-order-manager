@@ -49,7 +49,6 @@ export function Produtos() {
         }
 
         setProducts(products.filter(product => product._id !== filteredProduct._id))
-        Messages.success("Produto excluído com sucesso")
     }
 
     if (loading) {

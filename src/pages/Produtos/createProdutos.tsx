@@ -48,13 +48,13 @@ export function CreateProdutos() {
             Messages.error("Preecha todos os campo obrigatórios")
             return
         }
-
+        console.log(description)
         const newProduct = {
             product: name,
             price: Number(price),
             category: selectCategory,
             unit: selectUn,
-            description: description
+            description: description || ""
         } 
 
         try{
@@ -87,7 +87,7 @@ export function CreateProdutos() {
                         {/* Inputs Padrão */}
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
-                                <label htmlFor="nome">Nome do Produto</label>
+                                <label htmlFor="nome">Nome do Produto *</label>
                                 <input 
                                     id="nome" 
                                     autoComplete="off"
@@ -96,7 +96,7 @@ export function CreateProdutos() {
                                     placeholder="Ex: Brigadeiro"/>
                             </div>
                             <div className={styles.inputBox}>
-                                <label htmlFor="preco">Preço</label>
+                                <label htmlFor="preco">Preço *</label>
                                 <div className={styles.priceInput}>
                                     <input 
                                         id="preco" 
@@ -115,7 +115,7 @@ export function CreateProdutos() {
                             <div className={styles.inputBox}>
                                 {/* Categoria */}
                                 <div className={styles.inputCategory}>
-                                    <label htmlFor="categoria">Categoria</label>
+                                    <label htmlFor="categoria">Categoria *</label>
                                     <button 
                                         type="button"
                                         className={`${styles.dropbtn} ${isCategoryOpen ? styles.open : ""}`}
@@ -144,7 +144,7 @@ export function CreateProdutos() {
                             {/* Unidade */}
                             <div className={styles.inputBox}>
                                 <div className={styles.inputCategory}>
-                                    <label htmlFor="unidade">Unidade</label>
+                                    <label htmlFor="unidade">Unidade *</label>
                                     <button 
                                         type="button"
                                         className={`${styles.dropbtn} ${isUnOpen ? styles.open : ""}`}

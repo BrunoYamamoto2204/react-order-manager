@@ -37,7 +37,7 @@ export function EditProdutos() {
 
                 setName(product.product)
                 setPrice(product.price.toFixed(2).toString())
-                setDescription(product.description)
+                setDescription(product.description || "")
                 setSelectCategory(product.category)
                 setSelectUn(product.unit)
             }
@@ -122,7 +122,7 @@ export function EditProdutos() {
                         {/* Inputs Padrão */}
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
-                                <label htmlFor="nome">Nome do Produto</label>
+                                <label htmlFor="nome">Nome do Produto *</label>
                                 <input 
                                     id="nome" 
                                     autoComplete="off"
@@ -131,7 +131,7 @@ export function EditProdutos() {
                                     placeholder="Ex: Brigadeiro"/>
                             </div>
                             <div className={styles.inputBox}>
-                                <label htmlFor="preco">Preço</label>
+                                <label htmlFor="preco">Preço *</label>
                                 <div className={styles.priceInput}>
                                     <input 
                                         id="preco" 
@@ -150,7 +150,7 @@ export function EditProdutos() {
                             <div className={styles.inputBox}>
                                 {/* Categoria */}
                                 <div className={styles.inputCategory}>
-                                    <label htmlFor="categoria">Categoria</label>
+                                    <label htmlFor="categoria">Categoria *</label>
                                     <button 
                                         type="button"
                                         className={`${styles.dropbtn} ${isCategoryOpen ? styles.open : ""}`}
@@ -179,7 +179,7 @@ export function EditProdutos() {
                             {/* Unidade */}
                             <div className={styles.inputBox}>
                                 <div className={styles.inputCategory}>
-                                    <label htmlFor="unidade">Unidade</label>
+                                    <label htmlFor="unidade">Unidade *</label>
                                     <button 
                                         type="button"
                                         className={`${styles.dropbtn} ${isUnOpen ? styles.open : ""}`}

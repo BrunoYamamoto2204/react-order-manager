@@ -6,7 +6,7 @@ export type Product = {
     price: number
     category: string
     unit: string,
-    description: string
+    description?: string
 }
 
 // GET - Produtos

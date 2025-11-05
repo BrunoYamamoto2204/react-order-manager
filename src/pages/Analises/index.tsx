@@ -6,8 +6,9 @@ import styles from "./Analises.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
 import {  ChartColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, DollarSignIcon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
 import { AnalysisList } from "../../components/AnalysisList"
-import { formatDate } from "../../utils/format-date"
+import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { AnalisysProductTable } from "../../components/AnalysisProductTable"
+import { getOrders, type Order } from "../../services/ordersApi"
 
 export function Analises() {
     useEffect(() => {
@@ -26,12 +27,32 @@ export function Analises() {
     yesterday.setDate(yesterday.getDate() - 1);
 
     // Data em String 
-    const [startDate, setStartDate] = useState(formatDateString(yesterday))
-    const [endDate, setEndDate] = useState(formatDateString(today))  
-    const [isOpen, setIsOpen] = useState(false)
-    const [optionSelected, setOptionSelected] = useState("Escolha uma opção");
+    const [ startDate, setStartDate ] = useState(formatDateString(yesterday))
+    const [ endDate, setEndDate ] = useState(formatDateString(today))  
+    const [ isOpen, setIsOpen ] = useState(false)
+    const [ optionSelected, setOptionSelected ] = useState("Escolha uma opção");
 
     const [ showProducts, setShowProducts ] = useState(false);
+    const [ orders, setOrders ] = useState<Order[]>([])
+
+    useEffect(() => {
+        const loadOrders = async () => {
+            try{
+                const ordersData = await getOrders()
+                
+                const filteredOrders = ordersData.filter(order => {
+                    const orderDateStr = formatStringDateTime(order.date)
+                    return orderDateStr >= startDate && orderDateStr <= endDate
+                })
+
+                setOrders(filteredOrders)
+            } catch (error) {
+                console.log("Erro ao buscar produtos: ", error)
+            }
+        } 
+
+        loadOrders()
+    }, [startDate, endDate])
     
     useEffect(() => {
         const mainElement = document.querySelector('main');
@@ -40,10 +61,19 @@ export function Analises() {
         }
     }, [showProducts])
 
-
     const selectOption = (option : string) => {
         setOptionSelected(option)
         setIsOpen(!isOpen)
+    }
+
+    const totalValue = () => {
+        return orders.reduce((total, order) => 
+            total += Number(order.value.split(" ")[1])
+        , 0)
+    }
+
+    const aovValue = () => {
+        return orders.length > 0 ? totalValue() / orders.length : 0
     }
 
     const productList = [
@@ -101,15 +131,15 @@ export function Analises() {
                     <div className={styles.resumeContent}>
                         <div className={styles.resumeItem}>
                             <h3>Quantidade de Pedidos</h3>
-                            <h4>231</h4>
+                            <h4>{orders.length}</h4>
                         </div>
                         <div className={styles.resumeItem}>
                             <h3>Valor dos Pedidos</h3>
-                            <h4>R$ 10.231,76</h4>
+                            <h4>R$ {totalValue().toFixed(2)}</h4>
                         </div>
                         <div className={styles.resumeItem}>
                             <h3>Ticket Médio</h3>
-                            <h4>R$ 44,76</h4>
+                            <h4>R$ {aovValue().toFixed(2)}</h4>
                         </div>
                     </div>
                 </div>

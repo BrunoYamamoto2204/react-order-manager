@@ -36,7 +36,6 @@ export function Home() {
                 console.log("[500] - Erro ao carregar produtos: ", error)
             } 
         }
-
         loadOrders()
     }, [date])
 

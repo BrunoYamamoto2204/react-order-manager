@@ -79,6 +79,7 @@ export default function CustomerSearch({
             normalizeText(customer.name).toLowerCase() === normalizeText(input).toLowerCase()
         );
 
+        // Valida se estiver escrito certo manualmente 
         if (matchedCustomer && matchedCustomer._id) {
             customerSelected(true);
             setCustomerId(matchedCustomer._id);
@@ -91,6 +92,7 @@ export default function CustomerSearch({
         setFilteredCustomers(filteredList)
     } 
 
+    // Escolhe o cliente 
     const choseCustomer = (customer: Customer) => {
         onChange(customer.name)
         customerSelected(true)

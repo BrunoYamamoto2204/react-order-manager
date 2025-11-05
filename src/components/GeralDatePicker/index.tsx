@@ -1,5 +1,5 @@
 // ========== PARTE 1: IMPORTS E DEPENDÊNCIAS ==========
-import { useState } from 'react';           // Hook para gerenciar estado
+import { useEffect, useRef, useState } from 'react';           // Hook para gerenciar estado
 import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react'; // Ícones
 import styles from "./GeralDatePicker.module.css" // Estilos CSS Modules
 
@@ -33,6 +33,21 @@ export function GeralDatePicker({
     className = "",                   // Valor padrão se não informado
     displayValue,
 }: GeralDatePickerProps) {
+
+    const datePickerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handleClickRef = (event: MouseEvent) => {
+            if (
+                datePickerRef.current && 
+                !datePickerRef.current.contains(event.target as Node)
+            ) {
+                setIsOpen(false)
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickRef)
+    }, [])
 
     // ========== PARTE 4: ESTADOS (useState) ==========
     
@@ -204,7 +219,7 @@ export function GeralDatePicker({
 
                 {/* SEÇÃO 2: DROPDOWN - O calendário que aparece quando abre */}
                 {isOpen && !disabled && ( // Só renderiza se estiver aberto E não desabilitado
-                    <div className={styles.dropdown}>
+                    <div className={styles.dropdown} ref={datePickerRef}>
             
                         {/* SUBSEÇÃO 1: HEADER - Navegação de mês/ano */}
                         <div className={styles.header}>

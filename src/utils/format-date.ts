@@ -20,3 +20,8 @@ export function formatDate(rawDate: string): string {
     })
 }
 
+// "dd/MM/yyyy" --> "yyyy-MM-dd"
+export function formatStringDateTime(rawDate: string) {
+    const [ day, month, year ] = rawDate.split("/")
+    return `${year}-${month}-${day}`
+}

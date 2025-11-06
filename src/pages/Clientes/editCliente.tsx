@@ -9,6 +9,7 @@ import { Messages } from "../../components/Messages";
 import { getCustomerById, updateCustomer, type Customer } from "../../services/customersApi"
 import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
 import { formatPhone } from "../../utils/format-phone";
+import { getOrders, updateOrder } from "../../services/ordersApi";
 
 export function EditCliente() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ export function EditCliente() {
     const [cep, setCep] = useState("");
     const [obs, setObs] = useState("");
 
-    const [ customers ] = useState<Customer[]>([]);
+    // const [ customers ] = useState<Customer[]>([]);
     
     const { id } = useParams<{id: string}>();
     const [ loading, setLoading] = useState(true);
@@ -62,7 +63,7 @@ export function EditCliente() {
         }
 
         loadCustomer()
-    },[customers, id])
+    },[id])
 
     const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
@@ -99,8 +100,23 @@ export function EditCliente() {
         } 
         
         try{
+
+            // Atualiza o cliente 
             await updateCustomer(id, editedCustomer)
-            Messages.success("Produto editado com sucesso")
+            Messages.success("Cliente editado com sucesso")
+
+            // Atualiza nos pedidos do cliente 
+            const customerOrdersData = await getOrders()
+            const filteredOrdersList = customerOrdersData.filter(order => (
+                id === order.customerId
+            ))
+            
+            for (const order of filteredOrdersList){
+                if (order._id){
+                    await updateOrder(order._id, {...order, name: name })
+                }
+            }
+
             navigate("/clientes")
         } catch(error) {
             console.log(`[-] Erro ao editar cliente ${id}: `, error)

@@ -23,11 +23,11 @@ export function Analises() {
     // Data em tipo Date
     const today = new Date()
     today.setDate(today.getDate());
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1);
+    const firstDay = new Date(today)
+    firstDay.setDate(1)
 
     // Data em String 
-    const [ startDate, setStartDate ] = useState(formatDateString(yesterday))
+    const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
     const [ endDate, setEndDate ] = useState(formatDateString(today))  
     const [ isOpen, setIsOpen ] = useState(false)
     const [ optionSelected, setOptionSelected ] = useState("Escolha uma opção");

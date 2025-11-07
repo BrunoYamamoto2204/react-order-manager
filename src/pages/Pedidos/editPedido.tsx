@@ -13,6 +13,7 @@ import { formatDate } from "../../utils/format-date";
 import CustomerSearch from "../../components/CustomerSearch";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 import { ProductSearch } from "../../components/ProductSearch";
+import { getProductById, updateProduct } from "../../services/productsApi";
 
 export type OrderProduct = {
     uniqueId: number
@@ -28,6 +29,8 @@ export function EditPedido() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const [ loading, setLoading ] = useState(true);
+
+    const [ previousProductList, setPreviousProductList ] = useState<OrderProduct[]>([])
 
     // Input Values
     const [ customerId, setCustomerId ] = useState<string | null>(null)
@@ -66,6 +69,7 @@ export function EditPedido() {
                 setDiscountValue(order.discountValue);
                 setNoRegister(order.noRegister)
                 setProductList(order.products);
+                setPreviousProductList(order.products)
 
                 setName(order.name)
                 setDescription(order.obs)
@@ -188,7 +192,7 @@ export function EditPedido() {
         } 
 
         else if (productList.length <= 0) {
-            Messages.error("Adiocione itens ao pedido");
+            Messages.error("Adicione itens ao pedido");
             return;
         } 
 
@@ -228,10 +232,76 @@ export function EditPedido() {
                 await updateCustomer(customerId, {...chosenCustomer, pendingOrders: true})
             }
 
-            // Futuramente: Adicionar a quantidade de produtos nas análises 
-            if (productId){
-                console.log(productId)
+            // Adicionar a quantidade de produtos nas análises 
+            for (const newProduct of productList) {
+                // Valida se cada item da lista atual faz parte da lista antiga
+                const oldProduct = previousProductList.find(p => 
+                    p.productId === newProduct.productId
+                )
+                
+                // Produto que já existia
+                if (oldProduct) {
+                    const result = newProduct.quantity - oldProduct.quantity
+
+                    const currentProduct = await getProductById(newProduct.productId)
+                    await updateProduct(newProduct.productId, {
+                        ...currentProduct,
+                        quantity: currentProduct.quantity + result
+                        
+                    })
+                }
+                
+                // Produto novo
+                else {
+                    const currentProduct = await getProductById(newProduct.productId)
+                    await updateProduct(newProduct.productId, {
+                        ...currentProduct,
+                        quantity: currentProduct.quantity + newProduct.quantity
+                    })
+                }
             }
+
+            // Remover produtos 
+            for (const oldProduct of previousProductList) {
+                const checkProduct = productList.find(p => (
+                    p.productId === oldProduct.productId
+                ))
+
+                if (!checkProduct) {
+                    const currentProduct = await getProductById(oldProduct.productId)
+                    await updateProduct(oldProduct.productId, {
+                        ...currentProduct,
+                        quantity: currentProduct.quantity - oldProduct.quantity
+                        
+                    })
+                }
+            }
+
+            // for (const product of productList) {
+            //     const productById = await getProductById(product.productId)
+
+            //     // 
+            //     await updateProduct(
+            //         product.productId, 
+            //         {...productById, quantity: productById.quantity += product.quantity}
+            //     )
+            // }
+
+            // // Apenas o que não está ou mudou na lista editada
+            // const productsDeleted = previousProductList.filter(product => (
+            //     !productList.includes(product)
+            // ))
+
+            // if (productsDeleted){
+            //     for (const product of productsDeleted) {
+            //         const productById = await getProductById(product.productId)
+
+            //         await updateProduct(
+            //             product.productId,
+            //             {...productById, quantity: productById.quantity -= product.quantity}
+            //         )
+            //     }
+            // }
 
             Messages.success("Pedido editado com sucesso")
             navigate("/pedidos");
@@ -308,6 +378,7 @@ export function EditPedido() {
                                             <tr>
                                                 <th>Produto</th>
                                                 <th>Quantidade</th>
+                                                <th>Unidade</th>
                                                 <th>Preço Unitário</th>
                                                 <th>Subtotal</th>
                                                 <th></th>

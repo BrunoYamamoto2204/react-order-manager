@@ -101,6 +101,10 @@
     border-top: 0.2rem solid var(--gray-400);
 }
 
+.itemTopLine input{
+    margin-right: 1rem;
+}
+
 .full {
     grid-column: 1 / -1; 
 }
@@ -142,7 +146,7 @@
     border-collapse: collapse;
     width: 100%;
     display: grid;
-    grid-template-columns: 2fr 0.5fr 1fr 1fr 0.5fr; 
+    grid-template-columns: 1.5fr 0.5fr 0.5fr 1fr 1fr 0.5fr; 
 }
 
 .orderTable thead, 

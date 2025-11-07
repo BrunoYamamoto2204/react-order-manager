@@ -15,15 +15,15 @@ export function CreateProdutos() {
     const navigate = useNavigate();
 
     // Input Values
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
-    const [description, setDescription] = useState("");
+    const [ name, setName ] = useState("");
+    const [ price, setPrice ] = useState("");
+    const [ description, setDescription ] = useState("");
 
     // Select Inputs
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false); 
-    const [isUnOpen, setIsUnOpen] = useState(false); 
-    const [selectCategory, setSelectCategory] = useState("Selecione uma categoria");
-    const [selectUn, setSelectUn] = useState("Selecione uma unidade");
+    const [ isCategoryOpen, setIsCategoryOpen ] = useState(false); 
+    const [ isUnOpen, setIsUnOpen ] = useState(false); 
+    const [ selectCategory, setSelectCategory ] = useState("Selecione uma categoria");
+    const [ selectUn, setSelectUn ] = useState("Selecione uma unidade");
 
     const selectOption = (option : string, type : string) => {
         if (type === "category") {
@@ -54,6 +54,7 @@ export function CreateProdutos() {
             price: Number(price),
             category: selectCategory,
             unit: selectUn,
+            quantity: 0,
             description: description || ""
         } 
 

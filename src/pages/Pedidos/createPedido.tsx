@@ -13,6 +13,7 @@ import { formatDate } from "../../utils/format-date";
 import CustomerSearch from "../../components/CustomerSearch";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 import { ProductSearch } from "../../components/ProductSearch";
+import { getProductById, updateProduct } from "../../services/productsApi";
 
 export type OrderProduct = {
     uniqueId: number
@@ -156,15 +157,15 @@ export function CreatePedido() {
                 await updateCustomer(customerId, { ...chosenCustomer, pendingOrders: true });
             }
 
-            // Futuramente: Adicionar a quantidade de produtos nas análises 
-            if (productId){
-                console.log(productId)
-            }
+            // Adicionar a quantidade de produtos nas análises 
+            for (const product of productList) {
+                const productById = await getProductById(product.productId)
 
-            // setName("");
-            // setDescription("");
-            // setProductList([]);
-            // setDiscountValue("0");
+                await updateProduct(
+                    product.productId, 
+                    {...productById, quantity: productById.quantity += product.quantity}
+                )
+            }
 
             Messages.success("Pedido criado com sucesso")
             navigate("/pedidos");
@@ -240,6 +241,7 @@ export function CreatePedido() {
                                             <tr>
                                                 <th>Produto</th>
                                                 <th>Quantidade</th>
+                                                <th>Unidade</th>
                                                 <th>Preço Unitário</th>
                                                 <th>Subtotal</th>
                                                 <th></th>

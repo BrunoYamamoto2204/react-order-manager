@@ -6,7 +6,7 @@ import styles from "./CreateCliente.module.css";
 import { SaveIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
-import { getCustomerById, updateCustomer, type Customer } from "../../services/customersApi"
+import { getCustomerById, updateCustomer } from "../../services/customersApi"
 import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
 import { formatPhone } from "../../utils/format-phone";
 import { getOrders, updateOrder } from "../../services/ordersApi";

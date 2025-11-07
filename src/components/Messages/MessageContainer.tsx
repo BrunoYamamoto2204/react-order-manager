@@ -9,7 +9,12 @@ export function MessageContainer({ children } : MessagesContainerProps) {
         <>
             {children}
             <ToastContainer 
+                autoClose={2000}
+                theme="colored"
+                position="top-left"
                 pauseOnHover={false}
+                pauseOnFocusLoss={false} 
+                closeOnClick
             />
         </>
     )

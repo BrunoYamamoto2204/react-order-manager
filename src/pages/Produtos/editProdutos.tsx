@@ -12,18 +12,19 @@ export function EditProdutos() {
     const navigate = useNavigate();
     
     // Input Values
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
-    const [description, setDescription] = useState("");
+    const [ name, setName ] = useState("");
+    const [ price, setPrice ] = useState("");
+    const [ quantity, setQuantity ] = useState(0);
+    const [ description, setDescription ] = useState("");
 
     // Select Inputs
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false); 
-    const [isUnOpen, setIsUnOpen] = useState(false); 
-    const [selectCategory, setSelectCategory] = useState("Selecione uma categoria");
-    const [selectUn, setSelectUn] = useState("Selecione uma unidade");
+    const [ isCategoryOpen, setIsCategoryOpen ] = useState(false); 
+    const [ isUnOpen, setIsUnOpen ] = useState(false); 
+    const [ selectCategory, setSelectCategory ] = useState("Selecione uma categoria");
+    const [ selectUn, setSelectUn ] = useState("Selecione uma unidade");
 
     const { id } = useParams<{id: string}>();
-    const [ loading, setLoading] = useState(true);
+    const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
         document.title = "Editar Produto - Comanda"
@@ -31,7 +32,6 @@ export function EditProdutos() {
         if(!id) return 
         
         try{
-            setLoading(true)
             const loadProducts = async () => {
                 const product = await getProductById(id)
 
@@ -40,6 +40,7 @@ export function EditProdutos() {
                 setDescription(product.description || "")
                 setSelectCategory(product.category)
                 setSelectUn(product.unit)
+                setQuantity(product.quantity)
             }
 
             loadProducts()
@@ -81,6 +82,7 @@ export function EditProdutos() {
             price: Number(price),
             category: selectCategory,
             unit: selectUn,
+            quantity: quantity,
             description: description
         } 
 

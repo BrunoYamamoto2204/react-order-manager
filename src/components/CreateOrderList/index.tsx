@@ -37,6 +37,11 @@ export function CreateOrderList({ orderList, changeQuantity, removeProduct} : Cr
                             />
                         </td>
 
+                        {/* Product Unit */}
+                        <td className={styles.itemTopLine}>
+                            {order.unit}
+                        </td>
+
                         {/* Product Quantity */}
                         <td className={styles.itemTopLine}>
                             R$ {order.price}

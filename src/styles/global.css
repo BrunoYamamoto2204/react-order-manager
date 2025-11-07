@@ -15,5 +15,8 @@ body{
     color: var(--text-default);
 }
 
-
-
+.Toastify__toast--success {
+  background-color: var(--primary) !important; 
+  color: white !important; 
+  font-weight: 600 !important;
+}

@@ -10,7 +10,6 @@ type ProductSearchProps = {
     productName: string
     onChangeName: (name: string) => void
     setProduct: (product: OrderProduct | undefined) => void
-    setProductId: (id: string | null) => void
     placeholder: string
 }
 
@@ -18,7 +17,6 @@ export function ProductSearch({
     productName,
     onChangeName, 
     setProduct, 
-    setProductId,
     placeholder
 } : ProductSearchProps
 ) {
@@ -79,20 +77,17 @@ export function ProductSearch({
 
         // Captura o product pela escrita manual do nome do produto 
         if(matchProduct && matchProduct._id) {
-            if (matchProduct._id) setProductId(matchProduct._id)
-
-                const formattedProduct = {
-                    uniqueId: Date.now(),
-                    productId: matchProduct._id,
-                    product: matchProduct.product,
-                    price: matchProduct.price.toString(),
-                    quantity: 1,
-                    category: matchProduct.category,
-                    unit: matchProduct.unit
-                }
-                setProduct(formattedProduct)
+            const formattedProduct = {
+                uniqueId: Date.now(),
+                productId: matchProduct._id,
+                product: matchProduct.product,
+                price: matchProduct.price.toString(),
+                quantity: 1,
+                category: matchProduct.category,
+                unit: matchProduct.unit
+            }
+            setProduct(formattedProduct)
         } else{
-            setProductId(null)
             setProduct(undefined)
         }
 
@@ -114,7 +109,6 @@ export function ProductSearch({
         }
 
         onChangeName(product.product)
-        setProductId(product._id)
         setProduct(formattedProduct)
         setShowSuggestions(false)
     }

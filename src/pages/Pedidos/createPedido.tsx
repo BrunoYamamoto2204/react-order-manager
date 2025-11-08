@@ -44,7 +44,6 @@ export function CreatePedido() {
     const [ totalGross, setTotalGross] = useState("")
     const [ discount, setDiscount ] = useState(0)
 
-    const [ productId, setProductId] = useState<string | null>(null)
     const [ productName, setProductName] = useState("")
     const [ product, setProduct ] = useState<OrderProduct>();
 
@@ -275,7 +274,6 @@ export function CreatePedido() {
                                     productName={productName}
                                     onChangeName={setProductName}
                                     setProduct={setProduct}
-                                    setProductId={setProductId}
                                     placeholder="Buscar produto para adicionar ao pedido..." 
                                 />
                             </div>

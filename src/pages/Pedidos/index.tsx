@@ -1,6 +1,6 @@
 import { Container } from "../../components/Container";
 import { MainTemplate } from "../../templates/MainTemplate";
-import { getOrders, deleteOrder } from "../../services/ordersApi"
+import { getOrders, deleteOrder, getOrderById } from "../../services/ordersApi"
 import type { Order } from "../../services/ordersApi"
 
 // import styles from "../../components/OrdersList/OrdersList.module.css"
@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
+import { getProductById, updateProduct } from "../../services/productsApi";
 
 export function Pedidos() {
     const navigate = useNavigate();
@@ -41,7 +42,15 @@ export function Pedidos() {
                 console.log("❌ Pedido sem _id:", filteredOrder);
                 return;
             };
+            const orderProducts = (await getOrderById(filteredOrder._id)).products
             await deleteOrder(filteredOrder._id);
+
+            for (const product of orderProducts) {
+                const productById = await getProductById(product.productId)
+                await updateProduct(
+                    product.productId, 
+                    {...productById, quantity: productById.quantity -= product.quantity})
+            }
 
             setOrders(orders.filter(order => order._id !== filteredOrder._id))
             Messages.success("Pedido excluido")

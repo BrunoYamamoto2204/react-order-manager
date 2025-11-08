@@ -48,7 +48,6 @@ export function EditPedido() {
     const [ totalGross, setTotalGross] = useState("")
     const [ discount, setDiscount ] = useState(0)
 
-    const [ productId, setProductId] = useState<string | null>(null)
     const [ productName, setProductName] = useState("")
     const [ product, setProduct ] = useState<OrderProduct>();
 
@@ -277,32 +276,6 @@ export function EditPedido() {
                 }
             }
 
-            // for (const product of productList) {
-            //     const productById = await getProductById(product.productId)
-
-            //     // 
-            //     await updateProduct(
-            //         product.productId, 
-            //         {...productById, quantity: productById.quantity += product.quantity}
-            //     )
-            // }
-
-            // // Apenas o que não está ou mudou na lista editada
-            // const productsDeleted = previousProductList.filter(product => (
-            //     !productList.includes(product)
-            // ))
-
-            // if (productsDeleted){
-            //     for (const product of productsDeleted) {
-            //         const productById = await getProductById(product.productId)
-
-            //         await updateProduct(
-            //             product.productId,
-            //             {...productById, quantity: productById.quantity -= product.quantity}
-            //         )
-            //     }
-            // }
-
             Messages.success("Pedido editado com sucesso")
             navigate("/pedidos");
         } catch (error){
@@ -412,7 +385,6 @@ export function EditPedido() {
                                     productName={productName}
                                     onChangeName={setProductName}
                                     setProduct={setProduct}
-                                    setProductId={setProductId}
                                     placeholder="Buscar produto para adicionar ao pedido..." 
                                 />
                             </div>

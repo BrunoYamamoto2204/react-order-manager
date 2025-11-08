@@ -83,42 +83,65 @@ export function Analises() {
         return orders.length > 0 ? totalValue() / orders.length : 0
     }
 
-    // Juntar as estatisticas de cada produto na lista dentro do período específico 
-    const productsStats = (orders: Order[]) => {
-        const productsMap = new Map<string, ProductQuantity>()
+    const [products, setProducts] = useState<ProductQuantity[]>([])
 
-        orders.forEach(order => {
-            order.products.forEach(product => {
-                const nameName = product.product
-                const quantity = product.quantity
-                const value = Number(product.price)
-                const totalValue = value * quantity
+    useEffect(() => {
+        // Juntar as estatisticas de cada produto na lista dentro do período específico 
+        const productsStats = (orders: Order[]) => {
+            const productsMap = new Map<string, ProductQuantity>()
 
-                // Se o produto já estiver no Map, adicione, se não, crie um novo
-                if (productsMap.has(nameName)){
-                    const currentProduct = productsMap.get(nameName)!
-                    currentProduct.totalValue = totalValue + currentProduct.totalValue
-                    currentProduct.totalQuantity += quantity
-                    currentProduct.orderCount += 1
+            orders.forEach(order => {
+                order.products.forEach(product => {
+                    const nameName = product.product
+                    const quantity = product.quantity
+                    const totalValue = Number(product.price) * quantity
 
-                } else {
-                    productsMap.set(nameName, 
-                        {
+                    // Se o produto já estiver no Map, adicione, se não, crie um novo
+                    if (productsMap.has(nameName)){
+                        const currentProduct = productsMap.get(nameName)!
+                        currentProduct.totalValue += totalValue
+                        currentProduct.totalQuantity += quantity
+                        currentProduct.orderCount += 1
+
+                    } else {
+                        productsMap.set(nameName, {
                             productName: nameName,
-                            totalValue: value,
+                            totalValue: totalValue,
                             totalQuantity: quantity,
                             orderCount: 1
-                        }
-                    )
-                }
+                        })
+                    }
+                })
             })
-        })
+            // console.log(productsMap)
+            return Array.from(productsMap.values())
+        }
 
-        return Array.from(productsMap.values())
+        setProducts(productsStats(orders))
+    }, [orders])
+
+    // Organiza a tabela segundo o parâmetro 
+    // const featuredProducts = () => {
+
+    // }   
+
+    // Exibe a tabela 
+    const productList1 = () => {
+        const tableProducts = [...products]
+        // console.log(tableProducts)
+        return tableProducts.sort((a, b) => b.totalValue - a.totalValue)
+            .slice(0, 5)
+            .map((p, k) => ({
+                postiion: k + 1,
+                productName: p.productName,
+                totalValue: p.totalValue,
+                totalQuantity: p.totalQuantity
+            })
+        )
     }
 
     function bestSellingProduct(){
-        const productList = productsStats(orders)
+        const productList = products
         if (productList.length === 0) return null
 
         // Ordenar por quantidade vendida (maior primeiro)
@@ -126,14 +149,6 @@ export function Analises() {
 
         return productList[0]
     }
-
-    const productList = [
-        { posicao: 1, produto: "Brigadeiro", valor: 2543.43, quantidade: 852 },
-        { posicao: 2, produto: "Coxinha", valor: 2243.43, quantidade: 772 },
-        { posicao: 3, produto: "Risoles", valor: 2032.42, quantidade: 692 },
-        { posicao: 4, produto: "Quibe", valor: 1832.12, quantidade: 641 },
-        { posicao: 5, produto: "Beijinho", valor: 1621.88, quantidade: 589 }
-    ];
 
     return (
         <MainTemplate>
@@ -265,7 +280,7 @@ export function Analises() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <AnalysisList productsList={productList}/>
+                                    <AnalysisList productsList={productList1()}/>
                                 </tbody>
                             </table>
                             <h3 

@@ -1,5 +1,3 @@
-import style from "../../pages/Analises/Analises.module.css"
-
 type analysisListProps = {
     productsList: object[]
 }
@@ -14,7 +12,8 @@ export function AnalysisList({ productsList } : analysisListProps) {
     // Passa todos os <td> para o <tr>
     const tdProduct = (product : object) => {
         return Object.entries(product).map(([k, v]) => { 
-            if (k === "valor") return <td key={k}>R$ {v}</td>
+            console.log(k)
+            if (k === "totalValue") return <td key={k}>R$ {v.toFixed(2).replace(".",",")}</td>
             else return <td key={k}>{v}</td>
         })
 

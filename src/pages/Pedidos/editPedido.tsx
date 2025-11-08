@@ -196,7 +196,7 @@ export function EditPedido() {
         } 
 
         const formattedProducts = productList.map(p => 
-            `${p.quantity}${p.unit} ${p.product}`
+            `${p.quantity} ${p.unit} ${p.product}`
         );
     
         const updatedOrder = ({

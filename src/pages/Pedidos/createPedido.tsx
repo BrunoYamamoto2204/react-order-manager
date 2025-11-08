@@ -129,7 +129,7 @@ export function CreatePedido() {
         } 
 
         const formattedProducts = productList.map(p => 
-            `${p.quantity}${p.unit === "UN" ? "" : p.unit} ${p.product}`
+            `${p.quantity} ${p.unit} ${p.product}`
         );
     
         const newOrder = ({

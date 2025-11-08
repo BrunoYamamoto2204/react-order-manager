@@ -11,6 +11,13 @@ import { AnalisysProductTable } from "../../components/AnalysisProductTable"
 import { getOrders, type Order } from "../../services/ordersApi"
 
 export function Analises() {
+    type ProductQuantity = {
+        productName: string
+        totalValue: number
+        totalQuantity: number
+        orderCount: number 
+    }
+
     useEffect(() => {
         document.title = "Análises - Comanda"
     },[])
@@ -74,6 +81,50 @@ export function Analises() {
 
     const aovValue = () => {
         return orders.length > 0 ? totalValue() / orders.length : 0
+    }
+
+    // Juntar as estatisticas de cada produto na lista dentro do período específico 
+    const productsStats = (orders: Order[]) => {
+        const productsMap = new Map<string, ProductQuantity>()
+
+        orders.forEach(order => {
+            order.products.forEach(product => {
+                const nameName = product.product
+                const quantity = product.quantity
+                const value = Number(product.price)
+                const totalValue = value * quantity
+
+                // Se o produto já estiver no Map, adicione, se não, crie um novo
+                if (productsMap.has(nameName)){
+                    const currentProduct = productsMap.get(nameName)!
+                    currentProduct.totalValue = totalValue + currentProduct.totalValue
+                    currentProduct.totalQuantity += quantity
+                    currentProduct.orderCount += 1
+
+                } else {
+                    productsMap.set(nameName, 
+                        {
+                            productName: nameName,
+                            totalValue: value,
+                            totalQuantity: quantity,
+                            orderCount: 1
+                        }
+                    )
+                }
+            })
+        })
+
+        return Array.from(productsMap.values())
+    }
+
+    function bestSellingProduct(){
+        const productList = productsStats(orders)
+        if (productList.length === 0) return null
+
+        // Ordenar por quantidade vendida (maior primeiro)
+        productList.sort((a, b) => b.totalQuantity - a.totalQuantity)
+
+        return productList[0]
     }
 
     const productList = [
@@ -177,18 +228,24 @@ export function Analises() {
                     <div className={styles.containersGroup}>
                         <div className={styles.featuredProduct}>
                             <h2><TrophyIcon/> Produto</h2>
-                            <h3 className={styles.productName}>Brigadeiro</h3>
+                            <h3 className={styles.productName}>
+                                {bestSellingProduct()?.productName}
+                            </h3>
                             <h4 className={styles.productSubtitle}>se destacou no período.</h4>
                         </div>
                         <div className={styles.featuredProduct}>
                             <h2><ShoppingCartIcon/> Quantidade Vendida</h2>
-                            <h3 className={styles.productName}>852</h3>
+                            <h3 className={styles.productName}>
+                                {bestSellingProduct()?.totalQuantity}
+                            </h3>
                             <h4 className={styles.productSubtitle}>unidades vendidas</h4>
                         </div>
                         <div className={styles.featuredProduct}>
                             <h2><DollarSignIcon/> Valor Total</h2>
-                            <h3 className={styles.productName}>R$ 2543,43</h3>
-                            <h4 className={styles.productSubtitle}>unidades vendidas</h4>
+                            <h3 className={styles.productName}>
+                                R$ {bestSellingProduct()?.totalQuantity.toFixed(2)}
+                            </h3>
+                            <h4 className={styles.productSubtitle}>em vendas no período</h4>
                         </div>
                     </div>
 

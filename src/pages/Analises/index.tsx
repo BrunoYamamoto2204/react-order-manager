@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Analises.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
-import {  ChartColumnIcon, ChartNoAxesCombinedIcon, ChevronDownIcon, DollarSignIcon, ShoppingCartIcon, TrophyIcon } from "lucide-react"
+import { ChartNoAxesCombinedIcon, ChevronDownIcon, CogIcon, DollarSignIcon, ShoppingCartIcon,TrophyIcon } from "lucide-react"
 import { AnalysisList } from "../../components/AnalysisList"
 import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { AnalisysProductTable } from "../../components/AnalysisProductTable"
@@ -38,11 +38,15 @@ export function Analises() {
     const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
     const [ endDate, setEndDate ] = useState(formatDateString(today))  
     const [ isOpen, setIsOpen ] = useState(false)
-    const [ optionSelected, setOptionSelected ] = useState("Escolha uma opção");
+    const [ sortType, setSortType ] = useState("Escolha uma opção")
 
+    const [ products, setProducts ] = useState<ProductQuantity[]>([])
     const [ showProducts, setShowProducts ] = useState(false);
     const [ orders, setOrders ] = useState<Order[]>([])
 
+    const inputRef = useRef<HTMLDivElement>(null)
+
+    // Busca os produtos pelo período
     useEffect(() => {
         const loadOrders = async () => {
             try{
@@ -69,6 +73,20 @@ export function Analises() {
         }
     }, [showProducts])
 
+    // Clicar fora das opções fecha
+    useEffect(() => {
+        const handleClickRef = (event: MouseEvent) => {
+            if (
+                inputRef.current && 
+                !inputRef.current.contains(event.target as Node)
+            ){
+                setIsOpen(false)
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickRef)
+    }, [])
+
     const totalValue = () => {
         return orders.reduce((total, order) => 
             total += Number(order.value.split(" ")[1])
@@ -79,31 +97,9 @@ export function Analises() {
         return orders.length > 0 ? totalValue() / orders.length : 0
     }
 
-    const [products, setProducts] = useState<ProductQuantity[]>([])
-
-    // Organiza a tabela segundo o parâmetro 
-    const selectOption = (option : string) => {
-        const currentProducts = [ ...products ]
-
-        setOptionSelected(option)
+    const selectOption = (option: string) => {
+        setSortType(option)
         setIsOpen(!isOpen)
-
-        switch (option) {
-            case "Mais Vendido":
-                setProducts(currentProducts.sort((a, b) => b.totalQuantity - a.totalQuantity))
-                break
-            case "Menos Vendido":
-                setProducts(currentProducts.sort((a, b) => a.totalQuantity - b.totalQuantity))
-                break
-            case "Mais Lucro":
-                setProducts(currentProducts.sort((a, b) => b.totalValue - a.totalValue))
-                break
-            case "Menos Lucro":
-                setProducts(currentProducts.sort((a, b) => a.totalValue - b.totalValue))
-                break
-        }
-        console.log(currentProducts)
-        setProducts(currentProducts)
     }
 
     useEffect(() => {
@@ -136,16 +132,52 @@ export function Analises() {
                     }
                 })
             })
-            return Array.from(productsMap.values()).sort((a, b) => b.totalQuantity - a.totalQuantity)
+            return Array.from(productsMap.values())
         }
 
-        setProducts(productsStats(orders))
-    }, [orders])
+        
+        const currentProducts = productsStats(orders)
+
+        // Organiza a tabela segundo o parâmetro 
+        if (sortType !== "Escolha uma opção") {
+            switch (sortType) {
+                case "Mais Vendido":
+                    currentProducts.sort((a, b) => b.totalQuantity - a.totalQuantity)
+                    break
+                case "Menos Vendido":
+                    currentProducts.sort((a, b) => a.totalQuantity - b.totalQuantity)
+                    break
+                case "Mais Lucro":
+                    currentProducts.sort((a, b) => b.totalValue - a.totalValue)
+                    break
+                case "Menos Lucro":
+                    currentProducts.sort((a, b) => a.totalValue - b.totalValue)
+                    break
+            }
+        } else {
+            currentProducts.sort((a, b) => b.totalValue - a.totalValue)
+        }
+
+        setProducts(currentProducts)
+    }, [orders, sortType])
 
     // Exibe a tabela 
     const productList = useMemo(() => {
         return [...products]
             .slice(0, 5)
+            .map((p, k) => {
+                const unit = p.unit === "UN" ? "" : ` ${p.unit}`
+                return {
+                    position: k + 1,
+                    productName: p.productName,
+                    totalValue: p.totalValue,
+                    totalQuantity: p.totalQuantity + unit,
+                }
+            })
+    }, [products])
+
+    const allProductList = useMemo(() => {
+        return [...products]
             .map((p, k) => {
                 const unit = p.unit === "UN" ? "" : ` ${p.unit}`
                 return {
@@ -163,7 +195,10 @@ export function Analises() {
         <MainTemplate>
             <Container >
                 {showProducts && (
-                    <AnalisysProductTable handleShowProducts={setShowProducts}/>
+                    <AnalisysProductTable 
+                        handleShowProducts={setShowProducts}
+                        products={allProductList}
+                    />
                 )}
 
                 <Title 
@@ -222,21 +257,23 @@ export function Analises() {
                 <div className={styles.featuredProductStats}>
                     <div className={styles.productChoice}>
                         <h2>Destaques </h2>
-                        <div className={styles.dropdown}>
+                        <div className={styles.dropdown} ref={inputRef} >
                             <button
                                 className={`${styles.dropbtn} ${isOpen ? styles.open : ""}`}
                                 onClick={() => setIsOpen(!isOpen)}
                             >
-                                {optionSelected}
+                                {sortType}
                                 <ChevronDownIcon/>
                             </button>
                         
-                            <div className={`${styles.dropdownContent} ${isOpen ? styles.open : ""}`}>
-                                <a onClick={() => selectOption("Mais Vendido")} href="#">
-                                    Mais Vendido
-                                </a>
+                            <div 
+                                className={`${styles.dropdownContent} ${isOpen ? styles.open : ""}`}
+                            >
                                 <a onClick={() => selectOption("Mais Lucro")} href="#">
                                     Mais Lucro
+                                </a>
+                                <a onClick={() => selectOption("Mais Vendido")} href="#">
+                                    Mais Vendido
                                 </a>
                                 <a onClick={() => selectOption("Menos Lucro")} href="#">
                                     Menos Lucro
@@ -301,9 +338,12 @@ export function Analises() {
                         </div>
                         <div className={styles.orderChart}>
                             <h2>
-                                <ChartColumnIcon/>
-                                Produtos mais vendidos
+                                <CogIcon /> 
+                                Em Breve
                             </h2>
+                            <div className={styles.centerBox}>
+                                <h2>Sessão em construção</h2>
+                            </div>
                         </div>  
                     </div>
                 </div>

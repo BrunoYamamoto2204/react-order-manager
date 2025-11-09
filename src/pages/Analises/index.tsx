@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
@@ -10,14 +10,15 @@ import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { AnalisysProductTable } from "../../components/AnalysisProductTable"
 import { getOrders, type Order } from "../../services/ordersApi"
 
-export function Analises() {
-    type ProductQuantity = {
-        productName: string
-        totalValue: number
-        totalQuantity: number
-        orderCount: number 
-    }
+type ProductQuantity = {
+    productName: string
+    totalValue: number
+    totalQuantity: number
+    orderCount: number 
+    unit: string
+}
 
+export function Analises() {
     useEffect(() => {
         document.title = "Análises - Comanda"
     },[])
@@ -68,11 +69,6 @@ export function Analises() {
         }
     }, [showProducts])
 
-    const selectOption = (option : string) => {
-        setOptionSelected(option)
-        setIsOpen(!isOpen)
-    }
-
     const totalValue = () => {
         return orders.reduce((total, order) => 
             total += Number(order.value.split(" ")[1])
@@ -85,6 +81,31 @@ export function Analises() {
 
     const [products, setProducts] = useState<ProductQuantity[]>([])
 
+    // Organiza a tabela segundo o parâmetro 
+    const selectOption = (option : string) => {
+        const currentProducts = [ ...products ]
+
+        setOptionSelected(option)
+        setIsOpen(!isOpen)
+
+        switch (option) {
+            case "Mais Vendido":
+                setProducts(currentProducts.sort((a, b) => b.totalQuantity - a.totalQuantity))
+                break
+            case "Menos Vendido":
+                setProducts(currentProducts.sort((a, b) => a.totalQuantity - b.totalQuantity))
+                break
+            case "Mais Lucro":
+                setProducts(currentProducts.sort((a, b) => b.totalValue - a.totalValue))
+                break
+            case "Menos Lucro":
+                setProducts(currentProducts.sort((a, b) => a.totalValue - b.totalValue))
+                break
+        }
+        console.log(currentProducts)
+        setProducts(currentProducts)
+    }
+
     useEffect(() => {
         // Juntar as estatisticas de cada produto na lista dentro do período específico 
         const productsStats = (orders: Order[]) => {
@@ -94,6 +115,7 @@ export function Analises() {
                 order.products.forEach(product => {
                     const nameName = product.product
                     const quantity = product.quantity
+                    const unit = product.unit
                     const totalValue = Number(product.price) * quantity
 
                     // Se o produto já estiver no Map, adicione, se não, crie um novo
@@ -108,47 +130,34 @@ export function Analises() {
                             productName: nameName,
                             totalValue: totalValue,
                             totalQuantity: quantity,
-                            orderCount: 1
+                            orderCount: 1,
+                            unit: unit
                         })
                     }
                 })
             })
-            // console.log(productsMap)
-            return Array.from(productsMap.values())
+            return Array.from(productsMap.values()).sort((a, b) => b.totalQuantity - a.totalQuantity)
         }
 
         setProducts(productsStats(orders))
     }, [orders])
 
-    // Organiza a tabela segundo o parâmetro 
-    // const featuredProducts = () => {
-
-    // }   
-
     // Exibe a tabela 
-    const productList1 = () => {
-        const tableProducts = [...products]
-        // console.log(tableProducts)
-        return tableProducts.sort((a, b) => b.totalValue - a.totalValue)
+    const productList = useMemo(() => {
+        return [...products]
             .slice(0, 5)
-            .map((p, k) => ({
-                postiion: k + 1,
-                productName: p.productName,
-                totalValue: p.totalValue,
-                totalQuantity: p.totalQuantity
+            .map((p, k) => {
+                const unit = p.unit === "UN" ? "" : ` ${p.unit}`
+                return {
+                    position: k + 1,
+                    productName: p.productName,
+                    totalValue: p.totalValue,
+                    totalQuantity: p.totalQuantity + unit,
+                }
             })
-        )
-    }
+    }, [products])
 
-    function bestSellingProduct(){
-        const productList = products
-        if (productList.length === 0) return null
-
-        // Ordenar por quantidade vendida (maior primeiro)
-        productList.sort((a, b) => b.totalQuantity - a.totalQuantity)
-
-        return productList[0]
-    }
+    const bestSellingProduct = products[0]
 
     return (
         <MainTemplate>
@@ -244,21 +253,21 @@ export function Analises() {
                         <div className={styles.featuredProduct}>
                             <h2><TrophyIcon/> Produto</h2>
                             <h3 className={styles.productName}>
-                                {bestSellingProduct()?.productName}
+                                {bestSellingProduct?.productName}
                             </h3>
                             <h4 className={styles.productSubtitle}>se destacou no período.</h4>
                         </div>
                         <div className={styles.featuredProduct}>
                             <h2><ShoppingCartIcon/> Quantidade Vendida</h2>
                             <h3 className={styles.productName}>
-                                {bestSellingProduct()?.totalQuantity}
+                                {bestSellingProduct?.totalQuantity}
                             </h3>
                             <h4 className={styles.productSubtitle}>unidades vendidas</h4>
                         </div>
                         <div className={styles.featuredProduct}>
                             <h2><DollarSignIcon/> Valor Total</h2>
                             <h3 className={styles.productName}>
-                                R$ {bestSellingProduct()?.totalQuantity.toFixed(2)}
+                                R$ {bestSellingProduct?.totalValue.toFixed(2)}
                             </h3>
                             <h4 className={styles.productSubtitle}>em vendas no período</h4>
                         </div>
@@ -268,7 +277,7 @@ export function Analises() {
                         <div className={styles.bestSellersContainer}>
                             <h2>
                                 <ChartNoAxesCombinedIcon/>
-                                Produtos mais vendidos
+                                Produtos em Destaque
                             </h2>
                             <table>
                                 <thead>
@@ -280,7 +289,7 @@ export function Analises() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <AnalysisList productsList={productList1()}/>
+                                    <AnalysisList productsList={productList}/>
                                 </tbody>
                             </table>
                             <h3 

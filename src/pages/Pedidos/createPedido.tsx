@@ -49,12 +49,11 @@ export function CreatePedido() {
 
     useEffect(() => {
         document.title = "Novo Pedido - Comanda"
-        console.log(productList)
     },[productList])
 
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
-        return sum + (order.quantity * Number(order.price))
+        return sum + (order.quantity * Number(order.price))    
     }, 0)
 
     // Define o total 

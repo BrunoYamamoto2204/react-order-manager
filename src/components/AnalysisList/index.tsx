@@ -12,11 +12,9 @@ export function AnalysisList({ productsList } : analysisListProps) {
     // Passa todos os <td> para o <tr>
     const tdProduct = (product : object) => {
         return Object.entries(product).map(([k, v]) => { 
-            console.log(k)
             if (k === "totalValue") return <td key={k}>R$ {v.toFixed(2).replace(".",",")}</td>
             else return <td key={k}>{v}</td>
         })
-
     }
 
     return (

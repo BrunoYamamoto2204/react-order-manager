@@ -8,7 +8,7 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
@@ -60,6 +60,25 @@ export function Pedidos() {
         }
     }
 
+        const handleChange = async (customerName: string) => {
+            const currentOrders = await getOrders()
+    
+            if (customerName && customerName.trim() === "") {
+                setOrders(currentOrders)
+            } else {
+                const normalizeText = (text: string) =>(
+                    text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                )
+    
+                const filteredOrders = currentOrders.filter(order => (
+                    normalizeText(order.name.toLowerCase())
+                    .includes(normalizeText(customerName.toLowerCase()))
+                ))
+    
+                setOrders(filteredOrders)
+            }
+        }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -77,8 +96,17 @@ export function Pedidos() {
             <Container>
                 <div className={styles.header}>
                     <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
-                    <button onClick={() => navigate("/pedidos/novo")}><PlusIcon/> Adicionar Pedido</button>
+                    <button onClick={() => navigate("/pedidos/novo")}>
+                        <PlusIcon/> Adicionar Pedido
+                    </button>
+                </div>
 
+                <div className={styles.searchOrder}>
+                    <SearchIcon className={styles.searchIcon} />
+                    <input 
+                        onChange={e => handleChange(e.target.value)}
+                        placeholder="Buscar produto"
+                    />
                 </div>
 
                 <div className={styles.orderTable}>

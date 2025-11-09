@@ -6,7 +6,7 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Clientes.module.css"
 import { useNavigate } from "react-router"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, SearchIcon } from "lucide-react"
 import { Messages } from "../../components/Messages"
 import { deleteCustomer, getCustomers, type Customer } from "../../services/customersApi"
 
@@ -51,6 +51,25 @@ export function Clientes() {
         }
     }
 
+    const handleChange = async (customerName: string) => {
+        const currentCustomers = await getCustomers()
+
+        if (customerName && customerName.trim() === "") {
+            setCustomers(currentCustomers)
+        } else {
+            const normalizeText = (text: string) =>(
+                text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            )
+
+            const filteredCustomers = currentCustomers.filter(customer => (
+                normalizeText(customer.name.toLowerCase())
+                .includes(normalizeText(customerName.toLowerCase()))
+            ))
+
+            setCustomers(filteredCustomers)
+        }
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -71,6 +90,14 @@ export function Clientes() {
                     <button onClick={() => navigate("/clientes/criar")}>
                         <PlusIcon/> Adicionar Cliente
                     </button>
+                </div>
+
+                <div className={styles.searchCustomer}>
+                    <SearchIcon className={styles.searchIcon} />
+                    <input 
+                        onChange={e => handleChange(e.target.value)}
+                        placeholder="Buscar cliente"
+                    />
                 </div>
 
                 <div className={styles.customersTable}>
@@ -94,7 +121,7 @@ export function Clientes() {
                             ) : (
                                 <tr>
                                     <td className={styles.noCustomers}>
-                                        <p>Sem Produtos disponíveis</p>
+                                        <p>Sem Clientes disponíveis</p>
                                     </td>
                                 </tr>
                             )}

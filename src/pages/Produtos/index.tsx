@@ -6,7 +6,7 @@ import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { Messages } from "../../components/Messages";
 import { deleteProduct, getProducts } from "../../services/productsApi";
 import type { Product } from "../../services/productsApi";
@@ -51,6 +51,26 @@ export function Produtos() {
         setProducts(products.filter(product => product._id !== filteredProduct._id))
     }
 
+    const handleChange = async (productName: string) => {
+        const currentProducts = await getProducts()
+
+        if (productName && productName.trim() === "") {
+            setProducts(currentProducts)
+        } else {
+            const normalizeText = (text: string) =>(
+                text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            )
+
+            const filteredProducts = currentProducts.filter(product => (
+                normalizeText(product.product.toLowerCase())
+                .includes(normalizeText(productName.toLowerCase()))
+            ))
+
+            setProducts(filteredProducts)
+        }
+    }
+    
+
     if (loading) {
         return (
             <MainTemplate>
@@ -71,6 +91,14 @@ export function Produtos() {
                     <button onClick={() => navigate("/produtos/criar")}>
                         <PlusIcon/> Adicionar Produto
                     </button>
+                </div>
+
+                <div className={styles.searchProduct}>
+                    <SearchIcon className={styles.searchIcon} />
+                    <input 
+                        onChange={e => handleChange(e.target.value)}
+                        placeholder="Buscar produto"
+                    />
                 </div>
 
                 <div className={styles.productTable}>

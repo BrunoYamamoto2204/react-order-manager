@@ -86,22 +86,8 @@ export function Analises() {
 
         document.addEventListener("mousedown", handleClickRef)
     }, [])
-
-    const totalValue = () => {
-        return orders.reduce((total, order) => 
-            total += Number(order.value.split(" ")[1])
-        , 0)
-    }
-
-    const aovValue = () => {
-        return orders.length > 0 ? totalValue() / orders.length : 0
-    }
-
-    const selectOption = (option: string) => {
-        setSortType(option)
-        setIsOpen(!isOpen)
-    }
-
+   
+    // Define a lista de produtos em destaque 
     useEffect(() => {
         // Juntar as estatisticas de cada produto na lista dentro do período específico 
         const productsStats = (orders: Order[]) => {
@@ -160,6 +146,21 @@ export function Analises() {
 
         setProducts(currentProducts)
     }, [orders, sortType])
+
+    const totalValue = () => {
+        return orders.reduce((total, order) => 
+            total += Number(order.value.split(" ")[1])
+        , 0)
+    }
+
+    const aovValue = () => {
+        return orders.length > 0 ? totalValue() / orders.length : 0
+    }
+
+    const selectOption = (option: string) => {
+        setSortType(option)
+        setIsOpen(!isOpen)
+    }
 
     // Exibe a tabela 
     const productList = useMemo(() => {

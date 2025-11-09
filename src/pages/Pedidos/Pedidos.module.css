@@ -1,6 +1,36 @@
+/* Buscar Pedidos */
+.searchOrder {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.searchOrder input {
+    width: 100%;
+    background-color: var(--gray-600);
+    border: 2px solid transparent; 
+    padding: 2rem;
+    border-radius: 1rem;
+    min-height: 5rem;
+    font-size: 1.8rem;
+    color: inherit;
+    padding-left: 5rem;
+}
+
+.searchOrder .searchIcon{
+    position: absolute;
+    left: 2rem;
+    color: var(--gray-300);
+    width: 2rem;
+    height: 2rem;
+    top: 32%;
+}
+
+/* Tabela de pedidos */
 .orderTable {
     font-size: 2rem;
-    margin-top: 6rem;
+    margin-top: 4rem;
     color: var(--gray-100);
     overflow: visible;
     border-radius: 1rem; 

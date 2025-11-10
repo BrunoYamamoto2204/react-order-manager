@@ -121,7 +121,6 @@ export function Analises() {
             return Array.from(productsMap.values())
         }
 
-        
         const currentProducts = productsStats(orders)
 
         // Organiza a tabela segundo o parâmetro 

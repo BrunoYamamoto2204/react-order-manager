@@ -12,7 +12,9 @@ interface ICustomer {
     city?: string,
     state?: string,
     cep?: string,
-    obs: string
+    obs: string,
+    createdAt?: Date,
+    updatedAt?: Date 
 }
 
 const customerSchema = new Schema<ICustomer>({

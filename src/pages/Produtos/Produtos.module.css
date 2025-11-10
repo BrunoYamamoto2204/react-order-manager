@@ -57,6 +57,21 @@
     color: var(--second-color);
     border-bottom: 2px solid var(--gray-500);
     text-align: start;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.productTable th svg {
+    transition: all 0.2s ease-in-out;
+}
+
+.productTable th svg.isUp {
+    transform: rotate(180deg);
+}
+
+.productTable th svg:hover {
+    cursor: pointer;
 }
 
 .productTable td {

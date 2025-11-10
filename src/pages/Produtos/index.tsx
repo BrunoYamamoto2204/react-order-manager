@@ -6,7 +6,7 @@ import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { Messages } from "../../components/Messages";
 import { deleteProduct, getProducts } from "../../services/productsApi";
 import type { Product } from "../../services/productsApi";
@@ -15,6 +15,12 @@ export function Produtos() {
     const navigate = useNavigate();
     const [ loading, setLoading ] = useState(true);
     const [ products, setProducts ] = useState<Product[]>([])
+
+    const [ nameIsDown, setNameIsDown ] = useState(true);
+    const [ categoryIsDown, setCategoryIsDown] = useState(true);
+    const [ unitIsDown, setUnitIsDown ] = useState(true);
+    const [ priceIsDown, setPriceIsDown ] = useState(true);
+
 
     useEffect(() => {
         document.title = "Produtos - Comanda"
@@ -25,7 +31,7 @@ export function Produtos() {
         try{
             setLoading(true)
             const data = await getProducts()
-            setProducts(data)
+            setProducts(data.sort((a, b) => a.price - b.price ))
         } catch(error){
             console.log("Erro ao carregar os produtos:", error)
             Messages.error("Erro ao carregar os produtos")
@@ -69,8 +75,96 @@ export function Produtos() {
             setProducts(filteredProducts)
         }
     }
-    
 
+    const thHandleClick = (th: string) => {
+        switch(th) {
+            case "Product": {
+                if (nameIsDown){
+                    const sortedList = [...products].sort((a, b) => 
+                        a.product.localeCompare(b.product)
+                    )
+                    setProducts(sortedList)
+                    setNameIsDown(false)
+
+                    setPriceIsDown(true)
+                    setCategoryIsDown(true)
+                    setUnitIsDown(true)
+                } else {
+                    const sortedList = [...products].sort((a, b) => 
+                        b.product.localeCompare(a.product)
+                    )
+                    setProducts(sortedList)
+                    setNameIsDown(true)
+                } 
+                break
+            }
+            case "Price": {
+                if (priceIsDown){
+                    const sortedList = [...products].sort((a, b) => 
+                        b.price - a.price 
+                    )
+                    setProducts(sortedList)
+                    setPriceIsDown(false)
+
+                    setNameIsDown(true)
+                    setUnitIsDown(true)
+                    setCategoryIsDown(true)
+                } else {
+                    const sortedList = [...products].sort((a, b) => 
+                        a.price - b.price 
+                    )
+                    setProducts(sortedList)
+                    setPriceIsDown(true)
+                } 
+                break
+            }
+            case "Category": {
+                if (categoryIsDown){
+                    const sortedList = [...products].sort((a, b) => 
+                        a.category.localeCompare(b.category)
+                    )
+                    setProducts(sortedList)
+                    setCategoryIsDown(false)
+
+                    setNameIsDown(true)
+                    setPriceIsDown(true)
+                    setUnitIsDown(true)
+                } else {
+                    const sortedList = [...products].sort((a, b) => 
+                        b.category.localeCompare(a.category)
+                    )
+                    setProducts(sortedList)
+                    setCategoryIsDown(true)
+                } 
+                break
+            }
+            case "Unit": {
+                if (unitIsDown){
+                    const sortedList = [...products].sort((a, b) => 
+                        a.unit.localeCompare(b.unit)
+                    )
+                    setProducts(sortedList)
+                    setUnitIsDown(false)
+
+                    setNameIsDown(true)
+                    setPriceIsDown(true)
+                    setCategoryIsDown(true)
+                } else {
+                    const sortedList = [...products].sort((a, b) => 
+                        b.unit.localeCompare(a.unit)
+                    )
+                    setProducts(sortedList)
+                    setUnitIsDown(true)
+                } 
+                break 
+            }              
+        }
+    }
+
+    const handleClickClass = (isDown: boolean) => {
+        return isDown ? `${styles.icon}` : `${styles.icon} ${styles.isUp}`
+    }
+    
     if (loading) {
         return (
             <MainTemplate>
@@ -105,10 +199,22 @@ export function Produtos() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Produto</th>
-                                <th>Preço</th>
-                                <th>Categoria</th>
-                                <th>Unidade</th>
+                                <th onClick={() => {thHandleClick("Product")}}>
+                                    Produto 
+                                    <ChevronDownIcon className={handleClickClass(nameIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Price")}>
+                                    Preço 
+                                    <ChevronDownIcon className={handleClickClass(priceIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Category")}>
+                                    Categoria 
+                                    <ChevronDownIcon className={handleClickClass(categoryIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Unit")}>
+                                    Unidade 
+                                    <ChevronDownIcon className={handleClickClass(unitIsDown)}/>
+                                </th>
                                 <th>Ações</th>
                             </tr>
                         </thead>

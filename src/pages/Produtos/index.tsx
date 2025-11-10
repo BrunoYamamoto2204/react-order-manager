@@ -199,7 +199,7 @@ export function Produtos() {
                     <table>
                         <thead>
                             <tr>
-                                <th onClick={() => {thHandleClick("Product")}}>
+                                <th onClick={() => thHandleClick("Product")}>
                                     Produto 
                                     <ChevronDownIcon className={handleClickClass(nameIsDown)}/>
                                 </th>

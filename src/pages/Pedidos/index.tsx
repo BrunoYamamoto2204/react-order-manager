@@ -8,7 +8,7 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
@@ -18,6 +18,13 @@ export function Pedidos() {
     const [ orders, setOrders ] = useState<Order[]>([]);
     const [ loading, setLoading ] = useState(true);
     
+    const [ nameIsDown, setNameIsDown ] = useState(true);
+    const [ dateIsDown, setDateIsDown] = useState(true);
+    const [ productsIsDown, setProductsIsDown ] = useState(true);
+    const [ valueIsDown, setValueIsDown ] = useState(true);
+    const [ statusIsDown, setStatusIsDown ] = useState(true);
+
+
     useEffect(() => {
         document.title = "Pedidos - Comanda"
         loadOrders()
@@ -27,7 +34,7 @@ export function Pedidos() {
         try{
             setLoading(true)
             const data = await getOrders()
-            setOrders(data)
+            setOrders(data.sort((a, b) => a.date.localeCompare(b.date)))
         } catch (error) {
             console.error('[-] Erro ao carregar pedidos:', error);
             Messages.error("Erro ao carregar pedidos");
@@ -60,24 +67,144 @@ export function Pedidos() {
         }
     }
 
-        const handleChange = async (customerName: string) => {
-            const currentOrders = await getOrders()
-    
-            if (customerName && customerName.trim() === "") {
-                setOrders(currentOrders)
-            } else {
-                const normalizeText = (text: string) =>(
-                    text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                )
-    
-                const filteredOrders = currentOrders.filter(order => (
-                    normalizeText(order.name.toLowerCase())
-                    .includes(normalizeText(customerName.toLowerCase()))
-                ))
-    
-                setOrders(filteredOrders)
-            }
+    const handleChange = async (customerName: string) => {
+        const currentOrders = await getOrders()
+
+        if (customerName && customerName.trim() === "") {
+            setOrders(currentOrders)
+        } else {
+            const normalizeText = (text: string) =>(
+                text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            )
+
+            const filteredOrders = currentOrders.filter(order => (
+                normalizeText(order.name.toLowerCase())
+                .includes(normalizeText(customerName.toLowerCase()))
+            ))
+
+            setOrders(filteredOrders)
         }
+    }
+
+    const thHandleClick = (th: string) => {
+        switch(th) {
+            case "Name": {
+                if (nameIsDown){
+                    const sortedList = [...orders].sort((a, b) => 
+                        a.name.localeCompare(b.name)
+                    )
+                    setOrders(sortedList)
+                    setNameIsDown(false)
+
+                    setDateIsDown(true)
+                    setProductsIsDown(true)
+                    setValueIsDown(true)
+                    setStatusIsDown(true)
+                } else {
+                    const sortedList = [...orders].sort((a, b) => 
+                        b.name.localeCompare(a.name)
+                    )
+                    setOrders(sortedList)
+                    setNameIsDown(true)
+                } 
+                break
+            }
+            case "Date": {
+                if (dateIsDown){
+                    const sortedList = [...orders].sort((a, b) => 
+                        a.date.localeCompare(b.date)
+                    )
+                    setOrders(sortedList)
+                    setDateIsDown(false)
+
+                    setNameIsDown(true)
+                    setValueIsDown(true)
+                    setProductsIsDown(true)
+                    setStatusIsDown(true)
+                } else {
+                    const sortedList = [...orders].sort((a, b) => 
+                        b.date.localeCompare(a.date)
+                    )
+                    setOrders(sortedList)
+                    setDateIsDown(true)
+                } 
+                break
+            }
+            case "Products": {
+                if (productsIsDown){
+                    const sortedList = [...orders].sort((a, b) => 
+                        a.products.length - b.products.length
+                    )
+                    setOrders(sortedList)
+                    setProductsIsDown(false)
+
+                    setNameIsDown(true)
+                    setDateIsDown(true)
+                    setValueIsDown(true)
+                    setStatusIsDown(true)
+                } else {
+                    const sortedList = [...orders].sort((a, b) => 
+                        b.products.length - a.products.length
+                    )
+                    setOrders(sortedList)
+                    setProductsIsDown(true)
+                } 
+                break
+            }
+            case "Value": {
+                if (valueIsDown){
+                    const sortedList = [...orders].sort((a, b) => {
+                        const priceA = Number(a.value.split(" ")[1])
+                        const priceB = Number(b.value.split(" ")[1])
+
+                        return priceB - priceA
+                    })
+                    setOrders(sortedList)
+                    setValueIsDown(false)
+
+                    setNameIsDown(true)
+                    setDateIsDown(true)
+                    setProductsIsDown(true)
+                    setStatusIsDown(true)
+                } else {
+                    const sortedList = [...orders].sort((a, b) => {
+                        const priceA = Number(a.value.split(" ")[1])
+                        const priceB = Number(b.value.split(" ")[1])
+
+                        return priceA - priceB
+                    })
+                    setOrders(sortedList)
+                    setValueIsDown(true)
+                } 
+                break 
+            }   
+            case "Status": {
+                if (statusIsDown){
+                    const sortedList = [...orders].sort((a, b) => 
+                        a.status.localeCompare(b.status)
+                    )
+                    setOrders(sortedList)
+                    setStatusIsDown(false)
+
+                    setNameIsDown(true)
+                    setDateIsDown(true)
+                    setProductsIsDown(true)
+                    setValueIsDown(true)
+                } else {
+                    const sortedList = [...orders].sort((a, b) => 
+                        b.status.localeCompare(a.status)
+                    )
+                    setOrders(sortedList)
+                    setValueIsDown(true)
+                } 
+                break 
+            }                
+        }
+    }
+
+    const handleClickClass = (isDown: boolean) => {
+        return isDown ? `${styles.icon}` : `${styles.icon} ${styles.isUp}`
+    }
 
     if (loading) {
         return (
@@ -113,11 +240,26 @@ export function Pedidos() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Nome</th>
-                                <th>Data</th>
-                                <th>Produtos</th>
-                                <th>Valor</th>
-                                <th>Status</th>
+                                <th onClick={() => thHandleClick("Name")}>
+                                    Nome 
+                                    <ChevronDownIcon className={handleClickClass(nameIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Date")}>
+                                    Data 
+                                    <ChevronDownIcon className={handleClickClass(dateIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Products")}>
+                                    Produtos 
+                                    <ChevronDownIcon className={handleClickClass(productsIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Value")}>
+                                    Valor 
+                                    <ChevronDownIcon className={handleClickClass(valueIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Status")}>
+                                    Status 
+                                    <ChevronDownIcon className={handleClickClass(statusIsDown)}/>
+                                </th>
                                 <th>Ações</th>
                             </tr>
                         </thead>

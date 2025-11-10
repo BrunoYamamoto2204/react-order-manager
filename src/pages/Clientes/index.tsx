@@ -6,7 +6,7 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Clientes.module.css"
 import { useNavigate } from "react-router"
-import { PlusIcon, SearchIcon } from "lucide-react"
+import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react"
 import { Messages } from "../../components/Messages"
 import { deleteCustomer, getCustomers, type Customer } from "../../services/customersApi"
 
@@ -14,6 +14,11 @@ export function Clientes() {
     const navigate = useNavigate();
     const [ customers, setCustomers ] = useState<Customer[]>([])
     const [ loading, setLoading ] = useState(true)
+
+    const [ nameIsDown, setNameIsDown ] = useState(true);
+    const [ phoneIsDown, setPhoneIsDown] = useState(true);
+    const [ emailIsDown, setEmailIsDownIsDown ] = useState(true);
+    const [ concluedOrderIsDown, setConcluedOrderIsDown ] = useState(true);
     
     useEffect(() => {
         document.title = "Clientes - Comanda"
@@ -70,6 +75,95 @@ export function Clientes() {
         }
     }
 
+    const thHandleClick = (th: string) => {
+        switch(th) {
+            case "Name": {
+                if (nameIsDown){
+                    const sortedList = [...customers].sort((a, b) => 
+                        a.name.localeCompare(b.name)
+                    )
+                    setCustomers(sortedList)
+                    setNameIsDown(false)
+
+                    setPhoneIsDown(true)
+                    setEmailIsDownIsDown(true)
+                    setConcluedOrderIsDown(true)
+                } else {
+                    const sortedList = [...customers].sort((a, b) => 
+                        b.name.localeCompare(a.name)
+                    )
+                    setCustomers(sortedList)
+                    setNameIsDown(true)
+                } 
+                break
+            }
+            case "Phone": {
+                if (phoneIsDown){
+                    const sortedList = [...customers].sort((a, b) => 
+                        a.phone.localeCompare(b.phone)
+                    )
+                    setCustomers(sortedList)
+                    setPhoneIsDown(false)
+
+                    setNameIsDown(true)
+                    setConcluedOrderIsDown(true)
+                    setEmailIsDownIsDown(true)
+                } else {
+                    const sortedList = [...customers].sort((a, b) => 
+                        b.phone.localeCompare(a.phone)
+                    )
+                    setCustomers(sortedList)
+                    setPhoneIsDown(true)
+                } 
+                break
+            }
+            case "Email": {
+                if (emailIsDown){
+                    const sortedList = [...customers].sort((a, b) => 
+                        a.email.localeCompare(b.email)
+                    )
+                    setCustomers(sortedList)
+                    setEmailIsDownIsDown(false)
+
+                    setNameIsDown(true)
+                    setPhoneIsDown(true)
+                    setConcluedOrderIsDown(true)
+                } else {
+                    const sortedList = [...customers].sort((a, b) => 
+                        b.email.localeCompare(a.email)
+                    )
+                    setCustomers(sortedList)
+                    setEmailIsDownIsDown(true)
+                } 
+                break
+            }
+            case "ConcluedOrder": {
+                if (concluedOrderIsDown){
+                    const sortedList = [...customers].sort((a, b) => 
+                        Number(a.pendingOrders) - Number(b.pendingOrders)
+                    )
+                    setCustomers(sortedList)
+                    setConcluedOrderIsDown(false)
+
+                    setNameIsDown(true)
+                    setPhoneIsDown(true)
+                    setEmailIsDownIsDown(true)
+                } else {
+                    const sortedList = [...customers].sort((a, b) => 
+                        Number(b.pendingOrders) - Number(a.pendingOrders)
+                    )
+                    setCustomers(sortedList)
+                    setConcluedOrderIsDown(true)
+                } 
+                break 
+            }              
+        }
+    }
+
+    const handleClickClass = (isDown: boolean) => {
+        return isDown ? `${styles.icon}` : `${styles.icon} ${styles.isUp}`
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -104,10 +198,27 @@ export function Clientes() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Nome</th>
-                                <th>Celular</th>
-                                <th>E-mail</th>
-                                <th style={{ textAlign: 'center'}}>Pedidos Concluídos</th>
+                                <th onClick={() => {thHandleClick("Name")}}>
+                                    Nome 
+                                    <ChevronDownIcon className={handleClickClass(nameIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Phone")}>
+                                    Celular 
+                                    <ChevronDownIcon className={handleClickClass(phoneIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Email")}>
+                                    E-mail 
+                                    <ChevronDownIcon className={handleClickClass(emailIsDown)}/>
+                                </th>
+                                <th 
+                                    onClick={() => thHandleClick("ConcluedOrder")} 
+                                    style={{ textAlign: 'center'}}
+                                >
+                                    Pedidos Concluídos 
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(concluedOrderIsDown)}
+                                    />
+                                </th>
                                 <th>Ações</th>
                             </tr>
                         </thead>

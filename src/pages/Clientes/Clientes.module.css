@@ -57,6 +57,21 @@
     color: var(--second-color);
     border-bottom: 2px solid var(--gray-500);
     text-align: start;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.customersTable th svg {
+    transition: all 0.2s ease-in-out;
+}
+
+.customersTable th svg.isUp {
+    transform: rotate(180deg);
+}
+
+.customersTable th svg:hover {
+    cursor: pointer;
 }
 
 .customersTable td {

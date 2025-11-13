@@ -21,7 +21,7 @@ export function Pedidos() {
     
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ dateIsDown, setDateIsDown] = useState(true);
-    const [ timeIsDown, setTimeIsDown] = useState(true);
+    // const [ timeIsDown, setTimeIsDown] = useState(true);
     const [ productsIsDown, setProductsIsDown ] = useState(true);
     const [ valueIsDown, setValueIsDown ] = useState(true);
     const [ statusIsDown, setStatusIsDown ] = useState(true);
@@ -106,7 +106,7 @@ export function Pedidos() {
                     setProductsIsDown(true)
                     setValueIsDown(true)
                     setStatusIsDown(true)
-                    setTimeIsDown(true)
+                    
                 } else {
                     const sortedList = [...orders].sort((a, b) => 
                         b.name.localeCompare(a.name)
@@ -116,37 +116,13 @@ export function Pedidos() {
                 } 
                 break
             }
-            case "Time": {
-                if (timeIsDown){
+            case "Date": {
+                if (dateIsDown){
                     const sortedList = [...orders].sort((a, b) => {
                         const dateTimeA = `${formatStringDateTime(a.date)} ${a.time}`; 
                         const dateTimeB = `${formatStringDateTime(b.date)} ${b.time}`; 
                         return dateTimeA.localeCompare(dateTimeB);
                     })
-                    setOrders(sortedList)
-                    setTimeIsDown(false)
-
-                    setNameIsDown(true)
-                    setDateIsDown(true)
-                    setProductsIsDown(true)
-                    setValueIsDown(true)
-                    setStatusIsDown(true)
-                } else {
-                    const sortedList = [...orders].sort((a, b) => {
-                        const dateTimeA = `${formatStringDateTime(a.date)} ${a.time}`; 
-                        const dateTimeB = `${formatStringDateTime(b.date)} ${b.time}`; 
-                        return dateTimeB.localeCompare(dateTimeA);
-                    })
-                    setOrders(sortedList)
-                    setTimeIsDown(true)
-                } 
-                break
-            }
-            case "Date": {
-                if (dateIsDown){
-                    const sortedList = [...orders].sort((a, b) => 
-                        a.date.localeCompare(b.date)
-                    )
                     setOrders(sortedList)
                     setDateIsDown(false)
 
@@ -154,11 +130,13 @@ export function Pedidos() {
                     setValueIsDown(true)
                     setProductsIsDown(true)
                     setStatusIsDown(true)
-                    setTimeIsDown(true)
+                    
                 } else {
-                    const sortedList = [...orders].sort((a, b) => 
-                        b.date.localeCompare(a.date)
-                    )
+                    const sortedList = [...orders].sort((a, b) => {
+                        const dateTimeA = `${formatStringDateTime(a.date)} ${a.time}`; 
+                        const dateTimeB = `${formatStringDateTime(b.date)} ${b.time}`; 
+                        return dateTimeB.localeCompare(dateTimeA);
+                    })
                     setOrders(sortedList)
                     setDateIsDown(true)
                 } 
@@ -176,7 +154,6 @@ export function Pedidos() {
                     setDateIsDown(true)
                     setValueIsDown(true)
                     setStatusIsDown(true)
-                    setTimeIsDown(true)
                 } else {
                     const sortedList = [...orders].sort((a, b) => 
                         b.products.length - a.products.length
@@ -201,7 +178,7 @@ export function Pedidos() {
                     setDateIsDown(true)
                     setProductsIsDown(true)
                     setStatusIsDown(true)
-                    setTimeIsDown(true)
+                    
                 } else {
                     const sortedList = [...orders].sort((a, b) => {
                         const priceA = Number(a.value.split(" ")[1])
@@ -226,7 +203,6 @@ export function Pedidos() {
                     setDateIsDown(true)
                     setProductsIsDown(true)
                     setValueIsDown(true)
-                    setTimeIsDown(true)
                 } else {
                     const sortedList = [...orders].sort((a, b) => 
                         b.status.localeCompare(a.status)
@@ -281,12 +257,8 @@ export function Pedidos() {
                                     Nome 
                                     <ChevronDownIcon className={handleClickClass(nameIsDown)}/>
                                 </th>
-                                <th onClick={() => thHandleClick("Time")}>
-                                    Horário 
-                                    <ChevronDownIcon className={handleClickClass(timeIsDown)}/>
-                                </th>
                                 <th onClick={() => thHandleClick("Date")}>
-                                    Data 
+                                    Horário | Data 
                                     <ChevronDownIcon className={handleClickClass(dateIsDown)}/>
                                 </th>
                                 <th onClick={() => thHandleClick("Products")}>

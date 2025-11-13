@@ -118,13 +118,12 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                             {order.name}
                         </td>
 
-                        {/* Time */}
-                        <td>
-                            {order.time}
-                        </td>
-
                         {/* Date */}
                         <td>
+                            <span style={{fontWeight: "bold", color:"var(--primary)"}}>
+                                {order.time}
+                            </span> 
+                            &nbsp; -&nbsp;
                             {order.date}
                         </td>
 

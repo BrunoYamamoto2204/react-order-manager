@@ -42,7 +42,7 @@
 
 .orderTable table {
     display: grid;
-    grid-template-columns: 1fr 0.5fr 1fr 1.5fr 1fr 1fr 1fr; 
+    grid-template-columns: 1fr 1.2fr 1.5fr 0.7fr 1fr 1fr; 
     border-collapse: collapse;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .orderTable th {
-    padding: 3rem;
+    padding: 3rem 2rem;
     background-color: var(--gray-400);
     font-weight: 400;
     color: var(--second-color);
@@ -95,7 +95,7 @@
 }
 
 .orderTable td {
-    padding: 3rem;
+    padding: 3rem 2rem;
     transition: background-color 0.3s ease; 
     display: flex;
     align-items: center;

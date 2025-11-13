@@ -3,12 +3,12 @@
 }
 
 .container {
-    margin: 98rem;
     margin: auto;
 }
 
 .content{
     margin: 3.2rem;
+    margin-left: 0;
     color: white;
     position: relative;
 }

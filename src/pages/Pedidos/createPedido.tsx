@@ -122,6 +122,11 @@ export function CreatePedido() {
             return;
         } 
 
+        if (!time) {
+            Messages.error("Adicione o horário do pedido");
+            return;
+        }
+
         if (productList.length <= 0) {
             Messages.error("Adicione itens ao pedido");
             return;

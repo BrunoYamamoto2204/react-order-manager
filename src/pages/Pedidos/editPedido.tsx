@@ -187,14 +187,17 @@ export function EditPedido() {
                 Messages.error("Insira o nome do cliente");
                 return;
             }
-        }
-
-        else if(!customerSelected) {
+        } else if(!customerSelected) {
             Messages.error("Selecione um cliente exitente");
             return;
         } 
 
-        else if (productList.length <= 0) {
+        if (!time) {
+            Messages.error("Adicione o horário do pedido");
+            return;
+        }
+
+        if (productList.length <= 0) {
             Messages.error("Adicione itens ao pedido");
             return;
         } 

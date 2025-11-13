@@ -1,6 +1,6 @@
 .mainTemplate {
     display: grid;
-    grid-template-columns: clamp(20rem, 30vw, 35rem) 1fr;
+    grid-template-columns: clamp(20rem, 30vw, 32rem) 1fr;
     overflow-y: hidden; 
     height: 100vh;
 }

@@ -42,7 +42,7 @@
 
 .orderTable table {
     display: grid;
-    grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr 1fr; 
+    grid-template-columns: 1fr 0.5fr 1fr 1.5fr 1fr 1fr 1fr; 
     border-collapse: collapse;
 }
 

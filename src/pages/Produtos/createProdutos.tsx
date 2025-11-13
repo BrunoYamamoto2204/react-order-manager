@@ -48,7 +48,7 @@ export function CreateProdutos() {
             Messages.error("Preecha todos os campo obrigatórios")
             return
         }
-        console.log(description)
+        
         const newProduct = {
             product: name,
             price: Number(price),

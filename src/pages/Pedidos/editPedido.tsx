@@ -11,9 +11,9 @@ import { CreateOrderList } from "../../components/CreateOrderList";
 import { getOrderById, updateOrder } from "../../services/ordersApi";
 import { formatDate } from "../../utils/format-date";
 import CustomerSearch from "../../components/CustomerSearch";
-import { getCustomerById, updateCustomer } from "../../services/customersApi";
 import { ProductSearch } from "../../components/ProductSearch";
 import { getProductById, updateProduct } from "../../services/productsApi";
+import { formatTime } from "../../utils/format-time";
 
 export type OrderProduct = {
     uniqueId: number
@@ -38,11 +38,13 @@ export function EditPedido() {
     const [ discountValue, setDiscountValue ] = useState("0")
     const [ noRegister, setNoRegister ] = useState(false);
     const [ productList, setProductList ] = useState<OrderProduct[]>([])
+    const [ status, setStatus] = useState("")
 
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
-    const [ customerSelected, setCustomerSelected ] = useState(true);
     const [ date, setDate ] = useState("")
+    const [ time, setTime] = useState(new Date().toLocaleDateString("sv-SE")) 
+    const [ customerSelected, setCustomerSelected ] = useState(true);
 
     const [ total, setTotal ] = useState("")
     const [ totalGross, setTotalGross] = useState("")
@@ -69,10 +71,12 @@ export function EditPedido() {
                 setNoRegister(order.noRegister)
                 setProductList(order.products);
                 setPreviousProductList(order.products)
+                setStatus(order.status)
 
                 setName(order.name)
                 setDescription(order.obs)
                 setDate(convertDateFormat(order.date))
+                setTime(order.time)
                 
                 setTotal(order.value)
                 setTotalGross(order.totalGross)
@@ -204,6 +208,7 @@ export function EditPedido() {
             name: name,
             noRegister: noRegister,
             date: formatDate(date),
+            time: time,
             productsStrings: formattedProducts,
             products: productList,
             value: `R$ ${Number(total).toFixed(2)}`,        
@@ -212,7 +217,7 @@ export function EditPedido() {
             totalGross: totalGross,
             discountType: discountType,
             obs: description,
-            status: "Pendente",
+            status: status,
         }) 
 
         // Enviar para o banco de dados
@@ -226,12 +231,12 @@ export function EditPedido() {
 
             await updateOrder(id, updatedOrder)
 
-            if (!noRegister && customerId){
-                const chosenCustomer = await getCustomerById(customerId)
-                await updateCustomer(customerId, {...chosenCustomer, pendingOrders: true})
-            }
+            // if (!noRegister && customerId){
+            //     const chosenCustomer = await getCustomerById(customerId)
+            //     await updateCustomer(customerId, {...chosenCustomer, pendingOrders: chosenCustomer.pendingOrders})
+            // }
 
-            // Adicionar a quantidade de produtos nas análises 
+            // Adicionar a quantidade de produtos nas quantidade dentro de products 
             for (const newProduct of productList) {
                 // Valida se cada item da lista atual faz parte da lista antiga
                 const oldProduct = previousProductList.find(p => 
@@ -340,6 +345,18 @@ export function EditPedido() {
                                     className={styles.dateInput} 
                                 />
                             </div>
+                            <div className={styles.inputBox}>
+                                <label htmlFor="data">Horário</label>
+                                <input 
+                                    className={styles.timeInput}
+                                    type="time"
+                                    value={time}
+                                    placeholder="14:00"   
+                                    maxLength={5} 
+                                    onChange={(e) => {setTime(formatTime(e.target.value))}}
+                                />
+                            </div>
+
                         </div>
 
                         {/* Produtos do Pedido */}
@@ -398,7 +415,7 @@ export function EditPedido() {
 
 
                         {/* Obs e Total */}
-                        <div className={styles.inputGroup}>
+                        <div className={styles.inputGroup2}>
                             {/* Observações */}
                             <div className={`${styles.inputBox} ${styles.obs}`}>
                                 <label htmlFor="descricao">Observações (Opcional)</label>

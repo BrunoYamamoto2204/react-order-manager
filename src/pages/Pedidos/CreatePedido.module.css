@@ -5,7 +5,14 @@
     border-radius: 1rem;
 }
 
-.inputGroup{
+.inputGroup {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.5fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.inputGroup2{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
@@ -15,6 +22,10 @@
 .inputBox {
     display: flex;
     flex-direction: column;
+}
+
+.timeInput{
+    font-family: inherit;
 }
 
 /* Normal Input */

@@ -14,6 +14,7 @@ import CustomerSearch from "../../components/CustomerSearch";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 import { ProductSearch } from "../../components/ProductSearch";
 import { getProductById, updateProduct } from "../../services/productsApi";
+import { formatTime } from "../../utils/format-time";
 
 export type OrderProduct = {
     uniqueId: number
@@ -28,16 +29,17 @@ export type OrderProduct = {
 export function CreatePedido() {
     const navigate = useNavigate();
 
+    const [ customerId, setCustomerId ] = useState<string | null>(null)
     const [ discountType, setDiscountType ] = useState("%")
     const [ discountValue, setDiscountValue ] = useState("0")
     const [ noRegister, setNoRegister ] = useState(false);
     const [ productList, setProductList ] = useState<OrderProduct[]>([])
 
     // Input Values
-    const [ customerId, setCustomerId ] = useState<string | null>(null)
     const [ name, setName ] = useState("");
     const [ description, setDescription ] = useState("");
-    const [ date, setDate] = useState(new Date().toLocaleDateString("sv-SE")) 
+    const [ date, setDate ] = useState(new Date().toLocaleDateString("sv-SE")) 
+    const [ time, setTime ] = useState("") 
     const [ customerSelected, setCustomerSelected ] = useState(false);
 
     const [ total, setTotal ] = useState(0)
@@ -49,7 +51,7 @@ export function CreatePedido() {
 
     useEffect(() => {
         document.title = "Novo Pedido - Comanda"
-    },[productList])
+    },[])
 
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
@@ -115,15 +117,13 @@ export function CreatePedido() {
                 Messages.error("Insira o nome do cliente");
                 return;
             }
-        }
-
-        else if(!customerSelected) {
+        } else if(!customerSelected) {
             Messages.error("Selecione um cliente exitente");
             return;
         } 
 
-        else if (productList.length <= 0) {
-            Messages.error("Adiocione itens ao pedido");
+        if (productList.length <= 0) {
+            Messages.error("Adicione itens ao pedido");
             return;
         } 
 
@@ -136,6 +136,7 @@ export function CreatePedido() {
             name: name,
             noRegister: noRegister,
             date: formatDate(date),
+            time: time,
             productsStrings: formattedProducts,
             products: productList,
             value: `R$ ${total.toFixed(2)}`,        
@@ -194,6 +195,8 @@ export function CreatePedido() {
 
                 <div className={styles.formContent}>
                     <form onSubmit={handleSubmit}>
+                        
+
                         {/* Inputs Padrão */}
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
@@ -226,6 +229,17 @@ export function CreatePedido() {
                                     onChange={setDate}
                                     placeholder="Selecione a data inicial"
                                     className={styles.dateInput} 
+                                />
+                            </div>
+                            <div className={styles.inputBox}>
+                                <label htmlFor="data">Horário</label>
+                                <input 
+                                    className={styles.timeInput}
+                                    type="time"
+                                    value={time}
+                                    placeholder="14:00"   
+                                    maxLength={5} 
+                                    onChange={(e) => {setTime(formatTime(e.target.value))}}
                                 />
                             </div>
                         </div>
@@ -287,7 +301,7 @@ export function CreatePedido() {
 
 
                         {/* Obs e Total */}
-                        <div className={styles.inputGroup}>
+                        <div className={styles.inputGroup2}>
                             {/* Observações */}
                             <div className={`${styles.inputBox} ${styles.obs}`}>
                                 <label htmlFor="descricao">Observações (Opcional)</label>
@@ -344,8 +358,6 @@ export function CreatePedido() {
                                         R$ {total.toFixed(2)}
                                     </p>
                                 </div>
-
-                                                     
                             </div>
                         </div>
 

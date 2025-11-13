@@ -68,17 +68,21 @@ export const updateOrder = async (req: Request, res: Response) => {
         const oldCustomerId = oldOrder.customerId
         const newCustomerId = newOrder.customerId
 
+        // Se o cliente mudou 
         if(oldCustomerId && oldCustomerId !== newCustomerId) {
+            // Verifica se depois da atualização o antigo ainda tem status pendente 
             const validateStatus = await Order.findOne({
                 customerId: oldCustomerId,
                 status: "Pendente" 
             })
 
+            // Se achar pendente, atualiza no antigo 
             await Customer.findByIdAndUpdate(oldCustomerId, {
                 pendingOrders: !!validateStatus
             })
         }
 
+        // Verifica se o cliente modificado tem status pendente  
         if(newCustomerId) {
             const validateStatus = await Order.findOne({
                 customerId: newCustomerId,

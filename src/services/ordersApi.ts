@@ -16,6 +16,7 @@ export type Order = {
     name: string;
     noRegister: boolean;
     date: string;
+    time: string;
     productsStrings: string[];
     products: Product[];
     value: string;

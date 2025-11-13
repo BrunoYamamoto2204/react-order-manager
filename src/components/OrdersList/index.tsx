@@ -14,7 +14,7 @@ type OrderListProps = {
 // Junta a lista de produtos em 1 <ul> (pronto para inserir dentro de <td>)
 const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
 
-    const [showAll, setShowAll] = useState(false);
+    const [ showAll, setShowAll ] = useState(false);
     const list = showAll ? productsStrings : productsStrings.slice(0,3)
     const showButton = showAll ? "Ver menos..." : "Ver mais..."
 
@@ -116,6 +116,11 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                         {/* Name */}
                         <td>
                             {order.name}
+                        </td>
+
+                        {/* Time */}
+                        <td>
+                            {order.time}
                         </td>
 
                         {/* Date */}

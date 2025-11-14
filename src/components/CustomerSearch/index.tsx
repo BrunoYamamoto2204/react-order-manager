@@ -63,6 +63,7 @@ export default function CustomerSearch({
 
         if(input.trim() === "") {
             setShowSuggetions(false)
+            customerSelected(false);
             setFilteredCustomers([])
             return 
         }

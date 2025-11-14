@@ -22,6 +22,9 @@ const ProductSchema = new Schema<IProduct>({
 
 export interface IOrder extends Document {
     customerId?: string;
+    isDelivery: boolean,
+    deliveryAddress?: string,
+    deliveryFee?: string,
     name: string,
     noRegister: boolean,
     date: string,
@@ -42,6 +45,9 @@ export interface IOrder extends Document {
 const OrderSchema = new Schema<IOrder>({
     customerId: { type: String },
     name: {type: String, required: true, trim: true },
+    isDelivery: {type: Boolean, required: true},
+    deliveryAddress: {type: String, required: false, trim: true },
+    deliveryFee: {type: String, required: false},
     noRegister: {type: Boolean, required: true},
     date: {type: String, required: true },
     time: {type: String, required: true },
@@ -53,7 +59,7 @@ const OrderSchema = new Schema<IOrder>({
     discountType: { type: String, enum: ["%", "R$"], default: "%" },
     totalGross: { type: String, required: true },
     obs: { type: String, default: "0"},
-    status: { type: String, enum: ["Pendente", "Concluído", "Cancelado"], default:"Pendente"}
+    status: { type: String, default:"Pendente"}
 }, {
     timestamps: true
 })

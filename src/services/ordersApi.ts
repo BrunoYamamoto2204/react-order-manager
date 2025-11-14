@@ -13,6 +13,9 @@ type Product = {
 export type Order = {
     _id?: string; 
     customerId?: string | null;
+    isDelivery: boolean,
+    deliveryAddress?: string,
+    deliveryFee?: string,
     name: string;
     noRegister: boolean;
     date: string;

@@ -55,33 +55,11 @@
     border-color: var(--gray-300);
 }
 
-.priceInput {
-    position: relative;
-}
-
-.priceInput input{
-    display: flex;
-    align-items: center;
-}
-
-.priceInput::before {
-    content: "R$";
-    position: absolute;
-    left: 2rem;
-    top: 30%;
-    color: var(--gray-100);
-    font-size: 1.8rem;
-    pointer-events: none;
-    z-index: 1;
-}
-
 .priceInput input {
     width: 100%;
-    padding-left: 5rem; 
 }
 
 /* Choice input */
-
 .productChoice{
     display: flex;
     justify-content: space-between;

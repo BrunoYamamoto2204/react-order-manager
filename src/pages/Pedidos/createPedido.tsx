@@ -3,7 +3,7 @@ import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreatePedido.module.css";
-import { PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
+import { BikeIcon, PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
@@ -15,6 +15,8 @@ import { getCustomerById, updateCustomer } from "../../services/customersApi";
 import { ProductSearch } from "../../components/ProductSearch";
 import { getProductById, updateProduct } from "../../services/productsApi";
 import { formatTime } from "../../utils/format-time";
+import { ToggleSwitch } from "../../components/ToggleSwitch";
+
 
 export type OrderProduct = {
     uniqueId: number
@@ -49,6 +51,10 @@ export function CreatePedido() {
     const [ productName, setProductName] = useState("")
     const [ product, setProduct ] = useState<OrderProduct>();
 
+    const [ isDelivery, setIsDelivery ] = useState(false);
+    const [ deliveryAddress, setDeliveryAddress ] = useState("");
+    const [ deliveryFee, setDeliveryFee ] = useState("");
+
     useEffect(() => {
         document.title = "Novo Pedido - Comanda"
     },[])
@@ -57,6 +63,10 @@ export function CreatePedido() {
     const grossValue = productList.reduce((sum, order) => {
         return sum + (order.quantity * Number(order.price))    
     }, 0)
+
+    const priceNumber = (price: string) => Number(
+        price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
+    );
 
     // Define o total 
     useEffect(() => {
@@ -74,15 +84,14 @@ export function CreatePedido() {
         }
 
         const currentDiscountAmount = calculatedDiscountAmount();
-        const subtotal = Math.max(0, grossValue - currentDiscountAmount);
+        const subtotal = Math.max(0, grossValue - currentDiscountAmount + priceNumber(deliveryFee));
         setTotal(subtotal); 
-    }, [productList, discountValue, discountType, grossValue]); 
+    }, [productList, discountValue, discountType, grossValue, deliveryFee]); 
 
     // Troca o tipo de Desconto
     const changeDiscountType = () => {
         return discountType == "%" ? setDiscountType("R$") : setDiscountType("%")
     }
-
    
     // Adiociona produto no pedido
     const handleNewProduct = () => {
@@ -109,6 +118,7 @@ export function CreatePedido() {
 
     // Cria Pedido
     const handleSubmit = async (e : React.FormEvent) => {
+        console.log("executou aqui")
         e.preventDefault()
         Messages.dismiss()
 
@@ -117,7 +127,7 @@ export function CreatePedido() {
                 Messages.error("Insira o nome do cliente");
                 return;
             }
-        } else if(!customerSelected) {
+        } else if (!customerSelected || !customerId) {
             Messages.error("Selecione um cliente exitente");
             return;
         } 
@@ -125,6 +135,17 @@ export function CreatePedido() {
         if (!time) {
             Messages.error("Adicione o horário do pedido");
             return;
+        }
+
+        if (isDelivery) {
+            if (!deliveryAddress) {
+                Messages.error("Informe o endereço de entrega do pedido");
+                return;
+            }
+            if (!deliveryFee) {
+                Messages.error("Informe a taxa de entrega do pedido");
+                return;
+            }
         }
 
         if (productList.length <= 0) {
@@ -138,6 +159,9 @@ export function CreatePedido() {
     
         const newOrder = ({
             customerId: customerId ?? undefined,
+            isDelivery: isDelivery,
+            deliveryAddress: deliveryAddress,
+            deliveryFee: deliveryFee,
             name: name,
             noRegister: noRegister,
             date: formatDate(date),
@@ -190,6 +214,46 @@ export function CreatePedido() {
         )
     }
 
+    const handleDeliveryFee = (value: string) => {
+        // Remove tudo que não for número
+        const numeric = value.replace(/\D/g, "");
+
+        // Converte para reais
+        const formatted = (Number(numeric) / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+
+        setDeliveryFee(formatted);
+    };
+
+    const handleClickAddressButton = async () => {
+        if (!customerSelected || !customerId){
+            Messages.dismiss()
+            setDeliveryAddress("")
+            Messages.error("Selecione um cliente exitente");
+            return;
+        } else{
+            const customerData = await getCustomerById(customerId)
+            const road = customerData.road
+            const neighborhood = customerData.neighborhood
+            const number = customerData.num
+            const city = customerData.city
+
+            const addressString = `${road} ${number} - ${neighborhood}, ${city}`
+
+            if (addressString === "  - , ") {
+                Messages.dismiss()
+                Messages.error("Sem endereço cadastrado");
+                return;
+            } else {
+                Messages.dismiss()
+                Messages.success("Dados adicionados com sucesso");
+                setDeliveryAddress(addressString)
+            }
+        }
+    }
+
     return(
         <MainTemplate>
             <Container>
@@ -200,8 +264,6 @@ export function CreatePedido() {
 
                 <div className={styles.formContent}>
                     <form onSubmit={handleSubmit}>
-                        
-
                         {/* Inputs Padrão */}
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
@@ -224,7 +286,6 @@ export function CreatePedido() {
                                         onChange={() => setNoRegister(!noRegister)}
                                     />
                                 </div>
-
                             </div>
                             <div className={styles.inputBox}>
                                 <label htmlFor="data">Data</label>
@@ -247,6 +308,55 @@ export function CreatePedido() {
                                     onChange={(e) => {setTime(formatTime(e.target.value))}}
                                 />
                             </div>
+                        </div>
+
+                        {/* Entrega  */}
+                        <div className={styles.delivery}>
+                            <hr />
+                            
+                            <div className={styles.deliveryCheckBox}>
+                                <label><BikeIcon/> Pedido para entrega?</label>
+                                <ToggleSwitch 
+                                    changeIsDelivery={setIsDelivery}
+                                    isDelivery={isDelivery}
+                                />
+                            </div>
+
+                            {isDelivery && (
+                                <div>
+                                    <div className={styles.deliveryInputBox}>
+                                        <div className={styles.deliveryInput}>
+                                            <label>Endereço </label>
+                                            <input
+                                                onChange={(e) => setDeliveryAddress(e.target.value)}
+                                                value={deliveryAddress}
+                                                placeholder="Ex: Rua ABC 123 - Bairro XYZ"
+                                            />
+                                        </div>
+                                        <div className={styles.deliveryInput}>
+                                            <label style={{color:"var(--primary-light)"}}>
+                                                Taxa de Entrega *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={deliveryFee}
+                                                placeholder="Ex: R$ 10,00"
+                                                onChange={(e) => handleDeliveryFee(e.target.value)}
+                                            />
+                                        </div>                                    
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => handleClickAddressButton()}
+                                        className={styles.reuse}
+                                    >
+                                        Usar endereço do Cliente
+                                    </button>
+
+                                </div>
+                            )}
+                            <hr />
                         </div>
 
                         {/* Produtos do Pedido */}
@@ -356,7 +466,14 @@ export function CreatePedido() {
                                     </p>
                                 </div>
 
-                                {/* Subtotal */}
+                                {isDelivery && (
+                                    <div className={styles.statsValueBox}>
+                                        <label>Taxa de Entrega</label> 
+                                        <p>R$ {priceNumber(deliveryFee).toFixed(2)}</p>
+                                    </div>
+                                )}
+
+                                {/* Total */}
                                 <div className={styles.statsValueBox}>
                                     <label>Total</label> 
                                     <p style={{ color: 'var(--primary)' }}>

@@ -44,7 +44,7 @@ export function CreateCliente() {
         }
 
         const newCustomer = {
-            name, 
+            name: name.trim(), 
             cpfCnpj, 
             phone, 
             email,

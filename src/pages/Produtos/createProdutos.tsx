@@ -48,10 +48,14 @@ export function CreateProdutos() {
             Messages.error("Preecha todos os campo obrigatórios")
             return
         }
-        
+
+        const priceNumber = Number(
+            price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
+        );
+
         const newProduct = {
             product: name,
-            price: Number(price),
+            price: priceNumber,
             category: selectCategory,
             unit: selectUn,
             quantity: 0,
@@ -74,6 +78,19 @@ export function CreateProdutos() {
             Messages.error("Erro ao criar produto")
         }
     }
+
+    const handleProductPrice = (value: string) => {
+        // Remove tudo que não for número
+        const numeric = value.replace(/\D/g, "");
+
+        // Converte para reais
+        const formatted = (Number(numeric) / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+
+        setPrice(formatted);
+    };
 
     return(
         <MainTemplate>
@@ -103,9 +120,8 @@ export function CreateProdutos() {
                                         id="preco" 
                                         autoComplete="off"
                                         value={price}
-                                        onChange={(e) => setPrice(e.target.value)}
-                                        type="number"
-                                        placeholder="0,00"
+                                        onChange={(e) => handleProductPrice(e.target.value)}
+                                        placeholder="R$ 0,00"
                                     />
                                 </div>
                             </div>

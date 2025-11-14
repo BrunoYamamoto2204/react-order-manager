@@ -80,7 +80,7 @@ export function EditCliente() {
         }
 
         const editedCustomer = {
-            name, 
+            name: name.trim(), 
             cpfCnpj, 
             phone, 
             email,

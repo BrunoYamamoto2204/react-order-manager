@@ -1,0 +1,55 @@
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.labelOn {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    transition: color 0.3s;
+}
+
+.labelOff {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--gray-300);
+    transition: color 0.3s;
+}
+
+.toggle {
+    position: relative;
+    width: 5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.toggleOff {
+    background-color: #475569;
+}
+
+.toggleOn {
+    background-color: var(--primary);
+}
+
+.slider {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sliderOn {
+    transform: translateX(2.5rem);
+}

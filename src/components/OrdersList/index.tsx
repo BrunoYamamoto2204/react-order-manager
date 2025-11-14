@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
-import { Edit2Icon, TrashIcon } from "lucide-react";
+import { BikeIcon, Edit2Icon, TrashIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { getOrders, updateOrder, type Order } from "../../services/ordersApi"
 import { StatusSelectList } from "../StatusSelectList/indes";
@@ -108,6 +108,20 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
         ))
     }
 
+    const deliveryInf = (isDelivery: boolean) => {
+        if (isDelivery) {
+            return (
+                <td
+                    style={{gap:"1rem", color:"var(--primary-light)"}}
+                >
+                    <BikeIcon/> Entrega
+                </td>
+            )
+        } else {
+            return <td>N/A</td>
+        }
+    }
+
     return (
         <>
             {list?.map((order) => {
@@ -132,6 +146,9 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                             <OrderProducts productsStrings={order.productsStrings} />
                         </td>
 
+                        {/* Delivery */}
+                        {deliveryInf(order.isDelivery)}
+                       
                         {/* Value */}
                         <td>
                             {order.value}

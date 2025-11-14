@@ -9,6 +9,7 @@ import { Messages } from "../../components/Messages";
 import { createCustomer } from "../../services/customersApi";
 import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
 import { formatPhone } from "../../utils/format-phone";
+import { formatCep } from "../../utils/format-cep";
 
 export function CreateCliente() {
     useEffect(() => {
@@ -47,15 +48,15 @@ export function CreateCliente() {
             name: name.trim(), 
             cpfCnpj, 
             phone, 
-            email,
+            email: email.trim(),
             pendingOrders: false,
-            road,
-            num,
-            neighborhood, 
-            city,
-            state,
+            road: road.trim(),
+            num: num.trim(),
+            neighborhood: neighborhood.trim(), 
+            city: city.trim(),
+            state: state.trim(),
             cep,
-            obs            
+            obs         
         }
 
         try {
@@ -189,9 +190,10 @@ export function CreateCliente() {
                                 <input
                                     id="cep"
                                     autoComplete="off"
-                                    value={cep}
+                                    value={formatCep(cep)}
                                     onChange={(e) => setCep(e.target.value)}
-                                    placeholder="00000-000"/>
+                                    placeholder="00000-000"
+                                    maxLength={9}/>
                             </div>
                         </div>
                         

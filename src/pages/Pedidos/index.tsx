@@ -21,7 +21,7 @@ export function Pedidos() {
     
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ dateIsDown, setDateIsDown] = useState(true);
-    // const [ timeIsDown, setTimeIsDown] = useState(true);
+    const [ deliveryIsDown, setDeliveryIsDown ] = useState(true);
     const [ productsIsDown, setProductsIsDown ] = useState(true);
     const [ valueIsDown, setValueIsDown ] = useState(true);
     const [ statusIsDown, setStatusIsDown ] = useState(true);
@@ -106,6 +106,7 @@ export function Pedidos() {
                     setProductsIsDown(true)
                     setValueIsDown(true)
                     setStatusIsDown(true)
+                    setDeliveryIsDown(true)
                     
                 } else {
                     const sortedList = [...orders].sort((a, b) => 
@@ -130,6 +131,7 @@ export function Pedidos() {
                     setValueIsDown(true)
                     setProductsIsDown(true)
                     setStatusIsDown(true)
+                    setDeliveryIsDown(true)
                     
                 } else {
                     const sortedList = [...orders].sort((a, b) => {
@@ -154,12 +156,35 @@ export function Pedidos() {
                     setDateIsDown(true)
                     setValueIsDown(true)
                     setStatusIsDown(true)
+                    setDeliveryIsDown(true)
                 } else {
                     const sortedList = [...orders].sort((a, b) => 
                         b.products.length - a.products.length
                     )
                     setOrders(sortedList)
                     setProductsIsDown(true)
+                } 
+                break
+            }
+            case "Delivery": {
+                if (deliveryIsDown){
+                    const sortedList = [...orders].sort((a, b) => 
+                        Number(b.isDelivery) - Number(a.isDelivery)
+                    )
+                    setOrders(sortedList)
+                    setDeliveryIsDown(false)
+
+                    setNameIsDown(true)
+                    setDateIsDown(true)
+                    setValueIsDown(true)
+                    setProductsIsDown(true)
+                    setStatusIsDown(true)
+                } else {
+                    const sortedList = [...orders].sort((a, b) => 
+                        Number(a.isDelivery) - Number(b.isDelivery)
+                    )
+                    setOrders(sortedList)
+                    setDeliveryIsDown(true)
                 } 
                 break
             }
@@ -178,6 +203,7 @@ export function Pedidos() {
                     setDateIsDown(true)
                     setProductsIsDown(true)
                     setStatusIsDown(true)
+                    setDeliveryIsDown(true)
                     
                 } else {
                     const sortedList = [...orders].sort((a, b) => {
@@ -203,6 +229,7 @@ export function Pedidos() {
                     setDateIsDown(true)
                     setProductsIsDown(true)
                     setValueIsDown(true)
+                    setDeliveryIsDown(true)
                 } else {
                     const sortedList = [...orders].sort((a, b) => 
                         b.status.localeCompare(a.status)
@@ -264,6 +291,10 @@ export function Pedidos() {
                                 <th onClick={() => thHandleClick("Products")}>
                                     Produtos 
                                     <ChevronDownIcon className={handleClickClass(productsIsDown)}/>
+                                </th>
+                                <th onClick={() => thHandleClick("Delivery")}>
+                                    Entrega 
+                                    <ChevronDownIcon className={handleClickClass(deliveryIsDown)}/>
                                 </th>
                                 <th onClick={() => thHandleClick("Value")}>
                                     Valor 

@@ -5,7 +5,7 @@ import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./Home.module.css"
 import { Title } from "../../components/Title";
 import GeralDatePicker from "../../components/GeralDatePicker";
-import { CircleCheckIcon, ClipboardListIcon, HourglassIcon } from "lucide-react";
+import { BikeIcon, CircleCheckIcon, HourglassIcon } from "lucide-react";
 import { formatBrDate, formatDate } from "../../utils/format-date";
 import { getOrders, type Order } from "../../services/ordersApi";
 
@@ -39,7 +39,7 @@ export function Home() {
         loadOrders()
     }, [date])
 
-    const countPendingOrders = () => {
+    const countOrders = () => {
         let countPending = 0;
         let concluedCounter = 0;
 
@@ -74,7 +74,17 @@ export function Home() {
         return { docesCount, salgadosCount, bolosCount, sobremesasCount }
     }
 
-    const { countPending, concluedCounter } = countPendingOrders()
+    const deliveryCount = () => {
+        let total = 0;
+
+        orders.map(order => {
+            if (order.isDelivery) total ++
+        })
+
+        return total
+    }
+
+    const { countPending, concluedCounter } = countOrders()
     const { docesCount, salgadosCount, bolosCount, sobremesasCount } = categoryCount()
     
     return (
@@ -145,11 +155,11 @@ export function Home() {
                         </div>
                         <div className={styles.quickStatsBox}>
                             <div className={styles.iconWrapper}>
-                                <ClipboardListIcon/>
+                                <BikeIcon />
                             </div>
                             <div className={styles.statsContent}>
-                                <h3>Pedidos Totais</h3>
-                                <p>{orders.length}</p>
+                                <h3>Entregas</h3>
+                                <p>{deliveryCount()}</p>
                             </div>
                         </div>
                     </div>

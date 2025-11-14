@@ -14,7 +14,6 @@ import CustomerSearch from "../../components/CustomerSearch";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 import { ProductSearch } from "../../components/ProductSearch";
 import { getProductById, updateProduct } from "../../services/productsApi";
-import { formatTime } from "../../utils/format-time";
 import { ToggleSwitch } from "../../components/ToggleSwitch";
 
 
@@ -59,11 +58,20 @@ export function CreatePedido() {
         document.title = "Novo Pedido - Comanda"
     },[])
 
+    // Remove os valores de entrega, caso estiver com a opção não
+    useEffect(() => {
+        if(!isDelivery) {
+            setDeliveryAddress("")
+            setDeliveryFee("")
+        }
+    },[isDelivery])
+
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
         return sum + (order.quantity * Number(order.price))    
     }, 0)
-
+    
+    // Formatar R$1,00 -> 1.0
     const priceNumber = (price: string) => Number(
         price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
     );
@@ -103,6 +111,7 @@ export function CreatePedido() {
         }
 
         setProductName("")
+        setProduct(undefined)
         setProductList([...productList, product]);
         Messages.success("Produto adicionado")
     }
@@ -240,9 +249,9 @@ export function CreatePedido() {
             const number = customerData.num
             const city = customerData.city
 
-            const addressString = `${road} ${number} - ${neighborhood}, ${city}`
+            const addressString = `${road}${number} - ${neighborhood}, ${city}`
 
-            if (addressString === "  - , ") {
+            if (addressString === " - , ") {
                 Messages.dismiss()
                 Messages.error("Sem endereço cadastrado");
                 return;
@@ -305,7 +314,7 @@ export function CreatePedido() {
                                     value={time}
                                     placeholder="14:00"   
                                     maxLength={5} 
-                                    onChange={(e) => {setTime(formatTime(e.target.value))}}
+                                    onChange={(e) => {setTime(e.target.value)}}
                                 />
                             </div>
                         </div>
@@ -465,7 +474,8 @@ export function CreatePedido() {
                                         - R$ {discount.toFixed(2)}
                                     </p>
                                 </div>
-
+                                
+                                {/* Taxa de Entrega */}
                                 {isDelivery && (
                                     <div className={styles.statsValueBox}>
                                         <label>Taxa de Entrega</label> 

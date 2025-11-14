@@ -83,15 +83,15 @@ export function EditCliente() {
             name: name.trim(), 
             cpfCnpj, 
             phone, 
-            email,
+            email: email.trim(),
             pendingOrders: false,
-            road,
-            num,
-            neighborhood, 
-            city,
-            state,
+            road: road.trim(),
+            num: num.trim(),
+            neighborhood: neighborhood.trim(), 
+            city: city.trim(),
+            state: state.trim(),
             cep,
-            obs            
+            obs             
         }
 
         if(!id) {

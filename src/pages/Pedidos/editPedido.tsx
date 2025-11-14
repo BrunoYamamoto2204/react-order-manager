@@ -3,7 +3,7 @@ import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreatePedido.module.css";
-import { PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
+import { BikeIcon, PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
@@ -13,7 +13,8 @@ import { formatDate } from "../../utils/format-date";
 import CustomerSearch from "../../components/CustomerSearch";
 import { ProductSearch } from "../../components/ProductSearch";
 import { getProductById, updateProduct } from "../../services/productsApi";
-import { formatTime } from "../../utils/format-time";
+import { getCustomerById } from "../../services/customersApi";
+import { ToggleSwitch } from "../../components/ToggleSwitch";
 
 export type OrderProduct = {
     uniqueId: number
@@ -53,6 +54,11 @@ export function EditPedido() {
     const [ productName, setProductName] = useState("")
     const [ product, setProduct ] = useState<OrderProduct>();
 
+    const [ isDelivery, setIsDelivery ] = useState(false);
+    const [ deliveryAddress, setDeliveryAddress ] = useState("");
+    const [ deliveryFee, setDeliveryFee ] = useState("");
+
+
     // Identifica qual order será modificada 
     useEffect(() => {
         document.title = "Editar Pedido - Comanda"
@@ -73,6 +79,10 @@ export function EditPedido() {
                 setPreviousProductList(order.products)
                 setStatus(order.status)
 
+                setIsDelivery(order.isDelivery)
+                setDeliveryAddress(order.deliveryAddress!)
+                setDeliveryFee(order.deliveryFee!)
+
                 setName(order.name)
                 setDescription(order.obs)
                 setDate(convertDateFormat(order.date))
@@ -92,10 +102,22 @@ export function EditPedido() {
         loadOrder()
     },[id])
 
+    // Remove os valores de entrega, caso estiver com a opção não
+    useEffect(() => {
+        if(!isDelivery) {
+            setDeliveryAddress("")
+            setDeliveryFee("")
+        }
+    },[isDelivery])
+
     // Calcula o Valor Bruto
     const grossValue = productList.reduce((sum, order) => {
         return sum + (order.quantity * Number(order.price))
     }, 0)
+
+    const priceNumber = (price: string) => Number(
+        price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
+    );
 
     // Define o total 
     useEffect(() => {
@@ -113,9 +135,9 @@ export function EditPedido() {
         }
 
         const currentDiscountAmount = calculatedDiscountAmount();
-        const subtotal = Math.max(0, grossValue - currentDiscountAmount);
+        const subtotal = Math.max(0, grossValue - currentDiscountAmount) + priceNumber(deliveryFee);
         setTotal(subtotal.toString()); 
-    }, [productList, discountValue, discountType, grossValue]); 
+    }, [productList, discountValue, discountType, grossValue, deliveryFee]); 
 
     // Formtar data: dd/MM/YYYY - YYYY-MM-dd
     const convertDateFormat = (dateStr: string) => {
@@ -142,17 +164,6 @@ export function EditPedido() {
         setProductList(newOrder)
     }
 
-    // Mudar o changeQuantity
-    const changeQuantity = (newQuantity : number, productId: string) => {
-        setProductList(currentProducts => 
-            currentProducts.map(product => 
-                product.uniqueId.toString() === productId 
-                    ? {...product, quantity: newQuantity}
-                    : product
-            )
-        )
-    }
-
     // Adiociona produto no pedido
     const handleNewProduct = () => {
         Messages.dismiss()
@@ -173,6 +184,7 @@ export function EditPedido() {
         };
 
         setProductName("")
+        setProduct(undefined)
         setProductList([...productList, newProduct]);
         Messages.success("Produto adicionado")
     }
@@ -197,6 +209,17 @@ export function EditPedido() {
             return;
         }
 
+        if (isDelivery) {
+            if (!deliveryAddress) {
+                Messages.error("Informe o endereço de entrega do pedido");
+                return;
+            }
+            if (!deliveryFee) {
+                Messages.error("Informe a taxa de entrega do pedido");
+                return;
+            }
+        }
+
         if (productList.length <= 0) {
             Messages.error("Adicione itens ao pedido");
             return;
@@ -208,6 +231,9 @@ export function EditPedido() {
     
         const updatedOrder = ({
             customerId: noRegister ? null : customerId,
+            isDelivery: isDelivery,
+            deliveryAddress: deliveryAddress,
+            deliveryFee: deliveryFee,
             name: name,
             noRegister: noRegister,
             date: formatDate(date),
@@ -233,11 +259,6 @@ export function EditPedido() {
             }
 
             await updateOrder(id, updatedOrder)
-
-            // if (!noRegister && customerId){
-            //     const chosenCustomer = await getCustomerById(customerId)
-            //     await updateCustomer(customerId, {...chosenCustomer, pendingOrders: chosenCustomer.pendingOrders})
-            // }
 
             // Adicionar a quantidade de produtos nas quantidade dentro de products 
             for (const newProduct of productList) {
@@ -289,6 +310,57 @@ export function EditPedido() {
         } catch (error){
             console.error("[-] Erro ao Editar Pedido: ", error)
             Messages.error("Erro ao Editar Pedido")
+        }
+    }
+
+    // Mudar o changeQuantity
+    const changeQuantity = (newQuantity : number, productId: string) => {
+        setProductList(currentProducts => 
+            currentProducts.map(product => 
+                product.uniqueId.toString() === productId 
+                    ? {...product, quantity: newQuantity}
+                    : product
+            )
+        )
+    }
+
+    const handleDeliveryFee = (value: string) => {
+        // Remove tudo que não for número
+        const numeric = value.replace(/\D/g, "");
+
+        // Converte para reais
+        const formatted = (Number(numeric) / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+
+        setDeliveryFee(formatted);
+    };
+
+    const handleClickAddressButton = async () => {
+        if (!customerSelected || !customerId){
+            Messages.dismiss()
+            setDeliveryAddress("")
+            Messages.error("Selecione um cliente exitente");
+            return;
+        } else{
+            const customerData = await getCustomerById(customerId)
+            const road = customerData.road
+            const neighborhood = customerData.neighborhood
+            const number = customerData.num
+            const city = customerData.city
+
+            const addressString = `${road} ${number} - ${neighborhood}, ${city}`
+
+            if (addressString === "  - , ") {
+                Messages.dismiss()
+                Messages.error("Sem endereço cadastrado");
+                return;
+            } else {
+                Messages.dismiss()
+                Messages.success("Dados adicionados com sucesso");
+                setDeliveryAddress(addressString)
+            }
         }
     }
 
@@ -356,10 +428,59 @@ export function EditPedido() {
                                     value={time}
                                     placeholder="14:00"   
                                     maxLength={5} 
-                                    onChange={(e) => {setTime(formatTime(e.target.value))}}
+                                    onChange={(e) => {setTime(e.target.value)}}
                                 />
                             </div>
 
+                        </div>
+
+                        {/* Entrega  */}
+                        <div className={styles.delivery}>
+                            <hr />
+                            
+                            <div className={styles.deliveryCheckBox}>
+                                <label><BikeIcon/> Pedido para entrega?</label>
+                                <ToggleSwitch 
+                                    changeIsDelivery={setIsDelivery}
+                                    isDelivery={isDelivery}
+                                />
+                            </div>
+
+                            {isDelivery && (
+                                <div>
+                                    <div className={styles.deliveryInputBox}>
+                                        <div className={styles.deliveryInput}>
+                                            <label>Endereço </label>
+                                            <input
+                                                onChange={(e) => setDeliveryAddress(e.target.value)}
+                                                value={deliveryAddress}
+                                                placeholder="Ex: Rua ABC 123 - Bairro XYZ"
+                                            />
+                                        </div>
+                                        <div className={styles.deliveryInput}>
+                                            <label style={{color:"var(--primary-light)"}}>
+                                                Taxa de Entrega *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={deliveryFee}
+                                                placeholder="Ex: R$ 10,00"
+                                                onChange={(e) => handleDeliveryFee(e.target.value)}
+                                            />
+                                        </div>                                    
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => handleClickAddressButton()}
+                                        className={styles.reuse}
+                                    >
+                                        Usar endereço do Cliente
+                                    </button>
+
+                                </div>
+                            )}
+                            <hr />
                         </div>
 
                         {/* Produtos do Pedido */}
@@ -468,7 +589,15 @@ export function EditPedido() {
                                     </p>
                                 </div>
 
-                                {/* Subtotal */}
+                                {/* Taxa de Entrega */}
+                                {isDelivery && (
+                                    <div className={styles.statsValueBox}>
+                                        <label>Taxa de Entrega</label> 
+                                        <p>R$ {priceNumber(deliveryFee).toFixed(2)}</p>
+                                    </div>
+                                )}
+
+                                {/* Total */}
                                 <div className={styles.statsValueBox}>
                                     <label>Total</label> 
                                     <p style={{ color: 'var(--primary)' }}>

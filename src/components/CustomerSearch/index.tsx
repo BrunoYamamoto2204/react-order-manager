@@ -9,6 +9,7 @@ type CustomerSearchProps ={
     onChange: (name: string) => void;
     setCustomerId: (id: string | null) => void;
     placeholder?: string;
+    noRegister: boolean
     setNoRegister: (noRegister: boolean) => void
 }
 
@@ -18,6 +19,7 @@ export default function CustomerSearch({
     onChange,
     setCustomerId,
     placeholder,
+    noRegister,
     setNoRegister
 }: CustomerSearchProps ) {
     const [ customers, setCustomers] = useState<Customer[]>([])
@@ -115,7 +117,7 @@ export default function CustomerSearch({
                     placeholder={placeholder}
                 />
 
-                {showSuggestions && (
+                {!noRegister && (showSuggestions && (
                     <div ref={dropDownRef} className={styles.suggestions}>
                         {loading ? (
                             <div>...Carregando</div>
@@ -138,7 +140,7 @@ export default function CustomerSearch({
                             )
                         )}
                     </div>
-                )}
+                ))}
             </div>
         </div>
     )

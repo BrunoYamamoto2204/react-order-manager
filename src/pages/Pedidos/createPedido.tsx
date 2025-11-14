@@ -284,6 +284,7 @@ export function CreatePedido() {
                                     setCustomerId={setCustomerId}
                                     placeholder="Buscar Cliente"
                                     setNoRegister={setNoRegister}
+                                    noRegister={noRegister}
                                 />
                                 <div className={styles.withouRegister}>
                                     <label htmlFor="noName">Sem cadastro</label>

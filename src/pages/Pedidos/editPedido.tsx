@@ -158,7 +158,7 @@ export function EditPedido() {
         const currentOrderList = [...productList]
 
         const newOrder = currentOrderList.filter(order => 
-            order.product !== listItem.product
+            order.uniqueId !== listItem.uniqueId
         )
 
         setProductList(newOrder)
@@ -397,6 +397,7 @@ export function EditPedido() {
                                     setCustomerId={setCustomerId}
                                     placeholder="Buscar Cliente"
                                     setNoRegister={setNoRegister}
+                                    noRegister={noRegister}
                                 />
                                 <div className={styles.withouRegister}>
                                     <label htmlFor="noName">Sem cadastro</label>

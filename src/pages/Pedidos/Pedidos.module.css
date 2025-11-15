@@ -16,6 +16,12 @@
     font-size: 1.8rem;
     color: inherit;
     padding-left: 5rem;
+    outline: none
+}
+
+.searchOrder input:focus {
+    border-color: var(--primary);
+    outline: none;
 }
 
 .searchOrder .searchIcon{
@@ -42,7 +48,7 @@
 
 .orderTable table {
     display: grid;
-    grid-template-columns: 1.2fr 1.2fr 1.4fr 0.7fr 0.7fr 1fr 0.6fr; 
+    grid-template-columns: 1.2fr 1.2fr 1.4fr 0.7fr 0.7fr 1fr 0.8fr; 
     border-collapse: collapse;
 }
 
@@ -188,7 +194,7 @@ tr:hover .status button:hover{
 /* Destaque para linha selecionada */
 .orderTable tbody tr:hover td{
     background-color: var(--gray-500);
-    color: var(--gray-100);
+    /* color: var(--gray-100); */
 }
 
 /* Botao Ver mais ... */
@@ -254,4 +260,16 @@ tr:hover .status button:hover{
 .noOrders {
     grid-column: 1 / -1;
     margin: auto;
+}
+
+.seeOrder p{
+    color: var(--gray-100);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.seeOrder p:hover{
+    color: var(--primary-light);
+    cursor: pointer;
+    transform: scale(1.05);
 }

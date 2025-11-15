@@ -1,0 +1,155 @@
+.product {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    color: var(--gray-100);
+    z-index: 999;
+    border-radius: 1rem;
+    padding: 5rem;
+    background-color: var(--gray-700);
+}
+
+.product h3{
+    font-size: 2.3rem;
+}
+
+/* Header */
+.header{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.backButtonBox{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.backButton, .editButton{
+    padding: 1rem 2rem;
+    border: none;
+    background-color: var(--gray-500);
+    color: var(--gray-100);
+    border-radius: 1rem;
+    font-size: 2rem;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    gap: 1rem;
+}
+
+.editButton{
+    background-color: var(--primary-dark);
+    transition: all 0.2 ease-in-out;
+}
+
+.editButton:hover{
+    color: var(--gray-100);
+    background-color: var(--gray-500);
+    transform: scale(1.05);
+}
+
+.backButton:hover {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    transform: scale(0.95);
+}
+
+/* informações do Pedido */
+.orderInfo {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+    gap: 1.5rem;
+}
+
+.sectionTitle {
+    color: var(--gray-300);
+    font-size: 1.8rem;
+}
+
+.titleAndValue{
+    color: var(--gray-300);
+    font-size: 1.8rem;
+    
+}
+
+.sectionTitleValue {
+    margin-top: 0.5rem;
+    font-size: 2.1rem;
+}
+
+/* Detalhes e Cliente */
+.details, .deliveryAndStatus{
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.infoBox{
+    border: 3px solid var(--gray-400);
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: var(--gray-500);
+    padding: 3rem;
+}
+
+.infoBox hr{
+    border: 1px solid var(--gray-300);
+    margin: 3rem 0;
+}
+
+.detailsHeader{
+    display: flex;
+    justify-content: space-between;
+}
+
+.detailsHeader h3 {
+    margin: 0;
+}
+
+/* Produtos e preços */
+.productItem{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.productItem p{
+    color: var(--gray-300);
+    font-size: 1.8rem;
+}
+.productItem label{
+    margin-top: 0.5rem;
+    font-size: 2.1rem;
+}
+
+/* Status */
+.orderStatus{
+    font-size: 2rem;
+    display: inline-block;
+    padding: 1.5rem;
+    border-radius: 5rem;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.orderStatusPending{
+    color: var(--warning);
+    background-color: rgba(245, 245, 14, 0.26);
+}
+
+.orderStatusConclued{
+    color: var(--primary-light);
+    background-color: var(--primary-dark);
+}
+
+.orderStatusCanceled{
+    color: var(--error);
+    background-color: rgba(102, 3, 3, 0.267);
+}
+
+.obs p{
+    margin-top: 2rem;
+    color: var(--gray-200);
+    font-size: 1.8rem;
+}

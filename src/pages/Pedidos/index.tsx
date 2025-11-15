@@ -13,6 +13,7 @@ import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
 import { formatStringDateTime } from "../../utils/format-date";
+import { CompleteOrder } from "../../components/CompleteOrder";
 
 export function Pedidos() {
     const navigate = useNavigate();
@@ -26,6 +27,8 @@ export function Pedidos() {
     const [ valueIsDown, setValueIsDown ] = useState(true);
     const [ statusIsDown, setStatusIsDown ] = useState(true);
 
+    const [ showOrder, setShowOrder ] = useState(false)
+    const [ order, setOrder ] =  useState<Order>()
 
     useEffect(() => {
         document.title = "Pedidos - Comanda"
@@ -37,10 +40,10 @@ export function Pedidos() {
             setLoading(true)
             const data = await getOrders()
             setOrders(data.sort((a, b) => {
-                        const dateTimeA = `${formatStringDateTime(a.date)} ${a.time}`; 
-                        const dateTimeB = `${formatStringDateTime(b.date)} ${b.time}`; 
-                        return dateTimeB.localeCompare(dateTimeA);
-                    }))
+                const dateTimeA = `${formatStringDateTime(a.date)} ${a.time}`; 
+                const dateTimeB = `${formatStringDateTime(b.date)} ${b.time}`; 
+                return dateTimeB.localeCompare(dateTimeA);
+            }))
         } catch (error) {
             console.error('[-] Erro ao carregar pedidos:', error);
             Messages.error("Erro ao carregar pedidos");
@@ -246,6 +249,11 @@ export function Pedidos() {
         return isDown ? `${styles.icon}` : `${styles.icon} ${styles.isUp}`
     }
 
+    const handleClickOrder = (order: Order) => {
+        setShowOrder(!showOrder)
+        setOrder(order)
+    }   
+
     if (loading) {
         return (
             <MainTemplate>
@@ -261,6 +269,14 @@ export function Pedidos() {
     return (
         <MainTemplate>
             <Container>
+                {showOrder && (
+                    <CompleteOrder 
+                        order={order!}
+                        removeOrders={removeOrder}
+                        setShowOrder={setShowOrder}
+                    />
+                )}
+
                 <div className={styles.header}>
                     <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
                     <button onClick={() => navigate("/pedidos/novo")}>
@@ -311,7 +327,7 @@ export function Pedidos() {
                             {orders.length > 0 ? (
                                 <OrdersList 
                                     ordersList={orders}
-                                    removeOrders={removeOrder}
+                                    handleClickOrder={handleClickOrder}
                                 />
                             ) : (
                                 <tr>

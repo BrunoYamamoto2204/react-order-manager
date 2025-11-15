@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
-import { BikeIcon, Edit2Icon, TrashIcon } from "lucide-react";
-import { useNavigate } from "react-router";
+import { BikeIcon } from "lucide-react";
 import { getOrders, updateOrder, type Order } from "../../services/ordersApi"
 import { StatusSelectList } from "../StatusSelectList/indes";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
 type OrderListProps = {
     ordersList: Order[],
-    removeOrders: (filteredOrder: Order)  => void
+    handleClickOrder: (order: Order) => void
+    // removeOrders: (filteredOrder: Order)  => void
 }
 
 // Junta a lista de produtos em 1 <ul> (pronto para inserir dentro de <td>)
@@ -37,8 +37,8 @@ const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
     )
 }
 
-export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
-    const navigate = useNavigate();
+export function OrdersList({ ordersList, handleClickOrder } : OrderListProps) {
+    // const navigate = useNavigate();
 
     const [ list, setList ] = useState<Order[]>()
 
@@ -58,7 +58,7 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
         }
     }
 
-     const changeStatus = async (order: Order, status: string, customerId: string) => { 
+    const changeStatus = async (order: Order, status: string, customerId: string) => { 
         let newStatus = ""; 
         if (status === "Pendente"){ 
             newStatus = "Pendente"; 
@@ -165,7 +165,10 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                         </td>
 
                         {/* Actions */}
-                        <td key="actions"> 
+                        <td className={styles.seeOrder}>
+                            <p onClick={() => handleClickOrder(order)}>Ver Pedido</p>
+                        </td>
+                        {/* <td key="actions"> 
                             <div className={styles.actions}>
                                 <button 
                                     onClick={() => navigate(`/pedidos/editar/${order._id}`)}
@@ -178,8 +181,7 @@ export function OrdersList({ ordersList, removeOrders } : OrderListProps) {
                                     <TrashIcon />
                                 </button>
                             </div>
-                        </td>
-
+                        </td> */}
                     </tr>
                 )
             })}

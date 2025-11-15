@@ -16,6 +16,12 @@
     font-size: 1.8rem;
     color: inherit;
     padding-left: 5rem;
+    outline: none
+}
+
+.searchProduct input:focus {
+    border-color: var(--primary);
+    outline: none;
 }
 
 .searchProduct .searchIcon{

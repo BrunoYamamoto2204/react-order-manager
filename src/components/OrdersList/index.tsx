@@ -8,6 +8,7 @@ import { getCustomerById, updateCustomer } from "../../services/customersApi";
 type OrderListProps = {
     ordersList: Order[],
     handleClickOrder: (order: Order) => void
+    setOrders: (newOrder: Order[]) => void
     // removeOrders: (filteredOrder: Order)  => void
 }
 
@@ -37,9 +38,7 @@ const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
     )
 }
 
-export function OrdersList({ ordersList, handleClickOrder } : OrderListProps) {
-    // const navigate = useNavigate();
-
+export function OrdersList({ ordersList, handleClickOrder, setOrders } : OrderListProps) {
     const [ list, setList ] = useState<Order[]>()
 
     useEffect(() => {
@@ -59,53 +58,38 @@ export function OrdersList({ ordersList, handleClickOrder } : OrderListProps) {
     }
 
     const changeStatus = async (order: Order, status: string, customerId: string) => { 
-        let newStatus = ""; 
-        if (status === "Pendente"){ 
-            newStatus = "Pendente"; 
-            const customer = await getCustomerById(customerId)
-            await updateCustomer(customerId, {...customer, pendingOrders: true})
-        }
-        else if (status === "Concluído") {
-            newStatus = "Concluído"; 
-
-            if(order._id) await updateOrder(order._id, { ...order, status: newStatus });
-
-            const orders = await getOrders()
-            const pendingOrder = orders.some(order => (
-                order.customerId === customerId && 
-                order.status === "Pendente"
-            ))
-
-            if (!pendingOrder) {
-                const customer = await getCustomerById(customerId)
-                await updateCustomer(customerId, {...customer, pendingOrders: false})
-            }
-        }
-        else {
-            newStatus = "Cancelado"; 
-
-            if(order._id) await updateOrder(order._id, { ...order, status: newStatus });
-            
-            const orders = await getOrders()
-            const pendingOrder = orders.some(order => (
-                order.customerId === customerId && 
-                order.status === "Pendente"
-            ))
-
-            if (!pendingOrder) {
-                const customer = await getCustomerById(customerId)
-                await updateCustomer(customerId, {...customer, pendingOrders: false})
-            }
+         if (!order._id) {
+            console.error("Pedido sem _id");
+            return;
         }
 
-        if(order._id) { 
-            const updatedOrder = {...order, status: newStatus} 
-            await updateOrder(order._id, updatedOrder) 
-        }
+        // Realiza a atualização de status no pedido [NO MONGO DB]
+        const updatedOrder = { ...order, status };
+        await updateOrder(order._id, updatedOrder); 
 
-        setList(prev => prev?.map(o => 
-            o._id === order._id ? {...o, status: newStatus} : o
-        ))
+        // Realiza a atualização de status no pedido [NA LISTA LOCAL]
+        const updatedList = list?.map(o => 
+            o._id === order._id ? updatedOrder : o
+        ) || []
+
+        setOrders(updatedList)
+        setList(updatedList);  
+
+        // Atualiza o noPending do cliente, se houver cadastro
+        if (customerId) {
+            const hasOtherPendingOrders = updatedList.some(o => 
+                o.customerId === customerId &&
+                o.status === "Pendente" 
+            )
+
+            const stillPending = status === "Pendente" || hasOtherPendingOrders;
+
+            const customer = await getCustomerById(customerId) 
+            await updateCustomer(customerId, {
+                ...customer,
+                pendingOrders: stillPending
+            })
+        }
     }
 
     const deliveryInf = (isDelivery: boolean) => {

@@ -328,6 +328,7 @@ export function Pedidos() {
                                 <OrdersList 
                                     ordersList={orders}
                                     handleClickOrder={handleClickOrder}
+                                    setOrders={setOrders}
                                 />
                             ) : (
                                 <tr>

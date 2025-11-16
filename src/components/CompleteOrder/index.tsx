@@ -23,7 +23,7 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
 
     const haveDiscount = (discount: string) => {
         if (discount === "") return 
-        const discountValueString = `R$ ${Number(order.discountValue).toFixed(2)}`
+        const discountValueString = `R$ ${Number(order.discount).toFixed(2)}`
 
         return (
             <div className={styles.productItem}>

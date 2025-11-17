@@ -10,6 +10,7 @@ import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { Messages } from "../../components/Messages";
 import { deleteProduct, getProducts } from "../../services/productsApi";
 import type { Product } from "../../services/productsApi";
+import { CompleteProduct } from "../../components/CompleteProduct";
 
 export function Produtos() {
     const navigate = useNavigate();
@@ -21,6 +22,8 @@ export function Produtos() {
     const [ unitIsDown, setUnitIsDown ] = useState(true);
     const [ priceIsDown, setPriceIsDown ] = useState(true);
 
+    const [ showProduct, setShowProduct ] = useState(false)
+    const [ product, setProduct ] =  useState<Product>()
 
     useEffect(() => {
         document.title = "Produtos - Comanda"
@@ -40,7 +43,7 @@ export function Produtos() {
         }
     } 
 
-    const removeOrder = async (filteredProduct: Product) => {
+    const removeProduct = async (filteredProduct: Product) => {
         try{
             if (!filteredProduct._id) {
                 console.log("❌ Produto sem _id:", filteredProduct);
@@ -164,6 +167,11 @@ export function Produtos() {
     const handleClickClass = (isDown: boolean) => {
         return isDown ? `${styles.icon}` : `${styles.icon} ${styles.isUp}`
     }
+
+    const handleClickproduct = (product: Product) => {
+        setShowProduct(true)
+        setProduct(product)
+    }   
     
     if (loading) {
         return (
@@ -180,6 +188,14 @@ export function Produtos() {
     return(
        <MainTemplate>
             <Container>
+                {showProduct && (
+                    <CompleteProduct 
+                        product={product!}
+                        removeProduct={removeProduct}
+                        setShowProduct={setShowProduct}
+                    />
+                )}
+
                 <div className={styles.header}>
                     <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
                     <button onClick={() => navigate("/produtos/criar")}>
@@ -215,14 +231,14 @@ export function Produtos() {
                                     Unidade 
                                     <ChevronDownIcon className={handleClickClass(unitIsDown)}/>
                                 </th>
-                                <th>Ações</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {products.length > 0 ? (
                                 <ProductsList 
                                     productsList={products}
-                                    deleteProduct = {removeOrder}
+                                    handleClickproduct={handleClickproduct}
                                 />
                             ): (
                                 <tr>

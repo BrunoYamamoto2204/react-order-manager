@@ -19,6 +19,10 @@
     outline: none
 }
 
+.searchCustomer input::placeholder {
+    color: var(--gray-300); 
+}
+
 .searchCustomer input:focus {
     border-color: var(--primary);
     outline: none;
@@ -178,6 +182,18 @@
 .noCustomers{
     grid-column: 1 / -1;
     margin: auto;
+}
+
+.seeCustomer p{
+    color: var(--gray-100);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.seeCustomer p:hover{
+    color: var(--primary-light);
+    cursor: pointer;
+    transform: scale(1.05);
 }
 
 

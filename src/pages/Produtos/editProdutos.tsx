@@ -36,7 +36,7 @@ export function EditProdutos() {
                 const product = await getProductById(id)
 
                 setName(product.product)
-                setPrice(product.price.toFixed(2).toString())
+                setPrice("R$ " + product.price.toFixed(2).replace(".",","))
                 setDescription(product.description || "")
                 setSelectCategory(product.category)
                 setSelectUn(product.unit)
@@ -99,6 +99,17 @@ export function EditProdutos() {
         }
     }
 
+    const handleProductPrice = (value: string) => {
+        const numeric = value.replace(/\D/g, "")
+
+        const formatted = (Number(numeric) / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })
+
+        setPrice(formatted)
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -139,8 +150,7 @@ export function EditProdutos() {
                                         id="preco" 
                                         autoComplete="off"
                                         value={price}
-                                        onChange={(e) => setPrice(e.target.value)}
-                                        type="number"
+                                        onChange={(e) => handleProductPrice(e.target.value)}
                                         placeholder="0,00"
                                     />
                                 </div>

@@ -19,6 +19,10 @@
     outline: none
 }
 
+.searchOrder input::placeholder {
+    color: var(--gray-300); 
+}
+
 .searchOrder input:focus {
     border-color: var(--primary);
     outline: none;
@@ -167,8 +171,8 @@
 
 
 tr:hover .status button {
-    background-color: var(--primary-light);
-    color: var(--gray-700);
+    background-color: var(--gray-600);
+    color: var(--gray-100);
     transform: scale(1.05);
     transition: all 0.2s ease-in-out;
 }

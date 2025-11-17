@@ -17,9 +17,9 @@ import { EditCliente } from "./pages/Clientes/editCliente";
 
 export function App(){
   return (
-    <BrowserRouter>
-        <MessageContainer >
-          <Routes>
+    <BrowserRouter> 
+         <MessageContainer > {/*Usar Mensagens do Toastify */}
+          <Routes> {/*Usar navigate para navergar entre componentes */}
             <Route path="/" element={<Home />} />
             <Route path="/analises" element={<Analises />} />
             <Route path="/clientes" element={<Clientes />} />

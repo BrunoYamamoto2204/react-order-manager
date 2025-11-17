@@ -66,7 +66,7 @@
     transform: scale(0.95);
 }
 
-.confirmButton {
+/* .confirmButton {
     background-color: var(--primary-dark);
     transition: all 0.2 ease-in-out;
 }
@@ -79,15 +79,9 @@
     color: var(--gray-100);
     background-color: var(--gray-600);
     transform: scale(1.05);
-}
+} */
 
-/* informações do Pedido */
-.orderInfo {
-    display: grid;
-    grid-template-columns: 1fr 0.5fr;
-    gap: 1.5rem;
-}
-
+/* informações do Produto */
 .sectionTitle {
     color: var(--gray-300);
     font-size: 1.8rem;
@@ -95,20 +89,26 @@
 
 .titleAndValue{
     color: var(--gray-300);
-    font-size: 1.8rem;
+    font-size: 2rem;
     
 }
 
 .sectionTitleValue {
     margin-top: 0.5rem;
-    font-size: 2.1rem;
+    font-size: 2.5rem;
 }
 
-/* Detalhes e Cliente */
-.details, .deliveryAndStatus{
+/* Detalhes e produto */
+.details{
     display: flex;
     flex-direction: column;
     gap: 3rem;
+}
+
+.productInfo{
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+    gap: 1.5rem;
 }
 
 .infoBox{
@@ -133,48 +133,19 @@
     margin: 0;
 }
 
-/* Produtos e preços */
-.productItem{
+.infoLine{
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
-}
 
-.productItem p{
-    color: var(--gray-300);
-    font-size: 1.8rem;
-}
-.productItem label{
-    margin-top: 0.5rem;
-    font-size: 2.1rem;
-}
-
-/* Status */
-.orderStatus{
-    font-size: 2rem;
-    display: inline-block;
-    padding: 1.5rem;
-    border-radius: 5rem;
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.orderStatusPending{
-    color: var(--warning);
-    background-color: rgba(245, 245, 14, 0.26);
-}
-
-.orderStatusConclued{
-    color: var(--primary-light);
-    background-color: var(--primary-dark);
-}
-
-.orderStatusCanceled{
-    color: var(--error);
-    background-color: rgba(102, 3, 3, 0.267);
 }
 
 /* Obs && Delivery */
+.obsBox{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
 .obs p{
     margin-top: 2rem;
     color: var(--gray-200);

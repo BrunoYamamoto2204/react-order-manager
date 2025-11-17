@@ -1,16 +1,13 @@
-import { CheckLineIcon, CircleXIcon, Edit2Icon, TrashIcon } from "lucide-react"
+import { CheckLineIcon, CircleXIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
-import { useNavigate } from "react-router"
 import { type Customer } from "../../services/customersApi"
 
 type CustomersListProps = {
     customersList: Customer[]
-    removeCustomer: (filteredCustomer: Customer) => void
+    handleClickCustomer: (customer: Customer) => void
 }
 
-export function CustomersList({ customersList, removeCustomer } : CustomersListProps) {
-    const navigate = useNavigate()
-    
+export function CustomersList({ customersList, handleClickCustomer } : CustomersListProps) {
     return (
         <>
             {customersList.map((customer, index) => {
@@ -38,19 +35,8 @@ export function CustomersList({ customersList, removeCustomer } : CustomersListP
                         }
 
                         {/* Ações  */}
-                        <td key="actions">
-                            <div className={styles.actions}>
-                                <button 
-                                    onClick={() => navigate(`/clientes/editar/${customer._id}`)}
-                                    className={styles.editIcon}>
-                                    <Edit2Icon />
-                                </button>
-                                <button 
-                                    className={styles.deleteIcon}
-                                    onClick={() => removeCustomer(customer)}>
-                                    <TrashIcon />
-                                </button>
-                            </div>
+                        <td className={styles.seeCustomer}>
+                            <p onClick={() => handleClickCustomer(customer)}>Ver Cliente</p>
                         </td>
                     </tr>
                 )

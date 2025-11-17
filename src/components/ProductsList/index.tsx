@@ -1,55 +1,41 @@
-import { Edit2Icon, TrashIcon } from "lucide-react"
 import styles from "../../pages/Produtos/Produtos.module.css"
-import { useNavigate } from "react-router"
 import type { Product } from "../../services/productsApi";
 
 type ProductsListProps = {
     productsList: Product[]
-    deleteProduct: (product: Product) => void
+    handleClickproduct: (product: Product) => void
+    
 }
 
-export function ProductsList({ productsList, deleteProduct } : ProductsListProps) {
-    const navigate = useNavigate()
-    
+export function ProductsList({ productsList, handleClickproduct } : ProductsListProps) {   
     return (
         <>
-            {productsList.map((order, index) => {
+            {productsList.map((product, index) => {
                 return (
-                    <tr key={`${order.product}_${index}`}>
+                    <tr key={`${product.product}_${index}`}>
                         {/* Name */}
                         <td>
-                            {order.product}
+                            {product.product}
                         </td>
 
                         {/* Price */}
                         <td>
-                            R$ {order.price.toFixed(2).replace(".",",")}
+                            R$ {product.price.toFixed(2).replace(".",",")}
                         </td>
 
                         {/* Category */}
                         <td>
-                            <span className={styles.category}>{order.category}</span>
+                            <span className={styles.category}>{product.category}</span>
                         </td>
 
                         {/* Unity */}
                         <td>
-                            {order.unit}
+                            {product.unit}
                         </td>
 
                         {/* Actions */}
-                        <td key="actions"> 
-                            <div className={styles.actions}>
-                                <button 
-                                    onClick={() => navigate(`/produtos/editar/${order._id}`)}
-                                    className={styles.editIcon}>
-                                    <Edit2Icon />
-                                </button>
-                                <button 
-                                    onClick={() => deleteProduct(order)}
-                                    className={styles.deleteIcon}>
-                                    <TrashIcon />
-                                </button>
-                            </div>
+                        <td className={styles.seeProduct}>
+                            <p onClick={() => handleClickproduct(product)}>Ver Produto</p>
                         </td>
                     </tr>
                 )

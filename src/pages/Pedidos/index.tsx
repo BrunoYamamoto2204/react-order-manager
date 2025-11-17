@@ -61,6 +61,7 @@ export function Pedidos() {
             const orderProducts = (await getOrderById(filteredOrder._id)).products
             await deleteOrder(filteredOrder._id);
 
+            // Atualiza a quantidade no produto específico 
             for (const product of orderProducts) {
                 const productById = await getProductById(product.productId)
                 await updateProduct(
@@ -68,6 +69,7 @@ export function Pedidos() {
                     {...productById, quantity: productById.quantity -= product.quantity})
             }
 
+            // Atualiza a lista local
             setOrders(orders.filter(order => order._id !== filteredOrder._id))
             Messages.success("Pedido excluido")
         } catch (error) {
@@ -250,7 +252,7 @@ export function Pedidos() {
     }
 
     const handleClickOrder = (order: Order) => {
-        setShowOrder(!showOrder)
+        setShowOrder(true)
         setOrder(order)
     }   
 
@@ -320,7 +322,7 @@ export function Pedidos() {
                                     Status 
                                     <ChevronDownIcon className={handleClickClass(statusIsDown)}/>
                                 </th>
-                                <th>Ações</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

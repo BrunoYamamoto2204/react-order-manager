@@ -9,6 +9,7 @@ import { useNavigate } from "react-router"
 import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react"
 import { Messages } from "../../components/Messages"
 import { deleteCustomer, getCustomers, type Customer } from "../../services/customersApi"
+import { CompleteCustomer } from "../../components/CompleteCustomer"
 
 export function Clientes() {
     const navigate = useNavigate();
@@ -19,6 +20,9 @@ export function Clientes() {
     const [ phoneIsDown, setPhoneIsDown] = useState(true);
     const [ emailIsDown, setEmailIsDownIsDown ] = useState(true);
     const [ concluedOrderIsDown, setConcluedOrderIsDown ] = useState(true);
+
+    const [ showCustomer, setShowCustomer ] = useState(false)
+    const [ customer, setCustomer ] =  useState<Customer>()
     
     useEffect(() => {
         document.title = "Clientes - Comanda"
@@ -164,6 +168,11 @@ export function Clientes() {
         return isDown ? `${styles.icon}` : `${styles.icon} ${styles.isUp}`
     }
 
+    const handleClickCustomer = (customer: Customer) => {
+        setShowCustomer(true)
+        setCustomer(customer)
+    } 
+
     if (loading) {
         return (
             <MainTemplate>
@@ -179,6 +188,14 @@ export function Clientes() {
     return(
         <MainTemplate>
             <Container>
+                {showCustomer && (
+                    <CompleteCustomer 
+                        customer={customer!}
+                        removeCustomer={removeCustomer}
+                        setShowCustomer={setShowCustomer}
+                    />
+                )}
+
                 <div className={styles.header}>
                     <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
                     <button onClick={() => navigate("/clientes/criar")}>
@@ -219,7 +236,7 @@ export function Clientes() {
                                         className={handleClickClass(concluedOrderIsDown)}
                                     />
                                 </th>
-                                <th>Ações</th>
+                                <th></th>
                             </tr>
                         </thead>
                         
@@ -227,7 +244,7 @@ export function Clientes() {
                             {customers.length > 0 ? (
                                 <CustomersList 
                                     customersList={customers}
-                                    removeCustomer={removeCustomer}
+                                    handleClickCustomer={handleClickCustomer}
                                 />   
                             ) : (
                                 <tr>

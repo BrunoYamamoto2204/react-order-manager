@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router";
 import styles from "./CompleteOrder.module.css"
-import { ArrowLeftIcon, PencilIcon } from "lucide-react";
+import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { Order } from "../../services/ordersApi";
+import { useState } from "react";
+import { DeleteConfirm } from "../DeleteConfirm";
 
 type CompleteOrderProps = {
     order: Order
@@ -11,6 +13,8 @@ type CompleteOrderProps = {
 
 export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOrderProps) {
     const navigate = useNavigate();
+
+    const [ confirmDelete, setConfirmDelete ] = useState(false)
 
     const titleAndValue = (title: string, value: string) => {
         return (
@@ -22,13 +26,24 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
     }
 
     const haveDiscount = (discount: string) => {
-        if (discount === "") return 
+        if (discount === "0.00") return 
         const discountValueString = `R$ ${Number(order.discount).toFixed(2)}`
 
         return (
             <div className={styles.productItem}>
                 <label style={{color:"var(--primary-light)"}}>Desconto</label>
                 <label style={{color:"var(--primary-light)"}}>{discountValueString}</label>
+            </div>
+        )
+    }
+
+    const haveDeliveryFee = (isDelivery: boolean) => {
+        if (!isDelivery) return
+
+        return (
+            <div className={styles.productItem}>
+                <label style={{color:"var(--warning)"}}>Taxa de Entrega</label>
+                <label style={{color:"var(--warning)"}}>- {order.deliveryFee}</label>
             </div>
         )
     }
@@ -83,10 +98,20 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
 
     return(
         <div className={styles.product}>
+            {confirmDelete && (
+                <DeleteConfirm 
+                    name="Pedido"
+                    setOpenConfirm={setConfirmDelete}
+                    removeRegister={removeOrders}
+                    register={order}
+                    setShowRegister={setShowOrder}
+                />
+            )}
+
             <div className={styles.header}>
                 <div className={styles.backButtonBox}>
                     <button
-                        className={styles.backButton}
+                        className={`${styles.button} ${styles.backButton}`}
                         onClick={() => setShowOrder(false)}
                     >
                         <ArrowLeftIcon/> Voltar
@@ -94,7 +119,7 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                     <h2>Pedido #{order._id}</h2>
                 </div>
                 <button
-                    className={styles.editButton}
+                    className={`${styles.button} ${styles.editButton}`}
                     onClick={() => navigate(`/pedidos/editar/${order._id}`)}
                 >
                     <PencilIcon/> Editar
@@ -143,6 +168,7 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                             )
                         })}
                         {haveDiscount(order.discount)}
+                        {haveDeliveryFee(order.isDelivery)}
                         <hr />
                         {/* Total */}
                         <div className={styles.detailsHeader} style={{marginTop:"2rem"}}>
@@ -170,6 +196,19 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                         <div className={styles.obs}>
                             <h3>Observações</h3>
                             <p>{order.obs ? order.obs : "Sem observações "}</p>
+                        </div>
+                    </div>
+                    <div className={styles.infoBox}>
+                        <div className={styles.obs}>
+                            <h3>Excluir pedido?</h3>
+                            <button 
+                                type="button" 
+                                className={`${styles.button} ${styles.deleteButton}`}
+                                onClick={() => setConfirmDelete(true)}
+                                style={{marginTop:"2rem"}}
+                            >
+                                <Trash2Icon /> Excluir
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "../../pages/Pedidos/Pedidos.module.css"
 import { BikeIcon } from "lucide-react";
-import { getOrders, updateOrder, type Order } from "../../services/ordersApi"
+import { updateOrder, type Order } from "../../services/ordersApi"
 import { StatusSelectList } from "../StatusSelectList/indes";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
@@ -152,20 +152,6 @@ export function OrdersList({ ordersList, handleClickOrder, setOrders } : OrderLi
                         <td className={styles.seeOrder}>
                             <p onClick={() => handleClickOrder(order)}>Ver Pedido</p>
                         </td>
-                        {/* <td key="actions"> 
-                            <div className={styles.actions}>
-                                <button 
-                                    onClick={() => navigate(`/pedidos/editar/${order._id}`)}
-                                    className={styles.editIcon}>
-                                    <Edit2Icon />
-                                </button>
-                                <button 
-                                    onClick={() => removeOrders(order)}
-                                    className={styles.deleteIcon}>
-                                    <TrashIcon />
-                                </button>
-                            </div>
-                        </td> */}
                     </tr>
                 )
             })}

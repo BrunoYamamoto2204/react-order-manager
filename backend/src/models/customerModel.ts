@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema, Document } from "mongoose"
 
-interface ICustomer {
+interface ICustomer extends Document { 
     name: string,
     cpfCnpj: string,
     phone: string,

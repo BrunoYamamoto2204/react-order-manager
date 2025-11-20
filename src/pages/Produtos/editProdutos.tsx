@@ -76,10 +76,14 @@ export function EditProdutos() {
             return
         }
 
+        const priceNumber = Number(
+            price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
+        );
+
         const editedProduct = {
             id: Number(id),
             product: name,
-            price: Number(price),
+            price: priceNumber,
             category: selectCategory,
             unit: selectUn,
             quantity: quantity,

@@ -94,8 +94,8 @@ export function CreateCliente() {
         <MainTemplate>
             <Container>
                 <Title 
-                    title="Novo Produto" 
-                    subtitle="Preencha os dados para cadastrar um novo produto"
+                    title="Novo Cliente" 
+                    subtitle="Preencha os dados para cadastrar um novo cliente"
                 />
 
                 <div className={styles.formContent}>

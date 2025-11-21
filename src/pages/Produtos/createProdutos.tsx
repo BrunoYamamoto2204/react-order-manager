@@ -213,9 +213,10 @@ export function CreateProdutos() {
                             <button 
                                 className={styles.save} 
                                 type="submit"
+                                disabled={isSubmitting}
                             >        
                                 <SaveIcon />
-                                Salvar Produto
+                                {isSubmitting ? "Salvando..." : "Salvar Produto"}
                             </button>
                         </div>
 

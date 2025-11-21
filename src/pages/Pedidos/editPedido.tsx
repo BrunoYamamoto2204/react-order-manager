@@ -630,9 +630,10 @@ export function EditPedido() {
                             <button 
                                 className={styles.save} 
                                 type="submit"
+                                disabled={isSubmitting}
                             >        
                                 <SaveIcon />
-                                Salvar Produto
+                                {isSubmitting ? "Salvando..." : "Salvar Pedido"}
                             </button>
                         </div>
 

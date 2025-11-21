@@ -282,9 +282,10 @@ export function EditCliente() {
                             <button 
                                 className={styles.save} 
                                 type="submit"
+                                disabled={isSubmitting}
                             >        
                                 <SaveIcon />
-                                Salvar Produto
+                                {isSubmitting ? "Salvando..." : "Salvar Cliente"}
                             </button>
                         </div>
 

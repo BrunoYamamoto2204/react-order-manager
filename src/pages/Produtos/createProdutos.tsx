@@ -14,6 +14,8 @@ export function CreateProdutos() {
     },[])
     const navigate = useNavigate();
 
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
+
     // Input Values
     const [ name, setName ] = useState("");
     const [ price, setPrice ] = useState("");
@@ -49,6 +51,10 @@ export function CreateProdutos() {
             return
         }
 
+        // Garante que não adicione vários produtos
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
+
         const priceNumber = Number(
             price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
         );
@@ -76,6 +82,8 @@ export function CreateProdutos() {
         } catch(error) {
             console.log("Erro ao criar produto: ", error)
             Messages.error("Erro ao criar produto")
+        } finally {
+            setIsSubmitting(false);
         }
     }
 

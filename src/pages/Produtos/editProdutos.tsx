@@ -10,6 +10,8 @@ import { getProductById, updateProduct } from "../../services/productsApi";
 
 export function EditProdutos() {
     const navigate = useNavigate();
+
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
     
     // Input Values
     const [ name, setName ] = useState("");
@@ -76,6 +78,10 @@ export function EditProdutos() {
             return
         }
 
+        // Garante que não adicione vários produtos
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
+
         const priceNumber = Number(
             price.replace("R$", "").replace(/\s/g, "").replace(".", "").replace(",", ".")
         );
@@ -100,6 +106,8 @@ export function EditProdutos() {
         } catch(error) {
             console.log("[-] Erro ao editar produto: ", error)
             Messages.error("Erro ao editar produto")
+        } finally {
+            setIsSubmitting(false);
         }
     }
 

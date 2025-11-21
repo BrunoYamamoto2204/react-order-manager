@@ -14,6 +14,8 @@ import { getOrders, updateOrder } from "../../services/ordersApi";
 export function EditCliente() {
     const navigate = useNavigate();
 
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
+
     // Input Values
     const [name, setName] = useState("");
     const [cpfCnpj, setcpfCnpj] = useState("");
@@ -79,6 +81,10 @@ export function EditCliente() {
             return
         }
 
+        // Garante que não adicione vários clientes
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
+
         const editedCustomer = {
             name: name.trim(), 
             cpfCnpj, 
@@ -121,6 +127,8 @@ export function EditCliente() {
         } catch(error) {
             console.log(`[-] Erro ao editar cliente ${id}: `, error)
             Messages.error("Erro ao editar cliente")
+        } finally {
+            setIsSubmitting(false);
         }
     }
 

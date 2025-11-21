@@ -133,9 +133,6 @@ export function CreatePedido() {
         e.preventDefault()
         Messages.dismiss()
 
-        if (isSubmitting) return; 
-        setIsSubmitting(true);
-
         if (noRegister) {
             if(!name){
                 Messages.error("Insira o nome do cliente");
@@ -166,6 +163,10 @@ export function CreatePedido() {
             Messages.error("Adicione itens ao pedido");
             return;
         } 
+
+        // Garante que não adicione vários pedidos
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
 
         const formattedProducts = productList.map(p => 
             `${p.quantity} ${p.unit} ${p.product}`
@@ -217,7 +218,7 @@ export function CreatePedido() {
         } catch (error) {
             console.error("[-] Erro ao criar pedido: ", error)
             Messages.error("Erro ao criar pedido")
-        }   finally {
+        } finally {
             setIsSubmitting(false);
         }
     }

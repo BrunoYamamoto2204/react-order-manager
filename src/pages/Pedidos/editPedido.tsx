@@ -31,6 +31,8 @@ export function EditPedido() {
     const { id } = useParams<{ id: string }>();
     const [ loading, setLoading ] = useState(true);
 
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
+
     const [ previousProductList, setPreviousProductList ] = useState<OrderProduct[]>([])
 
     // Input Values
@@ -225,6 +227,10 @@ export function EditPedido() {
             return;
         } 
 
+        // Garante que não adicione vários pedidos
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
+
         const formattedProducts = productList.map(p => 
             `${p.quantity} ${p.unit} ${p.product}`
         );
@@ -310,6 +316,8 @@ export function EditPedido() {
         } catch (error){
             console.error("[-] Erro ao Editar Pedido: ", error)
             Messages.error("Erro ao Editar Pedido")
+        } finally {
+            setIsSubmitting(false);
         }
     }
 

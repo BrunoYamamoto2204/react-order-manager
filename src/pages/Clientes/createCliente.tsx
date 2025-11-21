@@ -17,6 +17,8 @@ export function CreateCliente() {
     },[])
     const navigate = useNavigate();
 
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
+
     // Input Values
     const [name, setName] = useState("");
     const [cpfCnpj, setCpfCnpj] = useState("");
@@ -43,6 +45,10 @@ export function CreateCliente() {
             Messages.error("Preecha todos os campo obrigatórios")
             return
         }
+
+        // Garante que não adicione vários clientes
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
 
         const newCustomer = {
             name: name.trim(), 
@@ -79,6 +85,8 @@ export function CreateCliente() {
         } catch(error) {
             console.log("Erro ao criar cliente: ", error)
             Messages.error("Erro ao cadastrar cliente")
+        } finally {
+            setIsSubmitting(false);
         }
     }
 

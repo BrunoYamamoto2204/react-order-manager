@@ -30,6 +30,8 @@ export type OrderProduct = {
 export function CreatePedido() {
     const navigate = useNavigate();
 
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
+
     const [ customerId, setCustomerId ] = useState<string | null>(null)
     const [ discountType, setDiscountType ] = useState("%")
     const [ discountValue, setDiscountValue ] = useState("0")
@@ -131,6 +133,9 @@ export function CreatePedido() {
         e.preventDefault()
         Messages.dismiss()
 
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
+
         if (noRegister) {
             if(!name){
                 Messages.error("Insira o nome do cliente");
@@ -212,6 +217,8 @@ export function CreatePedido() {
         } catch (error) {
             console.error("[-] Erro ao criar pedido: ", error)
             Messages.error("Erro ao criar pedido")
+        }   finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -509,9 +516,10 @@ export function CreatePedido() {
                             <button 
                                 className={styles.save} 
                                 type="submit"
+                                disabled={isSubmitting}
                             >        
                                 <SaveIcon />
-                                Salvar Produto
+                                {isSubmitting ? "Salvando..." : "Salvar Pedido"}
                             </button>
                         </div>
 

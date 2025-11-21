@@ -204,6 +204,9 @@ export function CreatePedido() {
                 )
             }
 
+            setName("")
+            setCustomerSelected(false)
+
             Messages.success("Pedido criado com sucesso")
             navigate("/pedidos");
         } catch (error) {

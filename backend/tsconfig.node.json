@@ -10,13 +10,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "types": ["node"]
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "ts-node": {
-    "esm": false,
-    "transpileOnly": true
-  }
+  "exclude": ["node_modules", "dist"]
 }

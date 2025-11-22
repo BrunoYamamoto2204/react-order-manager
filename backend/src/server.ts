@@ -5,6 +5,7 @@ import cors from "cors";
 import orderRoutes from "./routes/orderRoutes"
 import productRoutes from "./routes/productRoutes"
 import customerRouter from "./routes/customerRouter"
+import { apiKeyAuth } from "./middleware/apiKeyAuth";
 
 dotenv.config();
 
@@ -17,6 +18,10 @@ const port = process.env.PORT || 5000;
 connectDB()
 
 app.use(express.json())
+
+// Autenticação para acessar o backend
+app.use(apiKeyAuth)
+
 app.use("/api/orders", orderRoutes)
 app.use("/api/products", productRoutes)
 app.use("/api/customers", customerRouter)

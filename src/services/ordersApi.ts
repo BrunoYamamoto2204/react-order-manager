@@ -1,4 +1,5 @@
 const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`
+const API_KEY = import.meta.env.VITE_API_KEY
 
 type Product = {
     uniqueId: number
@@ -33,14 +34,22 @@ export type Order = {
 
 // GET - Buscar Usuários 
 export async function getOrders(): Promise<Order[]> {
-    const response = await fetch(`${API_URL}/orders`);
+    const response = await fetch(`${API_URL}/orders`, {
+        headers: {
+            'x-api-key': API_KEY
+        }
+    });
     if (!response.ok) throw new Error("[-] Erro ao buscar os pedidos!");
     return response.json();
 }
 
 // GET - Buscar um usuário específico
 export async function getOrderById(id: string): Promise<Order> {
-    const response = await fetch(`${API_URL}/orders/${id}`);
+    const response = await fetch(`${API_URL}/orders/${id}`, {
+        headers: {
+            'x-api-key': API_KEY
+        }
+    });
     if (!response.ok) throw new Error("[-] Erro ao buscar os pedidos!");
     return response.json();
 }
@@ -49,8 +58,11 @@ export async function getOrderById(id: string): Promise<Order> {
 export async function createOrder(order: Order): Promise<Order>{
     const response = await fetch(`${API_URL}/orders`, {
         method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify(order)
+        headers: { 
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
+        body: JSON.stringify(order),
     })
 
     if (!response.ok) throw new Error("[-] Erro ao criar pedido!");
@@ -61,7 +73,10 @@ export async function createOrder(order: Order): Promise<Order>{
 export async function updateOrder(id: string, order: Order): Promise<Order> {
     const response = await fetch(`${API_URL}/orders/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json"},
+        headers: { 
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
         body: JSON.stringify(order)
     })
 
@@ -72,7 +87,10 @@ export async function updateOrder(id: string, order: Order): Promise<Order> {
 // DELETE - Exclui o pedido
 export async function deleteOrder(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/orders/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            'x-api-key': API_KEY
+        }
     })
 
     if(!response.ok) throw new Error("[-] Erro ao deletar o pedido!");

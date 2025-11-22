@@ -1,4 +1,5 @@
 const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`
+const API_KEY = import.meta.env.VITE_API_KEY
 
 export type Product = {
     _id?: string,
@@ -12,14 +13,22 @@ export type Product = {
 
 // GET - Produtos
 export async function getProducts(): Promise<Product[]>{
-    const response = await fetch(`${API_URL}/products`)
+    const response = await fetch(`${API_URL}/products`, {
+        headers: {
+            'x-api-key': API_KEY
+        }
+    })
     if (!response.ok) throw new Error ("[-] Erro ao buscar produtos")
     return response.json()
 }
 
 // GET - Produto Específico 
 export async function getProductById(id: string): Promise<Product>{
-    const response = await fetch(`${API_URL}/products/${id}`)
+    const response = await fetch(`${API_URL}/products/${id}`, {
+        headers: {
+            'x-api-key': API_KEY
+        }
+    })
     if (!response.ok) throw new Error(`[-] Erro ao buscar produto ${id}`)
     return response.json()
 }
@@ -28,7 +37,10 @@ export async function getProductById(id: string): Promise<Product>{
 export async function createProduct(content: Product): Promise<Product> {
     const response = await fetch(`${API_URL}/products`, {
         method: "POST",
-        headers: { "Content-Type": "application/json"},
+        headers: { 
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
         body: JSON.stringify(content)
     })
 
@@ -40,7 +52,10 @@ export async function createProduct(content: Product): Promise<Product> {
 export async function updateProduct(id: string, content: Product): Promise<Product> {
     const response = await fetch(`${API_URL}/products/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json"},
+        headers: { 
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
         body: JSON.stringify(content)
     })
 
@@ -51,7 +66,10 @@ export async function updateProduct(id: string, content: Product): Promise<Produ
 // DELETE - Excluir Produto 
 export async function deleteProduct(id: string): Promise<Product> {
     const response = await fetch(`${API_URL}/products/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            'x-api-key': API_KEY
+        }
     })
 
     if(!response.ok) throw new Error(`[-] Erro ao excluir pedido ${id}`)

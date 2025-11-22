@@ -1,5 +1,6 @@
 
 const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`
+const API_KEY = import.meta.env.VITE_API_KEY
 
 export type Customer = {
     _id?: string,
@@ -18,13 +19,21 @@ export type Customer = {
 }
 
 export async function getCustomers(): Promise<Customer[]> {
-    const response = await fetch(`${API_URL}/customers`, )
+    const response = await fetch(`${API_URL}/customers`, {
+        headers: {
+            'x-api-key': API_KEY
+        }
+    })
     if (!response.ok) throw new Error("Erro ao buscar clientes")
     return response.json()
 }
 
 export async function getCustomerById(id: string): Promise<Customer>{
-    const response = await fetch(`${API_URL}/customers/${id}`)
+    const response = await fetch(`${API_URL}/customers/${id}`, {
+        headers: {
+            'x-api-key': API_KEY
+        }
+    })
     if (!response.ok) throw new Error(`Erro ao buscar cliente ${id}`)
     return response.json()
 }
@@ -32,7 +41,10 @@ export async function getCustomerById(id: string): Promise<Customer>{
 export async function createCustomer(customer: Customer): Promise<Customer> {
     const response = await fetch(`${API_URL}/customers`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { 
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
         body: JSON.stringify(customer)
     })
 
@@ -43,7 +55,10 @@ export async function createCustomer(customer: Customer): Promise<Customer> {
 export async function updateCustomer(id: string, customer: Customer): Promise<Customer>{
     const response = await fetch(`${API_URL}/customers/${id}`, {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: { 
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
         body: JSON.stringify(customer)
     })
 
@@ -53,7 +68,10 @@ export async function updateCustomer(id: string, customer: Customer): Promise<Cu
 
 export async function deleteCustomer(id: string) {
     const response = await fetch(`${API_URL}/customers/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            'x-api-key': API_KEY
+        }
     })
 
     if(!response.ok) throw new Error(`Erro ao excluir cliente ${id}`)

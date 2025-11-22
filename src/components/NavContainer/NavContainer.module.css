@@ -9,10 +9,11 @@
 
 .titleContainer {
     margin-bottom: 3rem;
+    margin-top: 2rem;
 }
 
 .titleContainer h1 {
-    font-size: 3rem;
+    font-size: 2.8rem;
 }
 
 .titleContainer h2 {
@@ -20,3 +21,8 @@
     color: var(--secondary-text);
 }
 
+.titleContainer svg {
+    color: var(--primary);
+    width: 2.5rem;
+    height: 2.5rem;
+}

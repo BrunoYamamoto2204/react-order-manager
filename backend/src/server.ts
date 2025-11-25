@@ -5,7 +5,9 @@ import cors from "cors";
 import orderRoutes from "./routes/orderRoutes"
 import productRoutes from "./routes/productRoutes"
 import customerRouter from "./routes/customerRouter"
+import authRoutes from "./routes/authRoutes"
 import { apiKeyAuth } from "./middleware/apiKeyAuth";
+import { jwtAuth } from "./middleware/jwtAuth";
 
 dotenv.config();
 
@@ -19,11 +21,24 @@ connectDB()
 
 app.use(express.json())
 
-// Autenticação para acessar o backend
+// --------------------- AUTENTICAÇÃO ------------------ //
+
+// Autenticação com apiKey para acessar o backend
 app.use(apiKeyAuth)
 
+// Rota de verificação 
+app.use("/api/auth", authRoutes)
+
+// Autenticação com jwtAuth para acessar o backend
+app.use(jwtAuth)
+// ----------------------------------------------------- //
+
+// --------------------- APLICAÇÃO --------------------- //
+
+// Rotas da aplicação (Apenas após autenticação )
 app.use("/api/orders", orderRoutes)
 app.use("/api/products", productRoutes)
 app.use("/api/customers", customerRouter)
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`))
+// ----------------------------------------------------- //

@@ -1,3 +1,5 @@
+import { getToken } from "./authApi"
+
 const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`
 const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -11,12 +13,16 @@ export type Product = {
     description?: string
 }
 
+const getHeaders = () => ({
+    "Content-Type": "application/json",
+    "x-api-key": API_KEY,
+    'Authorization': `Bearer ${getToken()}`
+})
+
 // GET - Produtos
 export async function getProducts(): Promise<Product[]>{
     const response = await fetch(`${API_URL}/products`, {
-        headers: {
-            'x-api-key': API_KEY
-        }
+        headers: getHeaders()
     })
     if (!response.ok) throw new Error ("[-] Erro ao buscar produtos")
     return response.json()
@@ -25,9 +31,7 @@ export async function getProducts(): Promise<Product[]>{
 // GET - Produto Específico 
 export async function getProductById(id: string): Promise<Product>{
     const response = await fetch(`${API_URL}/products/${id}`, {
-        headers: {
-            'x-api-key': API_KEY
-        }
+        headers: getHeaders()
     })
     if (!response.ok) throw new Error(`[-] Erro ao buscar produto ${id}`)
     return response.json()
@@ -37,10 +41,7 @@ export async function getProductById(id: string): Promise<Product>{
 export async function createProduct(content: Product): Promise<Product> {
     const response = await fetch(`${API_URL}/products`, {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            'x-api-key': API_KEY
-        },
+        headers: getHeaders(),
         body: JSON.stringify(content)
     })
 
@@ -52,10 +53,7 @@ export async function createProduct(content: Product): Promise<Product> {
 export async function updateProduct(id: string, content: Product): Promise<Product> {
     const response = await fetch(`${API_URL}/products/${id}`, {
         method: "PUT",
-        headers: { 
-            "Content-Type": "application/json",
-            'x-api-key': API_KEY
-        },
+        headers: getHeaders(),
         body: JSON.stringify(content)
     })
 
@@ -67,9 +65,7 @@ export async function updateProduct(id: string, content: Product): Promise<Produ
 export async function deleteProduct(id: string): Promise<Product> {
     const response = await fetch(`${API_URL}/products/${id}`, {
         method: "DELETE",
-        headers: {
-            'x-api-key': API_KEY
-        }
+        headers: getHeaders()
     })
 
     if(!response.ok) throw new Error(`[-] Erro ao excluir pedido ${id}`)

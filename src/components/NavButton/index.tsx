@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router";
 import styles from "./NavButton.module.css"
+import { useAuth } from "../../hooks/useAuth";
 
 type NavButtonProps = {
     icon: React.ReactNode;
@@ -9,6 +10,8 @@ type NavButtonProps = {
 export function NavButton({ icon, sectionName } : NavButtonProps) {
     const navigate = useNavigate();
     const { pathname } = useLocation();
+
+    const { logout } = useAuth();
 
     // Formata a URL 
     const currentSection = sectionName === "home" ? "/" : `/${sectionName}`
@@ -21,8 +24,27 @@ export function NavButton({ icon, sectionName } : NavButtonProps) {
         navigate(currentSection);
     }
 
+    const handleLogout = () => {
+        logout(); 
+        navigate("/login"); 
+    }
+
     function firstUpperCase(name: string){
         return name.charAt(0).toUpperCase() + name.slice(1)
+    }
+
+    if (sectionName === "sair"){
+        return (
+            <div className={styles.navButtonContainer}>
+                <button
+                    className={`${styles.navButton} ${activeButton}`}
+                    onClick={handleLogout}
+                >
+                    {icon}
+                    <span>{firstUpperCase(sectionName)}</span>
+                </button>
+            </div>
+        )
     }
 
     return (

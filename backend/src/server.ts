@@ -26,19 +26,19 @@ app.use(express.json())
 // Autenticação com apiKey para acessar o backend
 app.use(apiKeyAuth)
 
-// Rota de verificação 
+// Rota de cadastro e login 
 app.use("/api/auth", authRoutes)
 
 // Autenticação com jwtAuth para acessar o backend
-app.use(jwtAuth)
+// app.use(jwtAuth)
 // ----------------------------------------------------- //
 
 // --------------------- APLICAÇÃO --------------------- //
 
 // Rotas da aplicação (Apenas após autenticação )
-app.use("/api/orders", orderRoutes)
-app.use("/api/products", productRoutes)
-app.use("/api/customers", customerRouter)
+app.use("/api/orders", jwtAuth, orderRoutes)
+app.use("/api/products", jwtAuth, productRoutes)
+app.use("/api/customers", jwtAuth, customerRouter)
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`))
 // ----------------------------------------------------- //

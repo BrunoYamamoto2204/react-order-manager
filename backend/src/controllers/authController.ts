@@ -3,11 +3,22 @@ import User from "../models/userModel"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
+// Permite a estensão do Request, permitindo usar req.user 
+interface AuthenticatedRequest extends Request {
+    user?: {
+        userId: string;
+        username: string;
+        role: string;
+    };
+}
+
+export {}
+
 export const register = async (req: Request, res: Response) => {
     try{
         const { username, password } = req.body
 
-        const existingUser = await User.findOne({ username })
+        const existingUser = await User.findOne({ user: username })
         if(existingUser) {
             return res.status(400).json({
                 error: `(400) - Usuário já existente`
@@ -17,62 +28,79 @@ export const register = async (req: Request, res: Response) => {
         const hashPassword = await bcrypt.hash(password, 10)
 
         const newUser = new User({
-            username,
+            user: username,
             password: hashPassword,
             role: "admin"
         })
 
         await newUser.save()
-        res.status(201).json(newUser)
+        return res.status(201).json(newUser)
     } catch (error) {
-        res.status(403).json({
-            error: `(500) - Erro ao criar usuário`
+        res.status(500).json({
+            error: `(500) - Erro ao criar usuário: ${error}`
         })
     }
 }
 
 export const login = async (req: Request, res: Response) => {
     try{
-        const { username, password } = req.body 
+        const { user, password } = req.body 
 
         // verifica se o cliente existe
-        const user = await User.findOne({ username })
-        if (!user) {
-            res.status(401).json({
+        const selectedUser = await User.findOne({ user })
+        if (!selectedUser) {
+            return res.status(401).json({
                 message: `(401) - Falha no login! Credenciais inválidas`
             })
         }
 
         // verifica se a senha está correta
-        const confirmPassword = await bcrypt.compare(password, user.password)
+        const confirmPassword = await bcrypt.compare(password, selectedUser.password)
         if (!confirmPassword) {
-            res.status(401).json({
+            return res.status(401).json({
                 message: `(401) - Falha no login! Credenciais inválidas`
             })
         }
 
+        // cria o token do login
         const token = jwt.sign(
-            { userId: user._id, username: user.user, role: user.role},
+            { userId: selectedUser._id, username: selectedUser.user, role: selectedUser.role},
             process.env.JWT_SECRET || "secret",
-            { expiresIn: '1d' } // Token expira em 7 dias
+            { expiresIn: '7d' } // Token expira em 7 dias
         )
 
-        res.status(200).json({
+        return res.status(200).json({
             token,
             user: {
-                userId: user._id, 
-                username: user.user, 
-                role: user.role
+                userId: selectedUser._id, 
+                username: selectedUser.user, 
+                role: selectedUser.role
             }
         })
 
     } catch (error) {
-        res.status(403).json({
-            message: `(500) - Falha no login`
+        return res.status(403).json({
+            message: `(500) - Falha no login: ${error}`
         })
     }
 }
 
 export const verifyToken = async (req: Request, res: Response) => {
-    res.json({ valid: true, user: req.body.user })
+    const formattedReq = req as AuthenticatedRequest
+
+    if (!formattedReq.user) {
+        return res.status(401).json({
+            valid: false,
+            message: "(401) - Usuário não autenticado"
+        })
+    }
+    
+    return res.status(200).json({
+        valid: true,
+        user: {
+            userId: formattedReq.user.userId,
+            username: formattedReq.user.username,
+            role: formattedReq.user.role
+        }
+    })
 }

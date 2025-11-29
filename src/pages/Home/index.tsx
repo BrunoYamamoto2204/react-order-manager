@@ -8,9 +8,12 @@ import GeralDatePicker from "../../components/GeralDatePicker";
 import { BikeIcon, CircleCheckIcon, HourglassIcon } from "lucide-react";
 import { formatBrDate, formatDate } from "../../utils/format-date";
 import { getOrders, type Order } from "../../services/ordersApi";
+import { useAuth } from "../../hooks/useAuth";
 
 
 export function Home() {
+    const { user } = useAuth()
+
     // Converte p/ string
     const formatDateString = (date : Date) => {
         return date.toLocaleDateString('sv-SE');
@@ -87,12 +90,15 @@ export function Home() {
     const { countPending, concluedCounter } = countOrders()
     const { docesCount, salgadosCount, bolosCount, sobremesasCount } = categoryCount()
     
+    const formattedName = user?.username
+        ? user.username.charAt(0).toUpperCase() + user.username.slice(1)
+        : "";
+
     return (
-        
         <MainTemplate>
             <Container>
                 <div className={styles.HomeContainer}>
-                    <Title title="Geral" subtitle="Olá Usuário! Aqui está o seu resumo diário"/>
+                    <Title title="Geral" subtitle={`Olá ${formattedName}! Aqui está o seu resumo diário`}/>
 
                     <h2 className={styles.date}>
                         <GeralDatePicker

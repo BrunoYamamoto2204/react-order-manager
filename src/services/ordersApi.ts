@@ -1,3 +1,5 @@
+import { getToken } from "./authApi";
+
 const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`
 const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -32,12 +34,16 @@ export type Order = {
     status: string;
 }
 
+const getHeaders = () => ({
+    "Content-Type": "application/json",
+    'x-api-key': API_KEY,
+    'Authorization': `Bearer ${getToken()}`
+})
+
 // GET - Buscar Usuários 
 export async function getOrders(): Promise<Order[]> {
     const response = await fetch(`${API_URL}/orders`, {
-        headers: {
-            'x-api-key': API_KEY
-        }
+        headers: getHeaders()
     });
     if (!response.ok) throw new Error("[-] Erro ao buscar os pedidos!");
     return response.json();
@@ -46,9 +52,7 @@ export async function getOrders(): Promise<Order[]> {
 // GET - Buscar um usuário específico
 export async function getOrderById(id: string): Promise<Order> {
     const response = await fetch(`${API_URL}/orders/${id}`, {
-        headers: {
-            'x-api-key': API_KEY
-        }
+        headers: getHeaders()
     });
     if (!response.ok) throw new Error("[-] Erro ao buscar os pedidos!");
     return response.json();
@@ -58,10 +62,7 @@ export async function getOrderById(id: string): Promise<Order> {
 export async function createOrder(order: Order): Promise<Order>{
     const response = await fetch(`${API_URL}/orders`, {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            'x-api-key': API_KEY
-        },
+        headers: getHeaders(),
         body: JSON.stringify(order),
     })
 
@@ -73,10 +74,7 @@ export async function createOrder(order: Order): Promise<Order>{
 export async function updateOrder(id: string, order: Order): Promise<Order> {
     const response = await fetch(`${API_URL}/orders/${id}`, {
         method: "PUT",
-        headers: { 
-            "Content-Type": "application/json",
-            'x-api-key': API_KEY
-        },
+        headers: getHeaders(),
         body: JSON.stringify(order)
     })
 
@@ -88,9 +86,7 @@ export async function updateOrder(id: string, order: Order): Promise<Order> {
 export async function deleteOrder(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/orders/${id}`, {
         method: "DELETE",
-        headers: {
-            'x-api-key': API_KEY
-        }
+        headers: getHeaders()
     })
 
     if(!response.ok) throw new Error("[-] Erro ao deletar o pedido!");

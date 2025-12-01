@@ -104,17 +104,17 @@ export function CreatePedido() {
     }
    
     // Adiociona produto no pedido
-    const handleNewProduct = () => {
+    const handleNewProduct = (productToAdd: OrderProduct) => {
         Messages.dismiss()
         
-        if (!product) {
+        if (!productToAdd) {
             Messages.error("Selecione um produto");
             return;
         }
 
         setProductName("")
         setProduct(undefined)
-        setProductList([...productList, product]);
+        setProductList(prev => [...prev, productToAdd]);
         Messages.success("Produto adicionado")
     }
 
@@ -295,7 +295,7 @@ export function CreatePedido() {
                             <div className={styles.inputBox}>
                                 <label htmlFor="nome">Cliente</label>
                                 <CustomerSearch 
-                                    value={name}
+                                    customerName={name}
                                     customerSelected={setCustomerSelected}
                                     onChange={setName}
                                     setCustomerId={setCustomerId}
@@ -430,10 +430,11 @@ export function CreatePedido() {
                                     onChangeName={setProductName}
                                     setProduct={setProduct}
                                     placeholder="Buscar produto para adicionar ao pedido..." 
+                                    onEnterPress={handleNewProduct}
                                 />
                             </div>
                             <button
-                                onClick={() => handleNewProduct()} 
+                                onClick={() => handleNewProduct(product!)} 
                                 className={styles.addItemButton}
                                 type="button"
                             >

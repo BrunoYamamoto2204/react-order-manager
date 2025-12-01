@@ -167,27 +167,27 @@ export function EditPedido() {
     }
 
     // Adiociona produto no pedido
-    const handleNewProduct = () => {
+    const handleNewProduct = (productToAdd: OrderProduct) => {
         Messages.dismiss()
 
-        if (!product) {
+        if (!productToAdd) {
             Messages.error("Selecione um produto");
             return;
         }
 
-        const newProduct = {
-            uniqueId: product.uniqueId,
-            productId: product.productId,
-            product: product.product,
-            price: product.price,
-            quantity: product.quantity,
-            category: product.category,
-            unit: product.unit,
-        };
+        // const newProduct = {
+        //     uniqueId: product.uniqueId,
+        //     productId: product.productId,
+        //     product: product.product,
+        //     price: product.price,
+        //     quantity: product.quantity,
+        //     category: product.category,
+        //     unit: product.unit,
+        // };
 
         setProductName("")
         setProduct(undefined)
-        setProductList([...productList, newProduct]);
+        setProductList([...productList, productToAdd]);
         Messages.success("Produto adicionado")
     }
 
@@ -405,7 +405,7 @@ export function EditPedido() {
                             <div className={styles.inputBox}>
                                 <label htmlFor="nome">Cliente</label>
                                 <CustomerSearch 
-                                    value={name}
+                                    customerName={name}
                                     customerSelected={setCustomerSelected}
                                     onChange={setName}
                                     setCustomerId={setCustomerId}
@@ -542,12 +542,14 @@ export function EditPedido() {
                                     onChangeName={setProductName}
                                     setProduct={setProduct}
                                     placeholder="Buscar produto para adicionar ao pedido..." 
+                                    onEnterPress={handleNewProduct}
                                 />
                             </div>
                             <button
-                                onClick={handleNewProduct} 
+                                onClick={() => handleNewProduct(product!)} 
                                 className={styles.addItemButton}
-                                type="button">
+                                type="button"
+                            >
                                 <PlusCircleIcon/> Adicionar Produto
                             </button>
                         </div>

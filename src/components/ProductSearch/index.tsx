@@ -11,19 +11,22 @@ type ProductSearchProps = {
     onChangeName: (name: string) => void
     setProduct: (product: OrderProduct | undefined) => void
     placeholder: string
+    onEnterPress: (product: OrderProduct) => void
 }
 
 export function ProductSearch({ 
     productName,
     onChangeName, 
     setProduct, 
-    placeholder
+    placeholder,
+    onEnterPress
 } : ProductSearchProps
 ) {
     const [ products, setProducts ] = useState<Product[]>([]) 
     const [ filteredProducts, setFilteredProducts ] = useState<Product[]>([]) 
     const [ showSuggestions, setShowSuggestions ] = useState(false) 
     const [ loading, setLoading ] = useState(true) 
+    const [ selectedIndex, setSelectedIndex ] = useState(0)
 
     const dropDownRef = useRef<HTMLInputElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -42,6 +45,10 @@ export function ProductSearch({
 
         document.addEventListener("mousedown", handleSuggestions)
     },[])
+
+    useEffect(() => {
+        setSelectedIndex(0)
+    },[filteredProducts])
 
     const loadProducts = async () => {
         try{
@@ -113,6 +120,38 @@ export function ProductSearch({
         setShowSuggestions(false)
     }
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if(event.key === "ArrowDown") {
+            event.preventDefault()
+            setSelectedIndex(prev => prev < filteredProducts.length - 1 ? prev + 1 : prev)
+        }
+
+        if(event.key === "ArrowUp") {
+            event.preventDefault()
+            setSelectedIndex(prev => prev > 0 ? prev - 1 : 0)
+        }
+
+        if (event.key === "Enter" && productName.trim() !== "") {
+            event.preventDefault();
+            const onlyProduct = filteredProducts[selectedIndex];
+
+            // Monta o produto formatado na hora
+            const formattedProduct: OrderProduct = {
+                uniqueId: Date.now(),
+                productId: onlyProduct._id!.toString(),
+                product: onlyProduct.product,
+                price: onlyProduct.price.toString(),
+                quantity: 1,
+                category: onlyProduct.category,
+                unit: onlyProduct.unit
+            };
+
+            setProduct(formattedProduct);
+            onEnterPress(formattedProduct);
+            setShowSuggestions(false);
+        } 
+    };
+
     return (
         <> 
             <SearchIcon className={styles.searchIcon} />
@@ -124,6 +163,7 @@ export function ProductSearch({
                 onChange={(e) => handleChange(e.target.value)}
                 placeholder={placeholder}
                 className={styles.input}
+                onKeyDown={handleKeyDown}
             />
 
             {showSuggestions && (
@@ -131,13 +171,16 @@ export function ProductSearch({
                     {loading ? (
                         <div>Carregando...</div>
                     ) : (filteredProducts.length > 0 
-                        ? (filteredProducts.map(product => (
+                        ? (filteredProducts.map((product, index) => (
                                 <button
                                     key={product._id} 
                                     onClick={() => {choseProduct(product)}}
-                                    className={styles.divChoseItem}
+                                    className={`${styles.divChoseItem} `}
+                                    onMouseEnter={() => setSelectedIndex(index)}
                                 >
-                                    <div className={styles.choseItem}>
+                                    <div className={`${styles.choseItem} ${
+                                        index === selectedIndex ? styles.selected : ""
+                                    }`}>
                                         {product.product} ({product.unit}) - 
                                         R$ {product.price.toFixed(2)}
                                     </div>

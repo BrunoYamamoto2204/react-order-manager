@@ -4,7 +4,7 @@ import styles from "./CustomerSearch.module.css"
 import { SearchIcon } from "lucide-react";
 
 type CustomerSearchProps ={
-    value: string;
+    customerName: string;
     customerSelected: (selected: boolean) => void;
     onChange: (name: string) => void;
     setCustomerId: (id: string | null) => void;
@@ -14,7 +14,7 @@ type CustomerSearchProps ={
 }
 
 export default function CustomerSearch({ 
-    value, 
+    customerName, 
     customerSelected, 
     onChange,
     setCustomerId,
@@ -26,6 +26,7 @@ export default function CustomerSearch({
     const [ filteredCustomers, setFilteredCustomers] = useState<Customer[]>([])
     const [ showSuggestions, setShowSuggetions] = useState(false)
     const [ loading, setLoading] = useState(true)
+    const [ selectedIndex, setSelectedIndex ] = useState(0)
 
     const inputRef = useRef<HTMLInputElement>(null)
     const dropDownRef = useRef<HTMLDivElement>(null)
@@ -103,6 +104,29 @@ export default function CustomerSearch({
         setShowSuggetions(false)
         setNoRegister(false)
     }
+
+    const handleKeyClick = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "ArrowDown") {
+            event.preventDefault()
+            setSelectedIndex(prev => prev < filteredCustomers.length - 1 ? prev + 1 : prev)
+        }
+
+        if (event.key === "ArrowUp") {
+            event.preventDefault()
+            setSelectedIndex(prev => prev > 0 ? prev - 1 : 0)
+        }
+
+        if (event.key === "Enter" && customerName) {
+            event.preventDefault()
+            const selectedCustomer = filteredCustomers[selectedIndex]
+
+            onChange(selectedCustomer.name)
+            customerSelected(true)
+            if (selectedCustomer._id) setCustomerId(selectedCustomer._id)
+            setShowSuggetions(false)
+            setNoRegister(false)
+        }
+    }
     
     return (
         <div className={styles.customerSearch}>
@@ -112,9 +136,10 @@ export default function CustomerSearch({
                     ref={inputRef}
                     id="nome"
                     autoComplete="off"
-                    value={value}
+                    value={customerName}
                     onChange={(e) => handleInputChange(e.target.value)}
                     placeholder={placeholder}
+                    onKeyDown={handleKeyClick}
                 />
 
                 {!noRegister && (showSuggestions && (
@@ -123,12 +148,15 @@ export default function CustomerSearch({
                             <div>...Carregando</div>
                         ) : (
                             filteredCustomers.length > 0 ? (
-                                filteredCustomers.map(customer => (
+                                filteredCustomers.map((customer, index) => (
                                     <div 
                                         key={customer._id} 
                                         onClick={() => choseCustomer(customer)}
+                                        onMouseDown={() => setSelectedIndex(index)}
                                     >
-                                        <div className={styles.choseItem}>
+                                        <div className={`${styles.choseItem} ${
+                                            index === selectedIndex ? styles.selected : ""
+                                        }`}>
                                             {customer.name} - {customer.phone}
                                         </div>
                                     </div>

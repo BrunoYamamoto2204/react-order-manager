@@ -8,7 +8,7 @@
     align-items: center;
     padding: 1.5rem 2rem;
     text-align: start;
-    width: 95%;
+    width: 100%;
     border: none;
     border-radius: 0.5rem;
     background-color: var(--gray-800);
@@ -34,4 +34,69 @@
 .buttonActive:hover {
     background-color: var(--gray-200);
     color: var(--gray-800);
+}
+
+/* Botão de confirmar */
+.button{
+    padding: 1rem 2rem;
+    border: none;
+    background-color: var(--gray-500);
+    color: var(--gray-100);
+    border-radius: 1rem;
+    font-size: 2rem;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    gap: 1rem;
+    min-width: 10rem;
+    justify-content: center;
+}
+
+.confirmButton {
+    background-color: var(--primary-dark);
+    transition: all 0.2 ease-in-out;
+}
+
+.confirmButton:hover {
+    color: var(--gray-100);
+    background-color: var(--gray-400);
+    transform: scale(1.05);
+}
+
+.cancelButton {
+    background-color: var(--error);
+}
+
+.cancelButton:hover{
+    color: var(--gray-100);
+    background-color: var(--gray-600);
+    transform: scale(1.05);
+}
+
+/* Confirm Delete */
+.confirmDeleteBox{
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px) brightness(0.8);
+    border-radius: 1rem;
+    display: flex;
+    align-items:start;
+    justify-content: center;
+    z-index: 999;
+}
+
+.confirmDelete{
+    text-align: center;
+    background-color: var(--gray-700);
+    padding: 10rem;
+    border: 2px solid var(--gray-500);
+    border-radius: 2rem;
+    margin-top: 10rem;
+}
+
+.confirmDeleteButtons{
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
 }

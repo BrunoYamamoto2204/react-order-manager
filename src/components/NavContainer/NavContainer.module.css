@@ -2,8 +2,8 @@
     background-color: var(--gray-800);
     max-width: 27rem;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
     padding: 2rem;
 }
 
@@ -26,3 +26,4 @@
     width: 2.5rem;
     height: 2.5rem;
 }
+

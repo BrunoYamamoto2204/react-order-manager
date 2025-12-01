@@ -1,13 +1,15 @@
 .product {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    position: absolute;
     color: var(--gray-100);
-    z-index: 999;
+    z-index: 9999;
     border-radius: 1rem;
     padding: 5rem;
     background-color: var(--gray-700);
+    overflow-y: scroll;
 }
 
 .product h3{

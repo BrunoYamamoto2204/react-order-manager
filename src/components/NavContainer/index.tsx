@@ -32,11 +32,12 @@ export function NavContainer() {
                     icon={<ChartNoAxesCombinedIcon />} 
                     sectionName="analises" 
                 />
-                <NavButton 
-                    icon={<LogOutIcon />} 
-                    sectionName="sair" 
-                />
             </nav>
+
+            <NavButton 
+                icon={<LogOutIcon />} 
+                sectionName="sair" 
+            />
         </div>
     )
 }

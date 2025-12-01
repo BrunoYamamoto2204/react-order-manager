@@ -393,7 +393,13 @@ export function EditPedido() {
                 />
 
                 <div className={styles.formContent}>
-                    <form onSubmit={handleSubmit}>
+                    <form 
+                        onSubmit={handleSubmit}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") e.preventDefault()
+                        }}
+                    
+                    >
                         {/* Inputs Padrão */}
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>

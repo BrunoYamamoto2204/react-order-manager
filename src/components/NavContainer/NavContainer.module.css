@@ -27,3 +27,57 @@
     height: 2.5rem;
 }
 
+/* ==================== MOBILE ==================== */
+.mobileMenuButton {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1002;
+    background-color: var(--primary);
+    border: none;
+    border-radius: 0.8rem;
+    padding: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.mobileMenuButton:hover{
+    color: var(--gray-300);
+    background-color: var(--gray-700);
+}
+
+.mobileNavContainer {
+    display: grid;
+    position: fixed;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1001;
+    right: -100%;
+    background-color: var(--gray-800);
+    height: 100%;
+    padding: 6rem 2rem 2rem 3rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: -4px 10px 12px rgba(0, 0, 0, 0.3);
+    grid-template-rows: auto 1fr auto;
+}
+
+.open{
+    opacity: 1;
+    visibility: visible;
+    right: 0;
+}
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}

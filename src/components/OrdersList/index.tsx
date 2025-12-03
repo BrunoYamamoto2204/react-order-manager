@@ -9,7 +9,6 @@ type OrderListProps = {
     ordersList: Order[],
     handleClickOrder: (order: Order) => void
     setOrders: (newOrder: Order[]) => void
-    // removeOrders: (filteredOrder: Order)  => void
 }
 
 // Junta a lista de produtos em 1 <ul> (pronto para inserir dentro de <td>)
@@ -40,6 +39,19 @@ const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
 
 export function OrdersList({ ordersList, handleClickOrder, setOrders } : OrderListProps) {
     const [ list, setList ] = useState<Order[]>()
+    const [ isMobile, setIsMobile ] = useState(false)
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 1750px)")
+        setIsMobile(mediaQuery.matches) 
+
+        const handleResize = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQuery.addEventListener("change", handleResize)
+        return () => mediaQuery.removeEventListener('change', handleResize);
+    },[])
 
     useEffect(() => {
         setList([ ...ordersList ])
@@ -117,12 +129,21 @@ export function OrdersList({ ordersList, handleClickOrder, setOrders } : OrderLi
                         </td>
 
                         {/* Date */}
-                        <td>
-                            <span style={{fontWeight: "bold", color:"var(--primary)"}}>
-                                {order.time}
-                            </span> 
-                            &nbsp; -&nbsp;
-                            {order.date}
+                        <td className={styles.date}>
+                            { !isMobile ? 
+                                <>
+                                    <span style={{fontWeight: "bold", color:"var(--primary)"}}>
+                                        {order.time}
+                                    </span> 
+                                    &nbsp;-&nbsp;
+                                    {order.date}
+                                </> : <>
+                                    <span style={{fontWeight: "bold", color:"var(--primary)"}}>
+                                        {order.time} 
+                                    </span> 
+                                    {order.date}
+                                </>
+                            }
                         </td>
 
                         {/* Products */}

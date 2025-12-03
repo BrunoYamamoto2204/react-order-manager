@@ -290,21 +290,31 @@ export function Analises() {
                         <div className={styles.featuredProduct}>
                             <h2><TrophyIcon/> Produto</h2>
                             <h3 className={styles.productName}>
-                                {bestSellingProduct?.productName}
+                                {
+                                    bestSellingProduct
+                                    ? bestSellingProduct?.productName
+                                    : "-"
+                                }
                             </h3>
                             <h4 className={styles.productSubtitle}>se destacou no período.</h4>
                         </div>
                         <div className={styles.featuredProduct}>
                             <h2><ShoppingCartIcon/> Quantidade Vendida</h2>
                             <h3 className={styles.productName}>
-                                {bestSellingProduct?.totalQuantity}
+                                { bestSellingProduct
+                                    ?bestSellingProduct?.totalQuantity
+                                    : 0
+                                }
                             </h3>
                             <h4 className={styles.productSubtitle}>unidades vendidas</h4>
                         </div>
                         <div className={styles.featuredProduct}>
                             <h2><DollarSignIcon/> Valor Total</h2>
                             <h3 className={styles.productName}>
-                                R$ {bestSellingProduct?.totalValue.toFixed(2)}
+                                R$ { bestSellingProduct
+                                    ? bestSellingProduct?.totalValue.toFixed(2)
+                                    : 0
+                                }
                             </h3>
                             <h4 className={styles.productSubtitle}>em vendas no período</h4>
                         </div>
@@ -326,7 +336,10 @@ export function Analises() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <AnalysisList productsList={productList}/>
+                                    {productList.length > 1 
+                                        ? <AnalysisList productsList={productList}/>
+                                        : <label className={styles.noProducts}>Sem produtos nesse período</label>
+                                    }
                                 </tbody>
                             </table>
                             <h3 

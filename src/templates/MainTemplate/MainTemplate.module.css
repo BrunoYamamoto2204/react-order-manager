@@ -8,3 +8,9 @@
 .mainTemplate main{
     overflow-y: scroll;
 }
+
+@media(max-width:1050px) {
+    .mainTemplate {
+        grid-template-columns: 1fr;
+    }
+}

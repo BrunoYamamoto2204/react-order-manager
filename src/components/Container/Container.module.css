@@ -12,3 +12,11 @@
     color: white;
     position: relative;
 }
+
+@media (max-width:1050px) {
+    .content{
+        margin: 3rem;
+        color: white;
+        position: relative;
+    }
+}

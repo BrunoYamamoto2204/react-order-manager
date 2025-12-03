@@ -8,17 +8,23 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
 import { formatStringDateTime } from "../../utils/format-date";
 import { CompleteOrder } from "../../components/CompleteOrder";
+import { MediaQueryOrderList } from "../../components/MediaQueryOrderList";
 
 export function Pedidos() {
     const navigate = useNavigate();
+
+    const [ isTablet, setIsTablet ] = useState(false);
+    const [ isMobile, setIsMobile ] = useState(false);
+
     const [ orders, setOrders ] = useState<Order[]>([]);
     const [ loading, setLoading ] = useState(true);
+    const [ activeFilter, setActiveFilter ] = useState("Date");
     
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ dateIsDown, setDateIsDown] = useState(true);
@@ -29,6 +35,31 @@ export function Pedidos() {
 
     const [ showOrder, setShowOrder ] = useState(false)
     const [ order, setOrder ] =  useState<Order>()
+
+    useEffect(() => {
+        // Telas menores de 1650px (Tablet)
+        const mediaQueryTablet = window.matchMedia("(max-width: 1650px)")
+        setIsTablet(mediaQueryTablet.matches) 
+
+        // Telas menores de 1050px (Mobile)
+        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQueryMobile.matches)
+
+        const handleResizeTablet = (e: MediaQueryListEvent) => {
+            setIsTablet(e.matches)
+        }
+        const handleResizeMobile = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQueryMobile.addEventListener("change", handleResizeMobile)
+        mediaQueryTablet.addEventListener("change", handleResizeTablet)
+
+        return () => {
+            mediaQueryMobile.removeEventListener("change", handleResizeMobile)
+            mediaQueryTablet.removeEventListener('change', handleResizeTablet)
+        }
+    },[])
 
     useEffect(() => {
         document.title = "Pedidos - Comanda"
@@ -256,6 +287,11 @@ export function Pedidos() {
         setOrder(order)
     }   
 
+    const handleMobileFilterClick = (filterType: string) => {
+        thHandleClick(filterType)
+        setActiveFilter(filterType)
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -266,6 +302,226 @@ export function Pedidos() {
                 </Container>
             </MainTemplate>
         );
+    }
+
+    if(isMobile) {
+        return(
+            <MainTemplate>
+                <Container>
+                    {showOrder && (
+                        <CompleteOrder
+                            order={order!}
+                            removeOrders={removeOrder}
+                            setShowOrder={setShowOrder}
+                        />
+                    )}
+                    <div className={styles.header}>
+                        <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
+                        <button
+                            onClick={() => navigate("/pedidos/novo")}
+                            className={styles.mobileAddButton}
+                        >
+                            <PlusIcon/>
+                        </button>
+                    </div>
+                    <div className={styles.searchOrder}>
+                        <SearchIcon className={styles.searchIcon} />
+                        <input
+                            onChange={e => handleChange(e.target.value)}
+                            placeholder="Buscar produto"
+                        />
+                        <div className={styles.mobileFilterBox}>
+                            <div className={styles.filterButton}>
+                                <FilterIcon/>
+                                Filtrar
+                            </div>
+                            <div className={styles.dropDownFilter}>
+                                <button onClick={() => {handleMobileFilterClick("Name")}}>
+                                    Nome
+                                    <ChevronDownIcon
+                                        className={handleClickClass(nameIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Name" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Date")}}>
+                                    Horário | Data
+                                    <ChevronDownIcon
+                                        className={handleClickClass(dateIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Date" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Products")}}>
+                                    Produtos
+                                    <ChevronDownIcon
+                                        className={handleClickClass(productsIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Products" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Delivery")}}>
+                                    Entrega
+                                    <ChevronDownIcon
+                                        className={handleClickClass(deliveryIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Delivery" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Value")}}>
+                                    Valor
+                                    <ChevronDownIcon
+                                        className={handleClickClass(valueIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Value" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Status")}}>
+                                    Status
+                                    <ChevronDownIcon
+                                        className={handleClickClass(statusIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Status" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className={styles.MobileList}>
+                            <MediaQueryOrderList
+                                ordersList={orders}
+                                handleClickOrder={handleClickOrder}
+                                setOrders={setOrders}
+                            />
+                        </div>
+                    </div>
+                </Container>
+            </MainTemplate>
+        )
+    }
+
+    if (isTablet) {
+        return(
+            <MainTemplate>
+                <Container>
+                    {showOrder && (
+                        <CompleteOrder 
+                            order={order!}
+                            removeOrders={removeOrder}
+                            setShowOrder={setShowOrder}
+                        />
+                    )}
+                    <div className={styles.header}>
+                        <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
+                        <button onClick={() => navigate("/pedidos/novo")}>
+                            <PlusIcon/> Adicionar Pedido
+                        </button>
+                    </div>
+                    <div className={styles.searchOrder}>
+                        <SearchIcon className={styles.searchIcon} />
+                        <input 
+                            onChange={e => handleChange(e.target.value)}
+                            placeholder="Buscar produto"
+                        />
+
+                        <div className={styles.mobileFilterBox}>
+                            <div className={styles.filterButton}>
+                                <FilterIcon/> 
+                                Filtrar
+                            </div>
+                            <div className={styles.dropDownFilter}>
+                                <button onClick={() => {handleMobileFilterClick("Name")}}>
+                                    Nome 
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(nameIsDown)}
+                                        style={{ 
+                                            opacity: activeFilter === "Name" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Date")}}>
+                                    Horário | Data
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(dateIsDown)}
+                                        style={{ 
+                                            opacity: activeFilter === "Date" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    /> 
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Products")}}>
+                                    Produtos 
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(productsIsDown)}
+                                        style={{ 
+                                            opacity: activeFilter === "Products" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    /> 
+                                </button>
+
+                                <button onClick={() => {handleMobileFilterClick("Delivery")}}>
+                                    Entrega 
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(deliveryIsDown)}
+                                        style={{ 
+                                            opacity: activeFilter === "Delivery" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    /> 
+                                </button>
+
+                                <button onClick={() => {handleMobileFilterClick("Value")}}>
+                                    Valor 
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(valueIsDown)}
+                                        style={{ 
+                                            opacity: activeFilter === "Value" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+
+                                <button onClick={() => {handleMobileFilterClick("Status")}}>
+                                    Status 
+                                    <ChevronDownIcon 
+                                        className={handleClickClass(statusIsDown)}
+                                        style={{ 
+                                            opacity: activeFilter === "Status" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div>
+                        <div className={styles.MobileList}>
+                            <MediaQueryOrderList 
+                                ordersList={orders}
+                                handleClickOrder={handleClickOrder}
+                                setOrders={setOrders}
+                            />
+                        </div>
+                    </div>
+                </Container>
+            </MainTemplate>
+        )
     }
 
     return (

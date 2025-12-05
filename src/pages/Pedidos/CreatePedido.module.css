@@ -77,7 +77,6 @@
 .withouRegister label {
     margin: 0 1rem 0 0;  
     font-size: 1.5rem;
-    font-size: 1.5rem;
 }
 
 .withouRegister input[type="checkbox"] {
@@ -377,4 +376,153 @@
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+@media (max-width: 1500px) {
+    .deliveryInputBox{
+        grid-template-columns: 1fr 0.3fr;  
+    }   
+
+    .deliveryInputBox label {
+        font-size: clamp(1.5rem, 1.5vw, 2.5rem);
+    }
+}
+
+@media (max-width: 1050px) {
+    .formContent form {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem; /* Espaçamento consistente entre TODOS os filhos */
+    }
+    
+    .formContent hr {
+        border: 0.1rem solid var(--gray-400);
+        margin: 0;
+    }
+
+    .inputBox {
+        margin: 0; /* Remove todas as margins */
+    }
+
+    .inputBox label {
+        margin-bottom: 1rem;
+    }
+
+    .withouRegister{
+        gap: 1rem;
+    }
+
+    .withouRegister label{
+        margin: 0;
+    }
+
+    .delivery {
+        margin-bottom: 0;
+    }
+
+    .delivery hr{
+        margin: 2rem 0;
+    }
+
+    .deliveryInputBox {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .deliveryInputBox {
+        grid-template-columns: 1fr 0.3fr;
+    }
+
+    .deliveryInputBox label{
+        font-size: 1.8rem;
+    }
+
+    .noProducts {
+        text-align: center;
+        background-color: var(--gray-600);
+        padding: 2rem;
+        border-radius: 1rem;
+        font-weight: bold;
+        margin-top: 0;
+    }
+
+    /* Product Table */
+    .orderTable {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .mqProducts {
+        background-color: var(--gray-800);
+        border-radius: 1rem;
+    }
+
+    .mqProductHeader {
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--gray-500);
+        padding: 2rem;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .mqProductHeader .icon {
+        border: none;
+        color: red;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .mqProductHeader .icon:hover {
+        transform: scale(1.05);
+        color: var(--gray-300);
+    }
+
+    .mqProductInfo {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5rem;
+        position: relative;
+        padding: 3rem 3rem 1rem 3rem;
+    }
+
+    .mqProductInfoBox {
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+    }
+
+    .mqProductInfoBox input {
+        padding: 0.5rem;
+        width: 100%;
+        background-color: var(--gray-500);
+    }
+
+    .mqProductInfoBox label {
+        margin-bottom: 1rem;
+        font-size: clamp(1.5rem, 2vw, 3.1rem); 
+    }
+
+    .mqProductInfoBox p {
+        font-size: clamp(2rem, 2.2vw, 3.1rem); 
+        display: flex;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .mqProducts hr {
+        grid-column: -1 / 1;
+        border: 0.1rem solid var(--gray-500);
+        margin: 2rem;
+    }
+
+    .mqProductTotalBox {
+        display: flex;
+        justify-content: space-between;
+        font-size: clamp(2rem, 2.2vw, 3.1rem); 
+        padding: 1rem 3rem;
+    }
+
+    h3.addProducth3 {
+        margin-top: 3rem;
+    }
 }

@@ -163,7 +163,7 @@ export function MediaQueryOrderList({
                                         order={order}
                                     />
                                 </div>
-                                <p>{deliveryInf(order.isDelivery)}</p>
+                                {deliveryInf(order.isDelivery)}
                             </div>
                             <p style={{fontSize: "2.2rem"}}>{order.value}</p>
                         </div>

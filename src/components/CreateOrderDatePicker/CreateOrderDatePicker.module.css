@@ -236,7 +236,7 @@ button.todayButton:hover {
 }
 
 /* ========== RESPONSIVIDADE ========== */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .dropdown {
         min-width: 28rem;
         padding: 1rem;
@@ -261,4 +261,4 @@ button.todayButton:hover {
         min-height: 3.5rem;
         padding: 0.6rem;
     }
-}
+} */

@@ -31,6 +31,8 @@ export function EditPedido() {
     const { id } = useParams<{ id: string }>();
     const [ loading, setLoading ] = useState(true);
 
+    const [ isMobile, setIsMobile ] = useState(false)
+
     const [ isSubmitting, setIsSubmitting ] = useState(false);
 
     const [ previousProductList, setPreviousProductList ] = useState<OrderProduct[]>([])
@@ -49,7 +51,7 @@ export function EditPedido() {
     const [ time, setTime] = useState(new Date().toLocaleDateString("sv-SE")) 
     const [ customerSelected, setCustomerSelected ] = useState(true);
 
-    const [ total, setTotal ] = useState("")
+    const [ total, setTotal ] = useState(0)
     const [ totalGross, setTotalGross] = useState("")
     const [ discount, setDiscount ] = useState(0)
 
@@ -60,6 +62,19 @@ export function EditPedido() {
     const [ deliveryAddress, setDeliveryAddress ] = useState("");
     const [ deliveryFee, setDeliveryFee ] = useState("");
 
+    useEffect(() => {
+        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQueryMobile.matches)
+
+        const handleMobile = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQueryMobile.addEventListener("change", handleMobile)
+        return () => {
+            mediaQueryMobile.removeEventListener("change", handleMobile)
+        }
+    },[])
 
     // Identifica qual order será modificada 
     useEffect(() => {
@@ -72,6 +87,7 @@ export function EditPedido() {
             try {
                 setLoading(true)
                 const order = await getOrderById(id)
+                const totalValue = Number(order.value.replace("R$", ""))
                 
                 setCustomerId(order.customerId ? order.customerId : null)
                 setDiscountType(order.discountType);
@@ -90,7 +106,7 @@ export function EditPedido() {
                 setDate(convertDateFormat(order.date))
                 setTime(order.time)
                 
-                setTotal(order.value)
+                setTotal(totalValue)
                 setTotalGross(order.totalGross)
                 setDiscount(Number(order.discount))  
             } catch (error){
@@ -138,7 +154,7 @@ export function EditPedido() {
 
         const currentDiscountAmount = calculatedDiscountAmount();
         const subtotal = Math.max(0, grossValue - currentDiscountAmount) + priceNumber(deliveryFee);
-        setTotal(subtotal.toString()); 
+        setTotal(subtotal); 
     }, [productList, discountValue, discountType, grossValue, deliveryFee]); 
 
     // Formtar data: dd/MM/YYYY - YYYY-MM-dd
@@ -384,6 +400,243 @@ export function EditPedido() {
         );
     }
 
+    if (isMobile) {
+        return (
+            <MainTemplate>
+                <Container>
+                    <Title 
+                        title="Novo Pedido" 
+                        subtitle="Preencha os dados para criar um novo pedido"
+                    />
+                    <div className={styles.formContent}>
+                        <form 
+                            onSubmit={handleSubmit}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") e.preventDefault()
+                            }}
+                        >
+                            <div className={styles.inputBox}>
+                                <label htmlFor="nome">Cliente</label>
+                                <CustomerSearch 
+                                    customerName={name}
+                                    customerSelected={setCustomerSelected}
+                                    onChange={setName}
+                                    setCustomerId={setCustomerId}
+                                    placeholder="Buscar Cliente"
+                                    setNoRegister={setNoRegister}
+                                    noRegister={noRegister}
+                                />
+                                <div className={styles.withouRegister}>
+                                    <label htmlFor="noName">Sem cadastro</label>
+                                    <input 
+                                        className={styles.noResgiterInput}
+                                        type="checkbox" 
+                                        name="noName" 
+                                        id="noName" 
+                                        checked={noRegister}
+                                        onChange={() => setNoRegister(!noRegister)}
+                                    />
+                                </div>
+                            </div>
+                            <hr />
+                            <div className={styles.inputBox}>
+                                <label htmlFor="data">Data</label>
+                                <CreateOrderDatePicker
+                                    displayValue={formatDate}
+                                    value={date}
+                                    onChange={setDate}
+                                    placeholder="Selecione a data inicial"
+                                    className={styles.dateInput} 
+                                />
+                            </div>
+                            <hr />
+                            <div className={styles.inputBox}>
+                                <label htmlFor="data">Horário</label>
+                                <input 
+                                    className={styles.timeInput}
+                                    type="time"
+                                    value={time}
+                                    placeholder="14:00"   
+                                    maxLength={5} 
+                                    onChange={(e) => {setTime(e.target.value)}}
+                                />
+                            </div>
+
+                            {/* Entrega  */}
+                            <div className={styles.delivery}>
+                                <hr />
+                                <div className={styles.deliveryCheckBox}>
+                                    <label><BikeIcon/> Pedido para entrega?</label>
+                                    <ToggleSwitch 
+                                        changeIsDelivery={setIsDelivery}
+                                        isDelivery={isDelivery}
+                                    />
+                                </div>
+
+                                {isDelivery && (
+                                    <div>
+                                        <div className={styles.deliveryInputBox}>
+                                            <div className={styles.deliveryInput}>
+                                                <label>Endereço </label>
+                                                <input
+                                                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                                                    value={deliveryAddress}
+                                                    placeholder="Ex: Rua ABC 123 - Bairro XYZ"
+                                                />
+                                            </div>
+                                            <div className={styles.deliveryInput}>
+                                                <label style={{color:"var(--primary-light)"}}>
+                                                    Taxa de Entrega *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={deliveryFee}
+                                                    placeholder="Ex: R$ 10,00"
+                                                    onChange={(e) => handleDeliveryFee(e.target.value)}
+                                                />
+                                            </div>                                    
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleClickAddressButton()}
+                                            className={styles.reuse}
+                                        >
+                                            Usar endereço do Cliente
+                                        </button>
+                                    </div>
+                                )}
+                                <hr />
+                            </div>
+                            
+                            {/* Produtos do Pedido */}
+                            <div className={styles.orderBox}>
+                                <h3>Produtos do Pedido</h3>
+                                <div className={styles.orderTable}>
+                                    {productList.length > 0 ? (
+                                        <CreateOrderList 
+                                            productList={productList} 
+                                            changeQuantity={changeQuantity}
+                                            removeProduct={removeProduct}
+                                        />
+                                    ) : (
+                                        <div className={styles.mqNoProductsContainer}> 
+                                            <p className={styles.noProducts}>
+                                                Adicione Produtos ao Pedido
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {/* Adicionar Produto */}
+                                <h3 style={{marginTop:"3rem"}}>Adicionar Produto</h3>
+                                <div className={styles.inputWithIcon} >
+                                    <ProductSearch 
+                                        productName={productName}
+                                        onChangeName={setProductName}
+                                        setProduct={setProduct}
+                                        placeholder="Buscar produto para adicionar ao pedido..." 
+                                        onEnterPress={handleNewProduct}
+                                    />
+                                </div>
+                                <button
+                                    onClick={() => handleNewProduct(product!)} 
+                                    className={styles.addItemButton}
+                                    type="button"
+                                >
+                                    <PlusCircleIcon /> Adicionar Produto
+                                </button>
+                            </div>
+
+                            {/* Observações */}
+                            <div className={`${styles.inputBox} ${styles.obs}`}>
+                                <label htmlFor="descricao">Observações (Opcional)</label>
+                                <textarea 
+                                    id="descricao" 
+                                    value={description}
+                                    placeholder="Adicione observações ao pedido..."
+                                    autoComplete="off"
+                                    onChange={(e) => setDescription(e.target.value)} 
+                                />                            
+                            </div>
+                            
+                            {/* Descontos */}
+                            <div className={styles.inputBox}>
+                                <h3 className={styles.discount}>Desconto (Opcional)</h3>
+                                <div className={styles.discountInputBox}>
+                                    <input 
+                                        className={styles.discountInput}
+                                        onChange={e => {
+                                            const value = Math.max(0, Number(e.target.value))
+                                            setDiscountValue(value.toString())
+                                        }}
+                                        value={discountValue}
+                                        type="number"
+                                    />    
+                                    <button 
+                                        type="button" 
+                                        className={styles.changeDiscountTypeButton}
+                                        onClick={changeDiscountType}
+                                    >   
+                                        <RefreshCwIcon />
+                                        {discountType}
+                                    </button>
+                                    
+                                </div> 
+                                {/* Subtotal */}
+                                <div className={styles.statsValueBox}>
+                                    <label>Subtotal</label> 
+                                    <p>R$ {grossValue.toFixed(2)}</p>
+                                </div>
+
+                                {/* Desconto */}
+                                <div className={styles.statsValueBox}>
+                                    <label>Desconto</label> 
+                                    <p style={{color:"var(--error)"}}>
+                                        - R$ {discount.toFixed(2)}
+                                    </p>
+                                </div>
+                                
+                                {/* Taxa de Entrega */}
+                                {isDelivery && (
+                                    <div className={styles.statsValueBox}>
+                                        <label>Taxa de Entrega</label> 
+                                        <p>R$ {priceNumber(deliveryFee).toFixed(2)}</p>
+                                    </div>
+                                )}
+
+                                {/* Total */}
+                                <div className={styles.statsValueBox}>
+                                    <label>Total</label> 
+                                    <p style={{ color: 'var(--primary)' }}>
+                                        R$ {total.toFixed(2)}
+                                    </p>
+                                </div>
+
+                                <div className={styles.buttons}>
+                                    <button 
+                                        onClick={() => {navigate("/pedidos")}} 
+                                        className={styles.cancel}
+                                        type="button"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button 
+                                        className={styles.save} 
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                    >        
+                                        <SaveIcon />
+                                        {isSubmitting ? "Salvando..." : "Salvar Pedido"}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </Container>
+            </MainTemplate>
+        )
+    }
+
     return(
         <MainTemplate>
             <Container>
@@ -516,7 +769,7 @@ export function EditPedido() {
                                             <tbody>
                                                 {productList.length > 0 ? (
                                                 <CreateOrderList 
-                                                    orderList={productList} 
+                                                    productList={productList} 
                                                     changeQuantity={changeQuantity}
                                                     removeProduct={removeProduct}
                                                 />

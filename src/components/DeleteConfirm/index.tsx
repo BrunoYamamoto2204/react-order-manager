@@ -24,32 +24,37 @@ export function DeleteConfirm<T>({
     },[])
 
     return (
-        <div className={styles.confirmDeleteBox}>
-            <div className={styles.confirmDelete}>
-                <h3>{`Excluir ${name}`}</h3>
-                <label style={{color:"var(--gray-300)"}}>
-                    {`Deseja mesmo excluir permanentemente este ${name}?`}
-                </label>
+        <>
+            <div 
+                className={styles.overlay}
+            />
+            <div className={styles.confirmDeleteBox}>
+                <div className={styles.confirmDelete}>
+                    <h3>{`Excluir ${name}`}</h3>
+                    <label style={{color:"var(--gray-300)"}}>
+                        {`Deseja mesmo excluir permanentemente este ${name}?`}
+                    </label>
 
-                <div className={styles.confirmDeleteButtons}>
-                    <button
-                        className={`${styles.button} ${styles.confirmButton}`}
-                        onClick={() => { 
-                            removeRegister(register)
-                            setShowRegister(false)
-                        }}
-                    >
-                        Sim desejo Excluir
-                    </button>
+                    <div className={styles.confirmDeleteButtons}>
+                        <button
+                            className={`${styles.button} ${styles.confirmButton}`}
+                            onClick={() => { 
+                                removeRegister(register)
+                                setShowRegister(false)
+                            }}
+                        >
+                            Sim desejo Excluir
+                        </button>
 
-                    <button
-                        className={`${styles.button} ${styles.cancelButton}`}
-                        onClick={() => setOpenConfirm(false)}
-                    >
-                        Cancelar
-                    </button>
+                        <button
+                            className={`${styles.button} ${styles.cancelButton}`}
+                            onClick={() => setOpenConfirm(false)}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

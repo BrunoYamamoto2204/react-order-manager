@@ -1,9 +1,8 @@
 import { CheckLineIcon, CircleXIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
-import {  type Customer } from "../../services/customersApi"
-// import { getCustomerById, type Customer } from "../../services/customersApi"
-// import { useEffect, useState } from "react"
-// import { getOrders } from "../../services/ordersApi"
+import { type Customer } from "../../services/customersApi"
+import { getOrders } from "../../services/ordersApi"
+import { useEffect, useState } from "react"
 
 type MediaQueryCustomerListProps = {
     customersList: Customer[]
@@ -15,35 +14,49 @@ export function MediaQueryCustomerList({
     handleClickCustomer 
 } : MediaQueryCustomerListProps) {
 
-    // const [ pendingByCustomer, setPendingByCustomer ] = useState<Record<string, number>>({})
-    // const [ concluedByCustomer, setConcluedByCustomer ] = useState<Record<string, number>>({})
+    const [ pendingByCustomer, setPendingByCustomer ] = useState<Record<string, number>>({})
+    const [ concluedByCustomer, setConcluedByCustomer ] = useState<Record<string, number>>({})
 
-    // useEffect(() => {
-    //     const loadPendingOrders = async () => {
-    //         const orders = await getOrders()
-            
-    //         const customerMap = customersList.reduce((acc, customer) => {
-    //             acc[customer._id!] = customer
-    //             return acc
-    //         }, {} as Record<string, Customer>)
+    useEffect(() => {
+        const loadPendingOrders = async () => {
+            const orders = await getOrders()
 
-    //         const pendingCounts: Record<string, number> = {}
-    //         const concluedCounts: Record<string, number> = {}
+            const customerMap = customersList.reduce((acc, customer) => {
+                acc[customer._id!] = customer
+                return acc
+            }, {} as Record<string, Customer>)
 
-    //         orders.forEach(order => {
-                
-    //         })
-    //     }
+            const pendingOrders: Record<string, number> = {}
+            const concluedOrders: Record<string, number> = {}
 
-    //     loadPendingOrders()
-    // },[])
+            orders.forEach(order => {
+                const customerId = order.customerId
+                if (!customerId) return
+
+                const customer = customerMap[customerId] 
+                if (!customer) return
+
+                if (order.status === "Pendente") {
+                    pendingOrders[customerId] =  (pendingOrders[customerId] || 0) + 1
+                } else {
+                    concluedOrders[customerId] = (concluedOrders[customerId] || 0) + 1
+                }
+            })
+
+            setPendingByCustomer(pendingOrders)
+            setConcluedByCustomer(concluedOrders)
+        }
+
+        loadPendingOrders()
+    },[customersList])
     
 
     return (
         <>
             {customersList.map((customer, index) => {
                 
-                // const pendingQuantity = pendingByCustomer[customer._id!] 
+                const pendingQuantity = pendingByCustomer[customer._id!] 
+                const concluedQuantity = concluedByCustomer[customer._id!]
 
                 return (
                     <div key={`${customer.name}_${index}`} className={styles.mobileCustomerBox}>
@@ -68,13 +81,13 @@ export function MediaQueryCustomerList({
 
                         {customer.pendingOrders 
                             ? (
-                                <div className={styles.noPendingOrders}>
-                                    <p> Pedido(s) Pendente(s)</p>
+                                <div className={styles.pendingOrders}>
+                                    <p>{pendingQuantity} Pedido(s) Pendente(s)</p>
                                     <CircleXIcon/>
                                 </div>
                             ) : (
-                                <div className={styles.pendingOrders}>
-                                    <p> Pedido(s) Concluído(s)</p>
+                                <div className={styles.noPendingOrders}>
+                                    <p>{concluedQuantity} Pedido(s) Totais(s)</p>
                                     <CheckLineIcon/>
                                 </div> 
                             )

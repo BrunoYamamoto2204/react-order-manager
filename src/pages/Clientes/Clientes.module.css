@@ -162,12 +162,16 @@
 
 .pendingOrders {
     text-align: center;
-    color: var(--primary);
+    color: var(--error);
 }
 
 .noPendingOrders {
     text-align: center;
-    color: var(--error);
+    color: var(--gray-200);
+}
+
+.noPendingOrders svg {
+    color: var(--primary);
 }
 
 .noPendingOrders svg,
@@ -323,14 +327,6 @@
         align-items: center;
         gap: 1rem;
         justify-content: space-between;
-    }
-
-    .pendingOrders {
-        color: var(--primary);
-    }
-
-    .noPendingOrders {
-        color: var(--error);
     }
 
     .noPendingOrders svg,

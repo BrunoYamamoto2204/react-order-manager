@@ -30,8 +30,8 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
 
                         {/* Completed orders */}
                         {customer.pendingOrders 
-                            ? <td className={styles.noPendingOrders}><CircleXIcon/></td>
-                            : <td className={styles.pendingOrders}><CheckLineIcon/></td> 
+                            ? <td className={styles.pendingOrders}><CircleXIcon/></td>
+                            : <td className={styles.noPendingOrders}><CheckLineIcon/></td> 
                         }
 
                         {/* Ações  */}

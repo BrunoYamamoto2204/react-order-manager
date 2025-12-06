@@ -1,6 +1,7 @@
 import { CheckLineIcon, CircleXIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
-import { getCustomerById, type Customer } from "../../services/customersApi"
+import {  type Customer } from "../../services/customersApi"
+// import { getCustomerById, type Customer } from "../../services/customersApi"
 // import { useEffect, useState } from "react"
 // import { getOrders } from "../../services/ordersApi"
 

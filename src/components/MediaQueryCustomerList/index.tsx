@@ -1,8 +1,8 @@
 import { CheckLineIcon, CircleXIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
-import { type Customer } from "../../services/customersApi"
+import { getCustomerById, type Customer } from "../../services/customersApi"
+// import { useEffect, useState } from "react"
 // import { getOrders } from "../../services/ordersApi"
-// import { useState } from "react"
 
 type MediaQueryCustomerListProps = {
     customersList: Customer[]
@@ -14,22 +14,35 @@ export function MediaQueryCustomerList({
     handleClickCustomer 
 } : MediaQueryCustomerListProps) {
 
-    // const [ pendingQuantity, setPendingQuantity ] = useState(0)
+    // const [ pendingByCustomer, setPendingByCustomer ] = useState<Record<string, number>>({})
+    // const [ concluedByCustomer, setConcluedByCustomer ] = useState<Record<string, number>>({})
 
-    // const loadPendingOrders = async (customerId: string) => {
-    //     const orders = await getOrders()
-        
-    //     setPendingQuantity(orders.reduce((total, order) => {
-    //         if (order.customerId === customerId) total += 1 
-    //         return total
-    //     }, 0))
-    // }
+    // useEffect(() => {
+    //     const loadPendingOrders = async () => {
+    //         const orders = await getOrders()
+            
+    //         const customerMap = customersList.reduce((acc, customer) => {
+    //             acc[customer._id!] = customer
+    //             return acc
+    //         }, {} as Record<string, Customer>)
+
+    //         const pendingCounts: Record<string, number> = {}
+    //         const concluedCounts: Record<string, number> = {}
+
+    //         orders.forEach(order => {
+                
+    //         })
+    //     }
+
+    //     loadPendingOrders()
+    // },[])
+    
 
     return (
         <>
             {customersList.map((customer, index) => {
                 
-                // loadPendingOrders(customer._id!)
+                // const pendingQuantity = pendingByCustomer[customer._id!] 
 
                 return (
                     <div key={`${customer.name}_${index}`} className={styles.mobileCustomerBox}>
@@ -55,12 +68,12 @@ export function MediaQueryCustomerList({
                         {customer.pendingOrders 
                             ? (
                                 <div className={styles.noPendingOrders}>
-                                    <p>Pedido(s) Pendente(s)</p>
+                                    <p> Pedido(s) Pendente(s)</p>
                                     <CircleXIcon/>
                                 </div>
                             ) : (
                                 <div className={styles.pendingOrders}>
-                                    <p>Pedido(s) Concluído(s)</p>
+                                    <p> Pedido(s) Concluído(s)</p>
                                     <CheckLineIcon/>
                                 </div> 
                             )

@@ -111,7 +111,6 @@ export function Home() {
                         
                     </h2>
 
-                    
                     <div className={styles.summary}>
                         <h2>Receita total: <span>R$ {totalOrdersValue().toFixed(2).replace(".",",")}</span></h2>
 

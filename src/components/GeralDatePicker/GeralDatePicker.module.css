@@ -241,6 +241,19 @@ button.todayButton:hover {
 }
 
 /* ========== RESPONSIVIDADE ========== */
+@media (max-width: 1050px) {
+    .inputDisplay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .inputDisplay span{
+        font-size: clamp(1.8rem, 2.3vw, 2.5rem);
+    }
+}
+
 @media (max-width: 768px) {
     .dropdown {
         min-width: 28rem;
@@ -267,3 +280,4 @@ button.todayButton:hover {
         padding: 0.6rem;
     }
 }
+

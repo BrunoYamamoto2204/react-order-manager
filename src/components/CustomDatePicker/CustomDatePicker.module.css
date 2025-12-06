@@ -261,3 +261,12 @@ button.todayButton:hover {
         padding: 0.6rem;
     }
 }
+
+@media(max-width: 1050px) {
+    .calendarIcon {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: var(--primary);
+        margin-left: 2rem;
+    }
+}

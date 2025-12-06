@@ -9,6 +9,7 @@ import { AnalysisList } from "../../components/AnalysisList"
 import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { AnalisysProductTable } from "../../components/AnalysisProductTable"
 import { getOrders, type Order } from "../../services/ordersApi"
+import { MediaQueryAnalysisList } from "../../components/MediaQueryAnalysisList"
 
 type ProductQuantity = {
     productName: string
@@ -18,9 +19,34 @@ type ProductQuantity = {
     unit: string
 }
 
+export type AnalysisProductList = {
+    position: number,
+    productName: string,
+    totalValue: number,
+    totalQuantity: string,
+}
+
+
 export function Analises() {
+
+    const [ isMobile, setIsMobile ] = useState(false);
+
     useEffect(() => {
         document.title = "Análises - Comanda"
+
+        // Telas menores de 1050px (Mobile)
+        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQueryMobile.matches)
+
+        const handleResizeMobile = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQueryMobile.addEventListener("change", handleResizeMobile)
+
+        return () => {
+            mediaQueryMobile.removeEventListener("change", handleResizeMobile)
+        }
     },[])
 
     // Converte p/ string
@@ -162,16 +188,15 @@ export function Analises() {
     }
 
     // Exibe a tabela 
-    const productList = useMemo(() => {
+    const productList = useMemo<AnalysisProductList[]>(() => {
         return [...products]
             .slice(0, 5)
             .map((p, k) => {
-                const unit = p.unit === "UN" ? "" : ` ${p.unit}`
                 return {
                     position: k + 1,
                     productName: p.productName,
                     totalValue: p.totalValue,
-                    totalQuantity: p.totalQuantity + unit,
+                    totalQuantity: `${p.totalQuantity} ${p.unit}`,
                 }
             })
     }, [products])
@@ -179,12 +204,12 @@ export function Analises() {
     const allProductList = useMemo(() => {
         return [...products]
             .map((p, k) => {
-                const unit = p.unit === "UN" ? "" : ` ${p.unit}`
+
                 return {
                     position: k + 1,
                     productName: p.productName,
                     totalValue: p.totalValue,
-                    totalQuantity: p.totalQuantity + unit,
+                    totalQuantity: `${p.totalQuantity} ${p.unit}`,
                 }
             })
     }, [products])
@@ -233,27 +258,52 @@ export function Analises() {
                 </div>
 
                 {/* RESUMO DO PERÍODO */}
-                <div className={styles.periodResume}>
-                    <div className={styles.resumeTitle}>
-                        <h2>Resumo do perído</h2>
-                        <h3>Visão geral dos seus resultados de vendas.</h3>
+                {isMobile ? (
+                        <div className={styles.periodResume}>
+                        <div className={styles.resumeTitle}>
+                            <h2>Resumo do perído</h2>
+                            <h3>Visão geral dos seus resultados de vendas.</h3>
+                        </div>
+                        <div className={styles.resumeContent}>
+                            <div className={styles.resumeItem}>
+                                <h3>Quantidade de Pedidos</h3>
+                                <h4>{orders.length}</h4>
+                            </div>
+                            <hr />
+                            <div className={styles.resumeItem}>
+                                <h3>Valor dos Pedidos</h3>
+                                <h4>R$ {totalValue().toFixed(2)}</h4>
+                            </div>
+                            <hr />
+                            <div className={styles.resumeItem}>
+                                <h3>Ticket Médio</h3>
+                                <h4>R$ {aovValue().toFixed(2)}</h4>
+                            </div>
+                        </div>
                     </div>
-                    <div className={styles.resumeContent}>
-                        <div className={styles.resumeItem}>
-                            <h3>Quantidade de Pedidos</h3>
-                            <h4>{orders.length}</h4>
+                ) : (
+                    <div className={styles.periodResume}>
+                        <div className={styles.resumeTitle}>
+                            <h2>Resumo do perído</h2>
+                            <h3>Visão geral dos seus resultados de vendas.</h3>
                         </div>
-                        <div className={styles.resumeItem}>
-                            <h3>Valor dos Pedidos</h3>
-                            <h4>R$ {totalValue().toFixed(2)}</h4>
-                        </div>
-                        <div className={styles.resumeItem}>
-                            <h3>Ticket Médio</h3>
-                            <h4>R$ {aovValue().toFixed(2)}</h4>
+                        <div className={styles.resumeContent}>
+                            <div className={styles.resumeItem}>
+                                <h3>Quantidade de Pedidos</h3>
+                                <h4>{orders.length}</h4>
+                            </div>
+                            <div className={styles.resumeItem}>
+                                <h3>Valor dos Pedidos</h3>
+                                <h4>R$ {totalValue().toFixed(2)}</h4>
+                            </div>
+                            <div className={styles.resumeItem}>
+                                <h3>Ticket Médio</h3>
+                                <h4>R$ {aovValue().toFixed(2)}</h4>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                )}
+                
                 <div className={styles.featuredProductStats}>
                     <div className={styles.productChoice}>
                         <h2>Destaques </h2>
@@ -319,36 +369,58 @@ export function Analises() {
                             <h4 className={styles.productSubtitle}>em vendas no período</h4>
                         </div>
                     </div>
-
+                    
+                    {/* PRODUTOS */}
                     <div className={styles.gridOfTwo}>
-                        <div className={styles.bestSellersContainer}>
-                            <h2>
-                                <ChartNoAxesCombinedIcon/>
-                                Produtos em Destaque
-                            </h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Posição</th>
-                                        <th>Produto</th>
-                                        <th>Valor</th>
-                                        <th>Quantidade</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {productList.length > 1 
-                                        ? <AnalysisList productsList={productList}/>
-                                        : <label className={styles.noProducts}>Sem produtos nesse período</label>
-                                    }
-                                </tbody>
-                            </table>
-                            <h3 
-                                className={styles.seeMore} 
-                                onClick={() => setShowProducts(true)}
-                            >
-                                Ver mais...
-                            </h3>
-                        </div>
+                        {isMobile ? (
+                            <div className={styles.bestSellersContainer}>
+                                <h2>
+                                    <ChartNoAxesCombinedIcon/>
+                                    Produtos em Destaque
+                                </h2>
+
+                                <div>
+                                    <MediaQueryAnalysisList productsList={productList}/>
+                                </div>
+
+                                <h3 
+                                    className={styles.seeMore} 
+                                    onClick={() => setShowProducts(true)}
+                                >
+                                    Ver mais...
+                                </h3>
+                            </div>
+                        ) : (
+                            <div className={styles.bestSellersContainer}>
+                                <h2>
+                                    <ChartNoAxesCombinedIcon/>
+                                    Produtos em Destaque
+                                </h2>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Posição</th>
+                                            <th>Produto</th>
+                                            <th>Valor</th>
+                                            <th>Quantidade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {productList.length > 1 
+                                            ? <AnalysisList productsList={productList}/>
+                                            : <label className={styles.noProducts}>Sem produtos nesse período</label>
+                                        }
+                                    </tbody>
+                                </table>
+                                <h3 
+                                    className={styles.seeMore} 
+                                    onClick={() => setShowProducts(true)}
+                                >
+                                    Ver mais...
+                                </h3>
+                            </div>
+                        )}
+
                         <div className={styles.orderChart}>
                             <h2>
                                 <CogIcon /> 

@@ -122,4 +122,20 @@
     margin-left: 2rem;
 }
 
+@media (max-width: 1050px) {
+    .categories {
+        grid-template-columns: 1fr 1fr;
+        margin-top: 2rem;
+    }
 
+    .quickStatsTitle{
+        font-size: 2.7rem;
+    }
+
+    .quickStats{
+        font-size: 1.8rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}

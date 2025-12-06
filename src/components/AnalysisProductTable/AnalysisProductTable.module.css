@@ -17,6 +17,7 @@
     transform: translate(-50%, -50%); /* Centraliza */
     width: 90%;
     overflow-y: auto;
+    max-height: 90vh;
     z-index: 9999;
     border-radius: 2rem;
     padding: 5rem;
@@ -95,4 +96,69 @@ h3.seeMore:hover{
     background-color: var(--gray-100);
     color: var(--gray-700);
     transform: scale(0.95);
+}
+
+@media(max-width: 1050px) {
+    .buttonbox {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Product Table */
+        .productInfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .productInfo h3{
+        margin-bottom: 1rem;
+    }
+
+    .productInfo h3 label {
+        color: var(--primary);
+    }
+
+    .productInfo hr {
+        margin: 3rem 0;
+        border: 0.1rem solid var(--gray-400);
+    }
+
+    .productTitle {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+    }
+
+    .quantityAndValue {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .quantityAndValueBox {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .quantityAndValueBox label {
+        color: var(--gray-300);
+        font-size: clamp(1.5rem, 2vw, 2.1rem);
+    }
+
+    .quantityAndValueBox p {
+        font-size: clamp(1.9rem, 2.2vw, 2.6rem);
+    }
+
+    h3.seeMore {
+        cursor: pointer;
+        width: fit-content;
+        margin: auto;     
+        margin-top: 3rem;
+    }
+
+    /* Em breve */
+    .centerBox {
+        margin-top: 2rem;
+    }
+
 }

@@ -185,16 +185,160 @@
 }
 
 .seeCustomer p{
-    color: var(--gray-100);
+    color: var(--primary-light);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
 
 .seeCustomer p:hover{
-    color: var(--primary-light);
+    color: var(--gray-100);
     cursor: pointer;
     transform: scale(1.05);
 }
 
+@media(max-width: 1050px) {
+    .mobileAddButton{
+        position: fixed;
+        bottom: 20px;   
+        right: 2%;    
+        z-index: 100;   
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
 
+    /* Mobile Header */
+    .filterButton{
+        margin-left: 2rem;
+        background-color: var(--gray-600);
+        border: 2px solid transparent; 
+        padding: 1.8rem 3rem;
+        border-radius: 1rem;
+        color: var(--gray-300);
+        outline: none;
+        display: flex;
+        align-items: center;
+        font-size: 1.8rem;
+        gap: 1rem;
+        transition: all 0.15s ease-in-out;
+        border: 3px solid transparent;
+        position: relative;
+    }
+
+    .filterButton:hover {
+        color: var(--gray-100);
+        border-color: var(--primary);
+        outline: none;    
+    }
+
+    .mobileFilterBox:hover .dropDownFilter{
+        display: flex;
+    }
+
+    .dropDownFilter {
+        position: absolute;
+        right: 0.5%;
+        display: none;
+        flex-direction: column;
+        background-color: var(--gray-700);
+        border-radius: 1rem;
+        overflow: hidden;
+        z-index: 10;
+    }
+
+    .dropDownFilter button {
+        background-color: transparent;
+        border: none;
+        color: var(--gray-100);
+        padding: 1.5rem 2rem;
+        font-size: 1.8rem;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid var(--gray-600);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .dropDownFilter button:hover {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    .orderTable th svg, .dropDownFilter button svg {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .orderTable th svg.isUp, .dropDownFilter button svg.isUp{
+        transform: rotate(180deg);
+    }
+
+    /* Customer Table */
+    .MobileList {
+        display: flex;
+        flex-direction: column;
+        margin-top: 2rem;
+        gap: 2rem;
+    }
+
+    .mobileCustomerBox {
+        background: linear-gradient(145deg, var(--gray-800), var(--gray-400));
+        padding: 2rem;
+        border-radius: 1rem;
+    }
+
+    .mobileCustomerBox hr {
+        border: 0.1rem solid var(--gray-400);
+        margin: 2rem 0;
+    }
+
+    .mobileCustomerHeader {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .mobileCustomerInfo {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .mobileCustomerInfo p {
+        font-size: clamp(2rem, 2.1vw, 2.5rem);
+    }
+
+    .mobileCustomerInfo label {
+        color: var(--gray-300);
+        font-style: italic;
+    }
+
+    .pendingOrders,
+    .noPendingOrders {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        justify-content: space-between;
+    }
+
+    .pendingOrders {
+        color: var(--primary);
+    }
+
+    .noPendingOrders {
+        color: var(--error);
+    }
+
+    .noPendingOrders svg,
+    .pendingOrders svg {
+        transition: all 0.3s ease-in-out;
+        width: 3rem;
+        height: 3rem;
+        margin: 0;
+    }
+}
 

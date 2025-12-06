@@ -405,8 +405,8 @@ export function EditPedido() {
             <MainTemplate>
                 <Container>
                     <Title 
-                        title="Novo Pedido" 
-                        subtitle="Preencha os dados para criar um novo pedido"
+                        title="Editar Pedido" 
+                        subtitle="Edite os dados do pedido antes de salvar as alterações"
                     />
                     <div className={styles.formContent}>
                         <form 
@@ -534,7 +534,7 @@ export function EditPedido() {
                                         productName={productName}
                                         onChangeName={setProductName}
                                         setProduct={setProduct}
-                                        placeholder="Buscar produto para adicionar ao pedido..." 
+                                        placeholder="Buscar produto para o pedido..." 
                                         onEnterPress={handleNewProduct}
                                     />
                                 </div>
@@ -546,6 +546,8 @@ export function EditPedido() {
                                     <PlusCircleIcon /> Adicionar Produto
                                 </button>
                             </div>
+
+                            <hr />
 
                             {/* Observações */}
                             <div className={`${styles.inputBox} ${styles.obs}`}>
@@ -559,6 +561,8 @@ export function EditPedido() {
                                 />                            
                             </div>
                             
+                            <hr />
+
                             {/* Descontos */}
                             <div className={styles.inputBox}>
                                 <h3 className={styles.discount}>Desconto (Opcional)</h3>

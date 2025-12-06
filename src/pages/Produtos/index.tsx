@@ -6,16 +6,21 @@ import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { Messages } from "../../components/Messages";
 import { deleteProduct, getProducts } from "../../services/productsApi";
 import type { Product } from "../../services/productsApi";
 import { CompleteProduct } from "../../components/CompleteProduct";
+import { MediaQueryProductList } from "../../components/MediaQueryProductList";
 
 export function Produtos() {
     const navigate = useNavigate();
+
+    const [ isMobile, setIsMobile ] = useState(false);
+
     const [ loading, setLoading ] = useState(true);
     const [ products, setProducts ] = useState<Product[]>([])
+    const [ activeFilter, setActiveFilter ] = useState("Date");
 
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ categoryIsDown, setCategoryIsDown] = useState(true);
@@ -28,6 +33,20 @@ export function Produtos() {
     useEffect(() => {
         document.title = "Produtos - Comanda"
         loadProducts()
+
+        // Telas menores de 1050px (Mobile)
+        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQueryMobile.matches)
+
+        const handleResizeMobile = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQueryMobile.addEventListener("change", handleResizeMobile)
+
+        return () => {
+            mediaQueryMobile.removeEventListener("change", handleResizeMobile)
+        }
     },[])
 
     const loadProducts = async () => {
@@ -173,6 +192,11 @@ export function Produtos() {
         setProduct(product)
     }   
     
+    const handleMobileFilterClick = (filterType: string) => {
+        thHandleClick(filterType)
+        setActiveFilter(filterType)
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -183,6 +207,97 @@ export function Produtos() {
                 </Container>
             </MainTemplate>
         );
+    }
+
+    if (isMobile) {
+        return(
+            <MainTemplate>
+                    <Container>
+                        {showProduct && (
+                            <CompleteProduct 
+                                product={product!}
+                                removeProduct={removeProduct}
+                                setShowProduct={setShowProduct}
+                            />
+                        )}
+
+                        <div className={styles.header}>
+                            <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
+                            <button 
+                                onClick={() => navigate("/produtos/criar")}
+                                className={styles.mobileAddButton}
+                            >
+                                <PlusIcon/>
+                            </button>
+                        </div>
+
+                        <div className={styles.searchProduct}>
+                            <SearchIcon className={styles.searchIcon} />
+                            <input 
+                                onChange={e => handleChange(e.target.value)}
+                                placeholder="Buscar produto"
+                            />
+
+                            <div className={styles.mobileFilterBox}>
+                                <div className={styles.filterButton}>
+                                    <ListFilterIcon/>
+                                </div>
+                                <div className={styles.dropDownFilter}>
+                                    <button onClick={() => {handleMobileFilterClick("Product")}}>
+                                        Produto
+                                        <ChevronDownIcon
+                                            className={handleClickClass(nameIsDown)}
+                                            style={{
+                                                opacity: activeFilter === "Product" ? 1 : 0,
+                                                pointerEvents: 'none'
+                                            }}
+                                        />
+                                    </button>
+                                    <button onClick={() => {handleMobileFilterClick("Price")}}>
+                                        Preço
+                                        <ChevronDownIcon
+                                            className={handleClickClass(priceIsDown)}
+                                            style={{
+                                                opacity: activeFilter === "Price" ? 1 : 0,
+                                                pointerEvents: 'none'
+                                            }}
+                                        />
+                                    </button>
+                                    <button onClick={() => {handleMobileFilterClick("Category")}}>
+                                        Categoria
+                                        <ChevronDownIcon
+                                            className={handleClickClass(categoryIsDown)}
+                                            style={{
+                                                opacity: activeFilter === "Category" ? 1 : 0,
+                                                pointerEvents: 'none'
+                                            }}
+                                        />
+                                    </button>
+                                    <button onClick={() => {handleMobileFilterClick("Unit")}}>
+                                        Unidade
+                                        <ChevronDownIcon
+                                            className={handleClickClass(unitIsDown)}
+                                            style={{
+                                                opacity: activeFilter === "Unit" ? 1 : 0,
+                                                pointerEvents: 'none'
+                                            }}
+                                        />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className={styles.MobileList}>
+                                <MediaQueryProductList
+                                    productsList={products}
+                                    handleClickproduct={handleClickproduct}
+                                />
+                            </div>
+                        </div>
+                    </Container>
+            </MainTemplate>
+        )
     }
 
     return(

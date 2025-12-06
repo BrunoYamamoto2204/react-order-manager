@@ -1,5 +1,4 @@
 .formContent{
-    min-width: 50rem;
     margin-top: 4rem;
     background-color: var(--gray-700);
     padding: 4rem;
@@ -148,5 +147,20 @@ button:disabled {
         padding: 0 0.7rem;
         color: var(--gray-300);
     }
+}
 
+@media (max-width: 1050px) {
+    .inputGroup {
+        grid-template-columns: 1fr;
+        margin-bottom: 5rem;
+    }
+
+    .buttons {
+        justify-content: center;
+    }
+
+    .addressGroup {
+        grid-template-columns: 1fr;
+        margin-bottom: 5rem;
+    }
 }

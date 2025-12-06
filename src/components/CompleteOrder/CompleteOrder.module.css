@@ -184,6 +184,10 @@
 }
 
 @media (max-width: 1050px) {
+    .order {
+        padding: 4rem 2rem;
+    }
+
     /* Header */
     .header {
         flex-direction: column;
@@ -215,17 +219,18 @@
         display: flex;
         flex-direction: column;
     }
-
-    .infoBox h3 {
-        font-size: clamp(2rem, 2.5vw, 3rem)
-    }
     
     /* Order content info */
     .mobileInfoGroup {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 2rem;
         width: 100%;
+        text-align: center;
+    }
+
+    .mobileInfoGroup p {
+        font-size: clamp(2rem, 2.5vw, 3rem)
     }
 
     .orderStatus {
@@ -238,5 +243,16 @@
         align-items: center;
     }
 
-    
+    /* Product List */
+    .productItem label, .detailsHeader label{
+        font-size: clamp(1.8rem, 2vw, 3rem)
+    }
+
+    .productItem p {
+        font-size: clamp(1.6rem, 2vw, 3rem)
+    }
+
+    .detailsHeader h3 {
+        font-size: clamp(2rem, 2.2vw, 3rem)
+    }
 }

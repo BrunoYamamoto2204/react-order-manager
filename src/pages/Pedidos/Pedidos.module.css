@@ -340,16 +340,6 @@ tr:hover .status button:hover{
     color: white;
 }
 
-/* Ícone de seta no filtro */
-.filterIcon {
-    width: 2rem;
-    height: 2rem;
-    transition: transform 0.2s ease;
-}
-
-.filterIcon.isUp {
-    transform: rotate(180deg);
-}
 
 /* -------------------- Tablet/Mobile Version Content -------------------- */
 .mobileOrderContainer {
@@ -452,7 +442,23 @@ div:hover .status button:hover{
     }
 }
 
+@media (max-width: 1050px) {
+    .mobileValue {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        gap: 1rem;
+    }
+
+    .seeOrder {
+        font-size: clamp(2rem, 2.5vw, 5rem);
+    }
+}
+
 @media (max-width: 550px) {
+    .mobileBoxHeader h3{
+        font-size: clamp(2.5rem, 4.5vw, 5rem);
+    }
     .infoFooter {
         flex-direction: column;
         align-items: start;
@@ -463,4 +469,17 @@ div:hover .status button:hover{
     .mobilePrice{
         justify-content: flex-end;
     }
+
+    .mobileValue {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        gap: 1rem;
+    }
+
+    .seeOrder {
+        font-size: clamp(1.5rem, 4.5vw, 5rem);
+    }
+
+    
 }

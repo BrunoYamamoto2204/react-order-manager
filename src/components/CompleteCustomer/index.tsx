@@ -19,6 +19,27 @@ export function CompleteCustomer({
 } : CompleteCustomerProps) {
     const navigate = useNavigate();
 
+    const [ isMobile, setIsMobile ] = useState(false)
+    
+    useEffect(() => {
+        const mainElement = document.querySelector("main")
+        if (mainElement) {
+            mainElement.scroll({ top: 0, behavior: "smooth" })
+        }
+
+        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQueryMobile.matches)
+
+        const handleMobile = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQueryMobile.addEventListener("change", handleMobile)
+        return () => {
+            mediaQueryMobile.removeEventListener("change", handleMobile)
+        }
+    }, [])
+
     const [ confirmDelete, setConfirmDelete ] = useState(false)
     const [ pendingQuantity, setPendingQuantity ] = useState(0)
 
@@ -90,6 +111,98 @@ export function CompleteCustomer({
                 </div>
             )
         }
+    }
+
+    if(isMobile) {
+        return(
+            <>
+                {confirmDelete && (
+                    <DeleteConfirm 
+                        name="Cliente"
+                        setOpenConfirm={setConfirmDelete}
+                        removeRegister={removeCustomer}
+                        register={customer}
+                        setShowRegister={setShowCustomer}
+                    />
+                )}
+
+                <div className={styles.customer}>
+                    <div className={styles.header}>
+                        <div className={styles.backButtonBox}>
+                            <h2>Cliente</h2>
+                            <h3>#{customer._id}</h3>
+                            <div className={styles.mobileHeaderButtons}>
+                                <button
+                                    className={`${styles.button} ${styles.backButton}`}
+                                    onClick={() => setShowCustomer(false)}
+                                >
+                                    <ArrowLeftIcon/> Voltar
+                                </button>
+
+                                <button
+                                    className={`${styles.button} ${styles.editButton}`}
+                                    onClick={() => navigate(`/clientes/editar/${customer._id}`)}
+                                >
+                                    <PencilIcon/> Editar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={styles.customerInfo}>
+                        <div className={styles.details}>
+                            <div className={styles.infoBox}>
+                                <h3>Informações do Cliente </h3>
+                                <hr />
+                                <div className={styles.infoLine}>
+                                    {titleAndValue("Nome Completo", customer.name)}
+                                    {titleAndValue("Número", customer.phone.toString())}
+                                    {titleAndValue("E-mail", customer.email)}
+                                    {titleAndValue("CPF/CNPJ", customer.cpfCnpj)}
+                                </div>
+                                <h3 style={{marginTop:"5rem"}}>
+                                    Endereço 
+                                </h3>
+                                <hr />
+                                {handleAddress()}
+                            </div>
+                        </div>
+
+                        <div className={styles.obsBox}>
+                            {/* Pendentes */}
+                            <div className={styles.infoBox}>
+                                <div>
+                                    <h3>Pedidos Pendentes</h3>
+                                    {handlePendingOrders()}
+                                </div>
+                            </div>
+                            {/* Observações */}
+                            <div className={styles.infoBox}>
+                                <div className={styles.obs}>
+                                    <h3>Observações</h3>
+                                    <p>{customer.obs ? customer.obs : "Sem observações "}</p>
+                                </div>
+                            </div>
+
+                            {/* Excluir */}
+                            <div className={styles.infoBox}>
+                                <div className={styles.obs}>
+                                    <h3>Excluir cliente?</h3>
+                                    <button 
+                                        type="button" 
+                                        className={`${styles.button} ${styles.deleteButton}`}
+                                        onClick={() => setConfirmDelete(true)}
+                                        style={{marginTop:"2rem"}}
+                                    >
+                                        <Trash2Icon /> Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
     }
 
     return(

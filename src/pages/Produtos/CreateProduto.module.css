@@ -108,6 +108,7 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    z-index: 999;
 }
 
 .dropdownContent a {
@@ -173,4 +174,14 @@
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+@media (max-width: 1050px) {
+    .inputGroup {
+        grid-template-columns: 1fr;
+    }
+
+    .buttons {
+        justify-content: center;
+    }
 }

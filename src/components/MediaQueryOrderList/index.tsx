@@ -142,10 +142,14 @@ export function MediaQueryOrderList({
                                 {order.date}
                             </div>
                         </div>
-
-                        <div className={styles.seeOrder}>
-                            <p onClick={() => handleClickOrder(order)}>Ver Pedido</p>
-                        </div>
+                        
+                        {isMobile ? (
+                            ""
+                        ) : (
+                            <div className={styles.seeOrder}>
+                                <p onClick={() => handleClickOrder(order)}>Ver Pedido</p>
+                            </div>
+                        )}
                     </div>
                     
                     <div className={styles.mobileBoxProducts}>
@@ -165,7 +169,12 @@ export function MediaQueryOrderList({
                                 </div>
                                 {deliveryInf(order.isDelivery)}
                             </div>
-                            <p style={{fontSize: "2.2rem"}}>{order.value}</p>
+                            <div className={styles.mobileValue}>
+                                <p style={{fontSize: "2.2rem"}}>{order.value}</p>
+                                <div className={styles.seeOrder}>
+                                    <p onClick={() => handleClickOrder(order)}>Ver Pedido</p>
+                                </div>
+                            </div>
                         </div>
                     ) : (  
                         <div className={styles.mobileBoxInfo}>

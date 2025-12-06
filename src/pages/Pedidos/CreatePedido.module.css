@@ -26,6 +26,7 @@
 
 .timeInput{
     font-family: inherit;
+    width: 100%;
 }
 
 /* Normal Input */
@@ -389,6 +390,10 @@ button:disabled {
 }
 
 @media (max-width: 1050px) {
+    .formContent {
+        padding: 3rem 1.5rem;
+    }
+
     .formContent form {
         display: flex;
         flex-direction: column;
@@ -437,6 +442,11 @@ button:disabled {
         font-size: 1.8rem;
     }
 
+    .deliveryCheckBox {
+        flex-direction: column;
+        gap: 3rem;
+    }
+
     .noProducts {
         text-align: center;
         background-color: var(--gray-600);
@@ -480,30 +490,30 @@ button:disabled {
     .mqProductInfo {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 5rem;
+        gap: 2rem;
         position: relative;
-        padding: 3rem 3rem 1rem 3rem;
+        padding: 3rem 1.5rem 1rem 1.5rem;
     }
 
     .mqProductInfoBox {
         display: flex;
         flex-direction: column;
-        margin: auto;
+        align-items: center;
     }
 
     .mqProductInfoBox input {
-        padding: 0.5rem;
         width: 100%;
         background-color: var(--gray-500);
+        padding: 1rem;
     }
 
     .mqProductInfoBox label {
+        font-size: clamp(1.3rem, 2vw, 3.1rem); 
         margin-bottom: 1rem;
-        font-size: clamp(1.5rem, 2vw, 3.1rem); 
     }
 
     .mqProductInfoBox p {
-        font-size: clamp(2rem, 2.2vw, 3.1rem); 
+        font-size: clamp(1.7rem, 1.4vw, 2.1rem); 
         display: flex;
         align-items: center;
         margin-top: 1rem;
@@ -524,5 +534,22 @@ button:disabled {
 
     h3.addProducth3 {
         margin-top: 3rem;
+    }
+
+    .buttons {
+        justify-content: center;
+    }
+
+    .cancel, .save{
+        padding: 1rem 2rem;
+        margin-top: 2rem;
+        min-height: 5rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        font-size: clamp(1.8rem, 2vw, 2.5rem);
+        gap: 1rem;
+        border: none;
+        transition: all 0.2s ease-in-out;
     }
 }

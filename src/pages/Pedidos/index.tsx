@@ -8,7 +8,7 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon, FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
@@ -324,16 +324,17 @@ export function Pedidos() {
                             <PlusIcon/>
                         </button>
                     </div>
+
                     <div className={styles.searchOrder}>
                         <SearchIcon className={styles.searchIcon} />
                         <input
                             onChange={e => handleChange(e.target.value)}
                             placeholder="Buscar produto"
                         />
+                        
                         <div className={styles.mobileFilterBox}>
                             <div className={styles.filterButton}>
-                                <FilterIcon/>
-                                Filtrar
+                                <ListFilterIcon/>
                             </div>
                             <div className={styles.dropDownFilter}>
                                 <button onClick={() => {handleMobileFilterClick("Name")}}>
@@ -399,6 +400,7 @@ export function Pedidos() {
                             </div>
                         </div>
                     </div>
+                    
                     <div>
                         <div className={styles.MobileList}>
                             <MediaQueryOrderList

@@ -435,6 +435,7 @@ export function CreatePedido() {
                                 </button>
                             </div>
 
+                            <hr />
                             {/* Observações */}
                             <div className={`${styles.inputBox} ${styles.obs}`}>
                                 <label htmlFor="descricao">Observações (Opcional)</label>
@@ -447,6 +448,7 @@ export function CreatePedido() {
                                 />                            
                             </div>
                             
+                            <hr />
                             {/* Descontos */}
                             <div className={styles.inputBox}>
                                 <h3 className={styles.discount}>Desconto (Opcional)</h3>

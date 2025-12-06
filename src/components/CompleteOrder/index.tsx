@@ -204,7 +204,7 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                 {/* Total */}
                                 <div className={styles.detailsHeader} style={{marginTop:"2rem"}}>
                                     <h3>Valor Total</h3>
-                                    <h3>{order.value}</h3>
+                                    <label>{order.value}</label>
                                 </div>         
                             </div>
                         </div>

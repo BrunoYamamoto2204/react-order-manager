@@ -148,3 +148,56 @@
     font-size: 1.8rem;
 }
 
+@media(max-width: 1050px){
+    /* Mobile Header */
+
+
+    .header {
+        flex-direction: column;
+    }
+
+    .header h2 {
+        font-size: 3.5rem;
+    }
+
+    .header h3 {
+        font-size: 1.5rem;
+        color: var(--gray-300);
+        font-style: italic;
+        margin-bottom: 2rem;
+    }
+
+    .backButtonBox {
+        flex-direction: column;
+    }
+
+    .mobileHeaderButtons {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .customerInfo{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .customer {
+        padding: 3rem 2rem;
+    }
+
+    /* Mobile info */
+    .infoLine{
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .titleAndValue{
+        font-size: clamp(1.7rem, 2vw, 2.5rem);
+    }
+
+    .sectionTitleValue {
+        font-size: clamp(2rem, 2.2vw, 2.5rem);
+    }
+}

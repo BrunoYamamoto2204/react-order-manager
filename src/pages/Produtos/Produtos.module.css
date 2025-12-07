@@ -194,7 +194,7 @@ td.categoryColumn {
     transform: scale(1.05);
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 1350px) {
     .mobileAddButton{
         position: fixed;
         bottom: 20px;   
@@ -312,5 +312,6 @@ td.categoryColumn {
     .seeProduct {
         display: flex;
         justify-content: end;
+        font-size: clamp(1.8rem, 2vw, 2.3rem);
     }
 }

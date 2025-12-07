@@ -1,6 +1,8 @@
 import { CheckLineIcon, CircleXIcon } from "lucide-react"
 import styles from "../../pages/Clientes/Clientes.module.css"
 import { type Customer } from "../../services/customersApi"
+import { useEffect, useState } from "react"
+import { getOrders } from "../../services/ordersApi"
 
 type CustomersListProps = {
     customersList: Customer[]
@@ -8,9 +10,51 @@ type CustomersListProps = {
 }
 
 export function CustomersList({ customersList, handleClickCustomer } : CustomersListProps) {
+    
+    const [ pendingByCustomer, setPendingByCustomer ] = useState<Record<string, number>>({})
+    const [ concluedByCustomer, setConcluedByCustomer ] = useState<Record<string, number>>({})
+    
+
+    useEffect(() => {
+        const loadPendingOrders = async () => {
+            const orders = await getOrders()
+
+            // Registro da quantidade de pedidos de cada um dos clientes 
+            // const customerMap = customersList.reduce((acc, customer) => {
+            //     acc[customer._id!] = customer
+            //     return acc
+            // }, {} as Record<string, Customer>)
+
+            const pendingOrders: Record<string, number> = {}
+            const concluedOrders: Record<string, number> = {}
+
+            orders.forEach(order => {
+                const customerId = order.customerId
+                if (!customerId) return
+
+                // const customer = customerMap[customerID!]
+
+                if (order.status === "Pendente") {
+                    pendingOrders[customerId!] = (pendingOrders[customerId] || 0) + 1
+                } else {
+                    concluedOrders[customerId!] = (concluedOrders[customerId] || 0) + 1
+                }
+            })
+
+            setPendingByCustomer(pendingOrders)
+            setConcluedByCustomer(concluedOrders)
+        }
+
+        loadPendingOrders()
+    },[customersList])
+
     return (
         <>
             {customersList.map((customer, index) => {
+
+                const pendingQuantity = pendingByCustomer[customer._id!]
+                const concluedQuantity = concluedByCustomer[customer._id!]
+
                 return (
                     <tr key={`${customer.name}_${index}`}>
                         {/* Name */}
@@ -30,8 +74,15 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
 
                         {/* Completed orders */}
                         {customer.pendingOrders 
-                            ? <td className={styles.pendingOrders}><CircleXIcon/></td>
-                            : <td className={styles.noPendingOrders}><CheckLineIcon/></td> 
+                            ? (
+                                <td className={styles.pendingOrders}>
+                                    <CircleXIcon/> {`${pendingQuantity} Pendentes`}
+                                </td>
+                            ) : (
+                                <td className={styles.noPendingOrders}>
+                                    <CheckLineIcon/> {`${concluedQuantity} Concluídos`}
+                                </td> 
+                            )
                         }
 
                         {/* Ações  */}

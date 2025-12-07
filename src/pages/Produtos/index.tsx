@@ -35,7 +35,7 @@ export function Produtos() {
         loadProducts()
 
         // Telas menores de 1050px (Mobile)
-        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        const mediaQueryMobile = window.matchMedia("(max-width: 1350px)")
         setIsMobile(mediaQueryMobile.matches)
 
         const handleResizeMobile = (e: MediaQueryListEvent) => {

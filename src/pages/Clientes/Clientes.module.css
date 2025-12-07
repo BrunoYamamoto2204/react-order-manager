@@ -148,36 +148,28 @@
     transition: all 0.2s ease;
 }
 
-.editIcon:hover svg{
-    color: var(--primary);
-    font-weight: bold;
-    transform: scale(1.2);
-}
-
-.deleteIcon:hover svg {
-    color: var(--error);
-    font-weight: bold;
-    transform: scale(1.2);
-}
-
 .pendingOrders {
     text-align: center;
-    color: var(--error);
+    gap: 1rem;
 }
 
 .noPendingOrders {
     text-align: center;
     color: var(--gray-200);
+    gap: 1rem;
 }
 
 .noPendingOrders svg {
     color: var(--primary);
 }
 
+.pendingOrders svg {
+    color: var(--error);
+}
+
 .noPendingOrders svg,
 .pendingOrders svg {
     transition: all 0.3s ease-in-out;
-    margin: auto;
     width: 3rem;
     height: 3rem;
 }
@@ -200,7 +192,7 @@
     transform: scale(1.05);
 }
 
-@media(max-width: 1050px) {
+@media(max-width: 1600px) {
     .mobileAddButton{
         position: fixed;
         bottom: 20px;   
@@ -329,12 +321,24 @@
         justify-content: space-between;
     }
 
+    .pendingOrders p {
+        color: var(--error);
+    }
+
+    .noPendingOrders p { 
+        color: var(--primary);
+    }
+
     .noPendingOrders svg,
     .pendingOrders svg {
         transition: all 0.3s ease-in-out;
         width: 3rem;
         height: 3rem;
         margin: 0;
+    }
+
+    .seeCustomer p{
+        font-size: clamp(1.8rem, 2vw, 2.3rem);
     }
 }
 

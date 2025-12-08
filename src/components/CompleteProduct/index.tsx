@@ -115,7 +115,7 @@ export function CompleteProduct({ product, removeProduct, setShowProduct } : Com
                             </div>
                             {/* Excluir */}
                             <div className={styles.infoBox}>
-                                <div className={styles.obs}>
+                                <div className={styles.mobileDelete}>
                                     <h3>Excluir produto?</h3>
                                     <button 
                                         type="button" 

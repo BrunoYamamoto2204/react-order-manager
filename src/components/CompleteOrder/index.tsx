@@ -178,7 +178,7 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                 </div>
                                 <hr />
                                 {/* Lista de Produtos e preços */}
-                                {order.products.map(p => {
+                                {order.products.map((p, index) => {
                                     const unitPriceString = `R$ ${Number(p.price)
                                         .toFixed(2).replace(".",",")
                                     }`
@@ -187,7 +187,10 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                     }`
 
                                     return (
-                                        <div className={styles.productItem}>
+                                        <div 
+                                            className={styles.productItem} 
+                                            key={`${p.productId}${index}`}
+                                        >
                                             <div>
                                                 <label>{p.product}</label>
                                                 <p>
@@ -297,7 +300,7 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                             </div>
                             <hr />
                             {/* Lista de Produtos e preços */}
-                            {order.products.map(p => {
+                            {order.products.map((p, index) => {
                                 const unitPriceString = `R$ ${Number(p.price)
                                     .toFixed(2).replace(".",",")
                                 }`
@@ -306,7 +309,10 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                 }`
 
                                 return (
-                                    <div className={styles.productItem}>
+                                    <div 
+                                        className={styles.productItem} 
+                                        key={`${p.productId}${index}`}
+                                    >
                                         <div>
                                             <label>{p.product}</label>
                                             <p>

@@ -419,6 +419,14 @@ button:disabled {
     }
 }
 
+@media (max-width: 1300px) { 
+    .customerTools {
+        margin-top: 2rem;
+        flex-direction: column;
+        align-items: start;
+    }
+}
+
 @media (max-width: 1050px) {
     .formContent {
         padding: 3rem 1.5rem;

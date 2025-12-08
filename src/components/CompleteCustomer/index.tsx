@@ -186,7 +186,7 @@ export function CompleteCustomer({
 
                             {/* Excluir */}
                             <div className={styles.infoBox}>
-                                <div className={styles.obs}>
+                                <div className={styles.mobileDelete}>
                                     <h3>Excluir cliente?</h3>
                                     <button 
                                         type="button" 

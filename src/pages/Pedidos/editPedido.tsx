@@ -544,7 +544,7 @@ export function EditPedido() {
                             {/* Produtos do Pedido */}
                             <div className={styles.orderBox}>
                                 <h3>Produtos do Pedido</h3>
-                                <div className={styles.orderTable}>
+                                <div>
                                     {productList.length > 0 ? (
                                         <CreateOrderList 
                                             productList={productList} 

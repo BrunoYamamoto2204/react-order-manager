@@ -3,8 +3,8 @@ import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreatePedido.module.css";
-import { BikeIcon, PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { BikeIcon, PlusCircleIcon, PlusIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
 import { CreateOrderList } from "../../components/CreateOrderList";
@@ -28,6 +28,8 @@ export type OrderProduct = {
 
 export function EditPedido() {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const { id } = useParams<{ id: string }>();
     const [ loading, setLoading ] = useState(true);
 
@@ -86,13 +88,13 @@ export function EditPedido() {
 
             try {
                 setLoading(true)
+
                 const order = await getOrderById(id)
                 const totalValue = Number(order.value.replace("R$", ""))
                 
-                setCustomerId(order.customerId ? order.customerId : null)
                 setDiscountType(order.discountType);
                 setDiscountValue(order.discountValue);
-                setNoRegister(order.noRegister)
+                
                 setProductList(order.products);
                 setPreviousProductList(order.products)
                 setStatus(order.status)
@@ -101,7 +103,6 @@ export function EditPedido() {
                 setDeliveryAddress(order.deliveryAddress!)
                 setDeliveryFee(order.deliveryFee!)
 
-                setName(order.name)
                 setDescription(order.obs)
                 setDate(convertDateFormat(order.date))
                 setTime(order.time)
@@ -109,6 +110,12 @@ export function EditPedido() {
                 setTotal(totalValue)
                 setTotalGross(order.totalGross)
                 setDiscount(Number(order.discount))  
+
+                if (location.state?.customerId && location.state?.customerName) return;
+
+                setCustomerId(order.customerId ? order.customerId : null)
+                setName(order.name)
+                setNoRegister(order.noRegister)
             } catch (error){
                 console.error(`[-] Erro ao carregar pedido ${id}: `, error)
                 Messages.error("Erro ao editar pedido")
@@ -118,7 +125,20 @@ export function EditPedido() {
         }; 
 
         loadOrder()
-    },[id])
+    },[id, location.state])
+
+    // Verifica se o cliente foi criado dentro do pedido
+    useEffect(() => {
+        if (location.state?.customerId && location.state?.customerName) {
+            setCustomerId(location.state.customerId)
+            setName(location.state.customerName)
+            setNoRegister(false)
+            setCustomerSelected(true)
+
+            Messages.success("Cliente criado e adicionado")
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state])
 
     // Remove os valores de entrega, caso estiver com a opção não
     useEffect(() => {
@@ -426,16 +446,29 @@ export function EditPedido() {
                                     setNoRegister={setNoRegister}
                                     noRegister={noRegister}
                                 />
-                                <div className={styles.withouRegister}>
-                                    <label htmlFor="noName">Sem cadastro</label>
-                                    <input 
-                                        className={styles.noResgiterInput}
-                                        type="checkbox" 
-                                        name="noName" 
-                                        id="noName" 
-                                        checked={noRegister}
-                                        onChange={() => setNoRegister(!noRegister)}
-                                    />
+                                <div className={styles.customerTools}>
+                                    <button 
+                                        className={styles.addNewCustomer}
+                                        type="button"
+                                        onClick={() => navigate("/clientes/criar", {
+                                            state: {
+                                                fromEditOrder: true,
+                                                id
+                                            }
+                                        })}
+                                    >
+                                        <PlusIcon /> Criar novo Cliente
+                                    </button>
+                                    <div className={styles.withouRegister}>
+                                        <label htmlFor="noName">Sem cadastro</label>
+                                        <input
+                                            type="checkbox"
+                                            name="noName"
+                                            id="noName"
+                                            checked={noRegister}
+                                            onChange={() => setNoRegister(!noRegister)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <hr />
@@ -670,17 +703,30 @@ export function EditPedido() {
                                     setNoRegister={setNoRegister}
                                     noRegister={noRegister}
                                 />
-                                <div className={styles.withouRegister}>
-                                    <label htmlFor="noName">Sem cadastro</label>
-                                    <input 
-                                        type="checkbox" 
-                                        name="noName" 
-                                        id="noName" 
-                                        checked={noRegister}
-                                        onChange={() => setNoRegister(!noRegister)}
-                                    />
+                                <div className={styles.customerTools}>
+                                    <button 
+                                        className={styles.addNewCustomer}
+                                        type="button"
+                                        onClick={() => navigate("/clientes/criar", {
+                                            state: {
+                                                fromEditOrder: true,
+                                                id
+                                            }
+                                        })}
+                                    >
+                                        <PlusIcon /> Criar novo Cliente
+                                    </button>
+                                    <div className={styles.withouRegister}>
+                                        <label htmlFor="noName">Sem cadastro</label>
+                                        <input
+                                            type="checkbox"
+                                            name="noName"
+                                            id="noName"
+                                            checked={noRegister}
+                                            onChange={() => setNoRegister(!noRegister)}
+                                        />
+                                    </div>
                                 </div>
-
                             </div>
                             <div className={styles.inputBox}>
                                 <label htmlFor="data">Data</label>

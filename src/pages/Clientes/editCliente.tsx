@@ -148,8 +148,8 @@ export function EditCliente() {
         <MainTemplate>
             <Container>
                 <Title 
-                    title="Novo Produto" 
-                    subtitle="Preencha os dados para cadastrar um novo produto"
+                    title="Editar Cliente" 
+                    subtitle="Edite os dados do cliente antes de salvar as alterações"
                 />
 
                 <div className={styles.formContent}>

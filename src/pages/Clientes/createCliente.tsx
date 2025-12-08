@@ -4,7 +4,7 @@ import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreateCliente.module.css";
 import { SaveIcon } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { createCustomer } from "../../services/customersApi";
 import { formatCpfCpnj } from "../../utils/format-cpf-cnpj";
@@ -16,6 +16,11 @@ export function CreateCliente() {
         document.title = "Novo Cliente - Comanda"
     },[])
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const fromCreateOrder = location.state?.fromCreateOrder || false
+    const fromEditOrder = location.state?.fromEditOrder || false
+    const orderId = location.state?.id;
 
     const [ isSubmitting, setIsSubmitting ] = useState(false);
 
@@ -66,7 +71,7 @@ export function CreateCliente() {
         }
 
         try {
-            await createCustomer(newCustomer)
+            const createdCustomer = await createCustomer(newCustomer)
 
             setName("");
             setCpfCnpj("");
@@ -79,9 +84,27 @@ export function CreateCliente() {
             setObs("");
             setEmail("");
             setNeighborhood("");
+
+            if (fromCreateOrder) {
+                navigate("/pedidos/novo", {
+                    state: {
+                        customerId: createdCustomer._id,
+                        customerName: createdCustomer.name
+                    }
+                })
+            } else if (fromEditOrder && orderId) {
+                navigate(`/pedidos/editar/${orderId}`, {
+                    state: {
+                        customerId: createdCustomer._id,
+                        customerName: createdCustomer.name
+                    }
+                })
+            } 
+            else{
+                Messages.success("Cliente criado com sucesso")
+                navigate("/clientes")
+            }
             
-            Messages.success("Produto criado com sucesso")
-            navigate("/clientes")
         } catch(error) {
             console.log("Erro ao criar cliente: ", error)
             Messages.error("Erro ao cadastrar cliente")
@@ -220,7 +243,16 @@ export function CreateCliente() {
                         {/* Botões */}
                         <div className={styles.buttons}>
                             <button 
-                                onClick={() => {navigate("/clientes")}} 
+                                onClick={() => {
+                                    if (fromCreateOrder) {
+                                        navigate("/pedidos/novo")
+                                    }
+                                    else if (fromEditOrder) {
+                                        navigate(`/pedidos/editar/${orderId}`)
+                                    } else {
+                                        navigate("/clientes")
+                                    }
+                                }}
                                 className={styles.cancel}
                                 type="button"
                             >

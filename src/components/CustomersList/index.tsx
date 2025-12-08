@@ -46,7 +46,7 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
         }
 
         loadPendingOrders()
-    },[customersList])
+    },[])
 
     return (
         <>
@@ -80,7 +80,7 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
                                 </td>
                             ) : (
                                 <td className={styles.noPendingOrders}>
-                                    <CheckLineIcon/> {`${concluedQuantity} Concluídos`}
+                                    <CheckLineIcon/> {`${concluedQuantity || 1} Concluídos`}
                                 </td> 
                             )
                         }

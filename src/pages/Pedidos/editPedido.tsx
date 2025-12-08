@@ -3,7 +3,7 @@ import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./CreatePedido.module.css";
-import { BikeIcon, PlusCircleIcon, PlusIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
+import { BikeIcon, PlusCircleIcon, RefreshCwIcon, SaveIcon } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { CreateOrderDatePicker } from "../../components/CreateOrderDatePicker";
@@ -447,7 +447,7 @@ export function EditPedido() {
                                     noRegister={noRegister}
                                 />
                                 <div className={styles.customerTools}>
-                                    <button 
+                                    {/* <button 
                                         className={styles.addNewCustomer}
                                         type="button"
                                         onClick={() => navigate("/clientes/criar", {
@@ -458,7 +458,7 @@ export function EditPedido() {
                                         })}
                                     >
                                         <PlusIcon /> Criar novo Cliente
-                                    </button>
+                                    </button> */}
                                     <div className={styles.withouRegister}>
                                         <label htmlFor="noName">Sem cadastro</label>
                                         <input
@@ -704,7 +704,7 @@ export function EditPedido() {
                                     noRegister={noRegister}
                                 />
                                 <div className={styles.customerTools}>
-                                    <button 
+                                    {/* <button 
                                         className={styles.addNewCustomer}
                                         type="button"
                                         onClick={() => navigate("/clientes/criar", {
@@ -715,7 +715,7 @@ export function EditPedido() {
                                         })}
                                     >
                                         <PlusIcon /> Criar novo Cliente
-                                    </button>
+                                    </button> */}
                                     <div className={styles.withouRegister}>
                                         <label htmlFor="noName">Sem cadastro</label>
                                         <input

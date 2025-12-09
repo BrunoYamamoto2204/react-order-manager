@@ -15,7 +15,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Centraliza */
-    width: 90%;
+    width: 70%;
     overflow-y: auto;
     max-height: 90vh;
     z-index: 9999;
@@ -29,33 +29,37 @@
 .productTable table{
     width: 100%;
     display: grid;
-    grid-template-columns: 0.8fr 1.5fr 1fr 1fr; 
+    grid-template-columns: 0.6fr 1.5fr 1fr 1fr; 
     border-collapse: collapse;
     font-size: 2.5rem;
-    background-color: var(--gray-700); 
-    padding: 2rem;
+    background-color: var(--gray-800); 
     border-radius: 1rem;
-    border: 0.3rem solid var(--gray-300);
+    border: 0.2rem solid var(--gray-400);
 }
 
 .productTable table th{
-    padding: 1rem;
+    background-color: var(--gray-700);
+    padding: 2rem;
     text-align: start;
     color: var(--primary);
-    font-weight: 800;
-    font-size: 3rem;
-}
-
-.productTable table th {
-    border-bottom: 0.2rem var(--gray-300) solid;
-    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 2.5rem;
+    border-bottom: 0.1rem var(--gray-400) solid;
 }
 
 .productTable table td {
-    border-bottom: 0.2rem var(--gray-300) solid;
-    padding: 3rem 0;
-    padding-left: 1rem;
-    font-weight: 700;
+    border-bottom: 0.1rem var(--gray-400) solid;
+    padding: 3rem 2rem;
+    font-weight: 300;
+    font-size: 2rem;
+}
+
+.productTable table thead th:first-child {
+    border-top-left-radius: 1rem;
+}
+
+.productTable table thead th:last-child {
+    border-top-right-radius: 1rem;
 }
 
 .productTable thead, 

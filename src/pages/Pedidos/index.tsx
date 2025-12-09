@@ -8,13 +8,14 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
-import { formatStringDateTime } from "../../utils/format-date";
+import { formatDate, formatStringDateTime } from "../../utils/format-date";
 import { CompleteOrder } from "../../components/CompleteOrder";
 import { MediaQueryOrderList } from "../../components/MediaQueryOrderList";
+import CustomDatePicker from "../../components/CustomDatePicker";
 
 export function Pedidos() {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ export function Pedidos() {
     const [ isMobile, setIsMobile ] = useState(false);
 
     const [ orders, setOrders ] = useState<Order[]>([]);
+    const [ allOrders, setAllOrders ] = useState<Order[]>([]);
     const [ loading, setLoading ] = useState(true);
     const [ activeFilter, setActiveFilter ] = useState("Date");
     
@@ -35,6 +37,25 @@ export function Pedidos() {
 
     const [ showOrder, setShowOrder ] = useState(false)
     const [ order, setOrder ] =  useState<Order>()
+
+    const [ openDateFilter, setOpenDateFilter ] = useState(false)
+    const [ mobileOpenDateFilter, setMobileOpenDateFilter ] = useState(false)
+    
+
+    // Converte p/ string
+    const formatDateString = (date : Date) => {
+        return date.toLocaleDateString('sv-SE');
+    }
+
+    // Data em tipo Date
+    const today = new Date()
+    today.setDate(today.getDate());
+    const firstDay = new Date(today)
+    firstDay.setDate(1)
+
+    // Data em String 
+    const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
+    const [ endDate, setEndDate ] = useState(formatDateString(today))  
 
     useEffect(() => {
         // Telas menores de 1650px (Tablet)
@@ -64,17 +85,30 @@ export function Pedidos() {
     useEffect(() => {
         document.title = "Pedidos - Comanda"
         loadOrders()
+        
     },[])
+
+    useEffect(() => {
+        const filtered = allOrders.filter(o => {
+            const orderDate = formatStringDateTime(o.date);
+            return orderDate >= startDate && orderDate <= endDate;
+        })
+
+        setOrders(filtered)
+    }, [allOrders, endDate, startDate])
 
     const loadOrders = async () => {
         try{
             setLoading(true)
             const data = await getOrders()
-            setOrders(data.sort((a, b) => {
+            const initialSortedData = data.sort((a, b) => {
                 const dateTimeA = `${formatStringDateTime(a.date)} ${a.time}`; 
                 const dateTimeB = `${formatStringDateTime(b.date)} ${b.time}`; 
                 return dateTimeB.localeCompare(dateTimeA);
-            }))
+            })
+
+            setOrders(initialSortedData)
+            setAllOrders(initialSortedData)
         } catch (error) {
             console.error('[-] Erro ao carregar pedidos:', error);
             Messages.error("Erro ao carregar pedidos");
@@ -101,7 +135,9 @@ export function Pedidos() {
             }
 
             // Atualiza a lista local
-            setOrders(orders.filter(order => order._id !== filteredOrder._id))
+            setOrders(prev => prev.filter(order => order._id !== filteredOrder._id))
+            setAllOrders(prev => prev.filter(order => order._id !== filteredOrder._id))
+
             Messages.success("Pedido excluido")
         } catch (error) {
             console.log("[-] Erro ao remover pedido!", error)
@@ -110,19 +146,25 @@ export function Pedidos() {
     }
 
     const handleChange = async (customerName: string) => {
-        const currentOrders = await getOrders()
-
         if (customerName && customerName.trim() === "") {
-            setOrders(currentOrders)
+            const sortedOrders = allOrders.filter(order => {
+                const formatedDate = formatStringDateTime(order.date)
+                return formatedDate >= startDate && formatedDate <= endDate
+            })
+            setOrders(sortedOrders)
         } else {
             const normalizeText = (text: string) =>(
                 text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             )
 
-            const filteredOrders = currentOrders.filter(order => (
-                normalizeText(order.name.toLowerCase())
-                .includes(normalizeText(customerName.toLowerCase()))
-            ))
+            const filteredOrders = orders.filter(order => {
+                const formatedDate = formatStringDateTime(order.date)
+                const matchDate = formatedDate >= startDate && formatedDate <= endDate
+                const matchName = normalizeText(order.name.toLowerCase())
+                    .includes(normalizeText(customerName.toLowerCase()))
+
+                return matchDate && matchName
+            })
 
             setOrders(filteredOrders)
         }
@@ -315,6 +357,54 @@ export function Pedidos() {
                             setShowOrder={setShowOrder}
                         />
                     )}
+
+                    {openDateFilter && (
+                        <>
+                            <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
+                                <div 
+                                    className={styles.dateFilter} 
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <h3>Escolha a data</h3>
+                                    <div className={styles.calendarBox}>
+                                        <div className={styles.startDate} >
+                                            <div>
+                                                <CustomDatePicker
+                                                    displayValue={formatDate}
+                                                    value={startDate}
+                                                    onChange={setStartDate}
+                                                    placeholder="Selecione a data inicial"
+                                                    dateName = "Data Inicial"
+                                                    maxDate={endDate} // Data inicial não pode ser depois da final
+                                                />
+                                            </div>
+                                        </div>
+                                        <p>até</p>
+                                        <div className={styles.startDate} >
+                                            <div>
+                                                <CustomDatePicker
+                                                    displayValue={formatDate}
+                                                    value={endDate}
+                                                    onChange={setEndDate}
+                                                    placeholder="Selecione a data final"
+                                                    dateName = "Data Final"
+                                                    minDate={startDate} // Data final não pode ser antes da inicial
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        type="button"
+                                        className={styles.calendarButton}
+                                        onClick={() => setOpenDateFilter(false)}
+                                    >
+                                        Fechar 
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
                     <div className={styles.header}>
                         <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
                         <button
@@ -400,6 +490,39 @@ export function Pedidos() {
                             </div>
                         </div>
                     </div>
+
+                    <div className={styles.periodFilter}>
+                        <div className={styles.filterAndDate}>
+                            <div 
+                                className={styles.filteredDate}
+                                onClick={() => setMobileOpenDateFilter(!mobileOpenDateFilter)}
+                            >
+                                <p><ListFilterIcon/> Filtrar Data:</p>
+                                <p><ChevronDownIcon/></p>
+                            </div>
+
+                            {mobileOpenDateFilter && (
+                                <label 
+                                    className={styles.filteredDateValue} 
+                                    onClick={() =>  setOpenDateFilter(true)}
+                                >
+                                    {`${formatDate(startDate)} - ${formatDate(endDate)}`}
+                                </label>
+                            )}
+                            
+                        </div>
+                        {mobileOpenDateFilter && (
+                            <p 
+                                className={styles.cleanFilter} 
+                                onClick={() => {
+                                    setStartDate(formatDateString(firstDay))
+                                    setEndDate(formatDateString(today))
+                                }}
+                            >
+                                Limpar Filtro
+                            </p>
+                        )}
+                    </div>
                     
                     <div>
                         <div className={styles.MobileList}>
@@ -426,11 +549,67 @@ export function Pedidos() {
                             setShowOrder={setShowOrder}
                         />
                     )}
+
+                    {openDateFilter && (
+                        <>
+                            <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
+                                <div 
+                                    className={styles.dateFilter} 
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <h3>Escolha a data</h3>
+                                    <div className={styles.calendarBox}>
+                                        <div className={styles.startDate} >
+                                            <div>
+                                                <CustomDatePicker
+                                                    displayValue={formatDate}
+                                                    value={startDate}
+                                                    onChange={setStartDate}
+                                                    placeholder="Selecione a data inicial"
+                                                    dateName = "Data Inicial"
+                                                    maxDate={endDate} // Data inicial não pode ser depois da final
+                                                />
+                                            </div>
+                                        </div>
+                                        <p>até</p>
+                                        <div className={styles.startDate} >
+                                            <div>
+                                                <CustomDatePicker
+                                                    displayValue={formatDate}
+                                                    value={endDate}
+                                                    onChange={setEndDate}
+                                                    placeholder="Selecione a data final"
+                                                    dateName = "Data Final"
+                                                    minDate={startDate} // Data final não pode ser antes da inicial
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        type="button"
+                                        className={styles.calendarButton}
+                                        onClick={() => setOpenDateFilter(false)}
+                                    >
+                                        Fechar 
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
                     <div className={styles.header}>
                         <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
-                        <button onClick={() => navigate("/pedidos/novo")}>
-                            <PlusIcon/> Adicionar Pedido
-                        </button>
+                        <div className={styles.headerButtons}>
+                            <button 
+                                className={styles.filterDateButton}
+                                onClick={() => setOpenDateFilter(true)}
+                            >
+                                <CalendarIcon/> Filtrar Horário
+                            </button>
+                            <button onClick={() => navigate("/pedidos/novo")}>
+                                <PlusIcon/> Adicionar Pedido
+                            </button>
+                        </div>
                     </div>
                     <div className={styles.searchOrder}>
                         <SearchIcon className={styles.searchIcon} />
@@ -499,7 +678,7 @@ export function Pedidos() {
                                 </button>
 
                                 <button onClick={() => {handleMobileFilterClick("Status")}}>
-                                    Status 
+                                    Status
                                     <ChevronDownIcon 
                                         className={handleClickClass(statusIsDown)}
                                         style={{ 
@@ -510,6 +689,26 @@ export function Pedidos() {
                                 </button>
                             </div>
                         </div>  
+                    </div>
+                    
+                    <div className={styles.periodFilter}>
+                        <div className={styles.filterAndDate}>
+                            <p className={styles.filteredDate}>
+                                <ListFilterIcon/> Filtro Ativo: 
+                            </p>
+                            <label className={styles.filteredDateValue}>
+                                {`${formatDate(startDate)} - ${formatDate(endDate)}`}
+                            </label>
+                        </div>
+                        <p 
+                            className={styles.cleanFilter} 
+                            onClick={() => {
+                                setStartDate(formatDateString(firstDay))
+                                setEndDate(formatDateString(today))
+                            }}
+                        >
+                            Limpar Filtro
+                        </p>
                     </div>
 
                     <div>
@@ -537,11 +736,66 @@ export function Pedidos() {
                     />
                 )}
 
+                {openDateFilter && (
+                    <>
+                        <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
+                            <div 
+                                className={styles.dateFilter} 
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <h3>Escolha a data</h3>
+                                <div className={styles.calendarBox}>
+                                    <div className={styles.startDate} >
+                                        <div>
+                                            <CustomDatePicker
+                                                displayValue={formatDate}
+                                                value={startDate}
+                                                onChange={setStartDate}
+                                                placeholder="Selecione a data inicial"
+                                                dateName = "Data Inicial"
+                                                maxDate={endDate} // Data inicial não pode ser depois da final
+                                            />
+                                        </div>
+                                    </div>
+                                    <p>até</p>
+                                    <div className={styles.startDate} >
+                                        <div>
+                                            <CustomDatePicker
+                                                displayValue={formatDate}
+                                                value={endDate}
+                                                onChange={setEndDate}
+                                                placeholder="Selecione a data final"
+                                                dateName = "Data Final"
+                                                minDate={startDate} // Data final não pode ser antes da inicial
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button 
+                                    type="button"
+                                    className={styles.calendarButton}
+                                    onClick={() => setOpenDateFilter(false)}
+                                >
+                                    Fechar 
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                )}
+
                 <div className={styles.header}>
                     <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
-                    <button onClick={() => navigate("/pedidos/novo")}>
-                        <PlusIcon/> Adicionar Pedido
-                    </button>
+                    <div className={styles.headerButtons}>
+                        <button 
+                            className={styles.filterDateButton}
+                            onClick={() => setOpenDateFilter(true)}
+                        >
+                            <CalendarIcon/> Filtrar Horário
+                        </button>
+                        <button onClick={() => navigate("/pedidos/novo")}>
+                            <PlusIcon/> Adicionar Pedido
+                        </button>
+                    </div>
                 </div>
 
                 <div className={styles.searchOrder}>
@@ -550,6 +804,26 @@ export function Pedidos() {
                         onChange={e => handleChange(e.target.value)}
                         placeholder="Buscar produto"
                     />
+                </div>
+
+                <div className={styles.periodFilter}>
+                    <div className={styles.filterAndDate}>
+                        <p className={styles.filteredDate}>
+                            <ListFilterIcon/> Filtro Ativo: 
+                        </p>
+                        <label className={styles.filteredDateValue}>
+                            {`${formatDate(startDate)} - ${formatDate(endDate)}`}
+                        </label>
+                    </div>
+                    <p 
+                        className={styles.cleanFilter} 
+                        onClick={() => {
+                            setStartDate(formatDateString(firstDay))
+                            setEndDate(formatDateString(today))
+                        }}
+                    >
+                        Limpar Filtro
+                    </p>
                 </div>
 
                 <div className={styles.orderTable}>

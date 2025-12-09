@@ -14,7 +14,7 @@
     position: absolute;
     top: -0.8rem;
     left: 1.2rem;
-    background-color: var(--background-primary, #111827);
+    background-color: var(--gray-900);
     padding: 0 0.8rem;
     font-size: 1.2rem;
     color: var(--secondary-text);
@@ -268,5 +268,21 @@ button.todayButton:hover {
         height: 2.5rem;
         color: var(--primary);
         margin-left: 2rem;
+    }
+}
+
+@media (max-width: 550px) {
+    .dropdown {
+
+        top: 100%;
+        left: -60%;
+        margin-top: 0.5rem;
+        background-color: var(--background-secondary, #1f2937);
+        border: 0.2rem solid var(--gray-600);
+        border-radius: 0.8rem;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
+        z-index: 50;
+        padding: 1.5rem;
+        min-width: 32rem;
     }
 }

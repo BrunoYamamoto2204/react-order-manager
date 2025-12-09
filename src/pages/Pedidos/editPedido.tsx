@@ -211,16 +211,6 @@ export function EditPedido() {
             return;
         }
 
-        // const newProduct = {
-        //     uniqueId: product.uniqueId,
-        //     productId: product.productId,
-        //     product: product.product,
-        //     price: product.price,
-        //     quantity: product.quantity,
-        //     category: product.category,
-        //     unit: product.unit,
-        // };
-
         setProductName("")
         setProduct(undefined)
         setProductList([...productList, productToAdd]);

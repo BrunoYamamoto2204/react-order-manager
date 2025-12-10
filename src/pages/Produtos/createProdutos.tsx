@@ -7,6 +7,8 @@ import { ChevronDownIcon, SaveIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { createProduct } from "../../services/productsApi";
+import { getProductTypes, type ProductType } from "../../services/productTypeApi";
+import { CategoryBox } from "../../components/CategoryBox";
 
 export function CreateProdutos() {
     useEffect(() => {
@@ -27,6 +29,11 @@ export function CreateProdutos() {
     const [ selectCategory, setSelectCategory ] = useState("Selecione uma categoria");
     const [ selectUn, setSelectUn ] = useState("Selecione uma unidade");
 
+    const [ productTypes, setProductTypes ] = useState<ProductType[]>([]); 
+
+    const [ openCreateCategory, setOpenCreateCategory ] = useState(false);
+    const [ openCreateBox, setOpenCreateBox ] = useState(false);    
+
     const selectOption = (option : string, type : string) => {
         if (type === "category") {
             setSelectCategory(option)
@@ -37,6 +44,20 @@ export function CreateProdutos() {
             setIsUnOpen(!isUnOpen)
         }
     }
+
+    useEffect(() => {
+        const loadProductTypes = async () => {
+            try{
+                const data = await getProductTypes()
+                setProductTypes(data)
+            } catch(error){
+                console.log("Erro ao carregar os tipos dos produtos:", error)
+                Messages.error("Erro ao carregar os cateorias")
+            }
+        } 
+
+        loadProductTypes()
+    }, [])
 
     const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
@@ -108,6 +129,16 @@ export function CreateProdutos() {
                     subtitle="Preencha os dados para cadastrar um novo produto"
                 />
 
+                {openCreateCategory && (
+                    <CategoryBox
+                        setOpenCreateBox={setOpenCreateBox}
+                        openCreateBox={openCreateBox}
+                        setOpenCreateCategory={setOpenCreateCategory}
+                        productTypes={productTypes}
+                        setProductTypes={setProductTypes}
+                    />
+                )}
+
                 <div className={styles.formContent}>
                     <form onSubmit={handleSubmit}>
                         {/* Inputs Padrão */}
@@ -149,19 +180,18 @@ export function CreateProdutos() {
                                         {selectCategory}
                                         <ChevronDownIcon/>
                                     </button>
-                                    <div className={`${styles.dropdownContent} ${isCategoryOpen ? styles.open : ""}`}>
-                                        <a onClick={() => 
-                                            selectOption("Doce", "category")}>Doce
-                                        </a>
-                                        <a onClick={() => 
-                                            selectOption("Salgado", "category")}>Salgado
-                                        </a>
-                                        <a onClick={() => 
-                                            selectOption("Bolo", "category")}>Bolo
-                                        </a>
-                                        <a onClick={() => 
-                                            selectOption("Sobremesa", "category")}>Sobremesa
-                                        </a>
+                                    <div 
+                                        className={`${styles.dropdownContent} ${isCategoryOpen ? styles.open : ""}`}
+                                    >
+                                        {productTypes.map(type => {
+                                            return (
+                                                <a onClick={() => 
+                                                    selectOption(`${type.name}`, "category")}
+                                                >
+                                                    {type.name}
+                                                </a>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             </div>
@@ -204,22 +234,30 @@ export function CreateProdutos() {
                         {/* Botões */}
                         <div className={styles.buttons}>
                             <button 
-                                onClick={() => {navigate("/produtos")}} 
-                                className={styles.cancel}
+                                className={styles.categoryButton} 
                                 type="button"
-                            >
-                                Cancelar
-                            </button>
-                            <button 
-                                className={styles.save} 
-                                type="submit"
-                                disabled={isSubmitting}
+                                onClick={() => setOpenCreateCategory(true)}
                             >        
-                                <SaveIcon />
-                                {isSubmitting ? "Salvando..." : "Salvar Produto"}
+                                Gerenciar Categorias
                             </button>
+                            <div className={styles.saveAndCancelDiv}>
+                                <button
+                                    onClick={() => {navigate("/produtos")}}
+                                    className={styles.cancel}
+                                    type="button"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    className={styles.save}
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                >
+                                    <SaveIcon />
+                                    {isSubmitting ? "Salvando..." : "Salvar Produto"}
+                                </button>
+                            </div>
                         </div>
-
                     </form>
                 </div>
             </Container>

@@ -1,0 +1,193 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px) brightness(0.8);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+}
+
+.createCategoryDiv {
+    z-index: 10000;
+    padding: 5rem;
+    background-color: var(--gray-900);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 0.2rem solid var(--gray-400);
+    border-radius: 1rem;
+    width: 50%;
+}
+
+.createCategoryDiv h3 {
+    margin-bottom: 2rem;
+}
+
+.createCategoryDiv hr {
+    border: 0.1rem solid var(--gray-400);
+    margin: 3rem 0;
+}
+
+.creteOpen {
+    display: flex;
+    flex-direction: column;
+}
+
+.creteOpen p svg{
+    transition: all 0.2s ease-in-out;
+}
+.creteOpen p svg.openCategory{
+    transform: rotate(180deg);
+}
+
+.creteOpen input, .creteOpen textarea{
+    background-color: var(--gray-800);
+    border: 2px solid transparent; 
+    padding: 0.5rem 1rem;
+    color: inherit;
+    border-radius: 0.5rem;
+    min-height: 5rem;
+    font-size: 1.8rem;
+    outline: none;
+    border-color: transparent;
+    margin-top: 1rem;
+    border: 0.1rem solid var(--gray-500);
+    width: 100%;
+}
+
+.creteOpen input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.creteOpen input::placeholder, .creteOpen textarea::placeholder {
+    color: var(--gray-400); 
+    opacity: 1; 
+}
+
+.creteOpenHeader {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    cursor: pointer;
+}
+
+.creteOpenHeader p{
+    font-size: 2rem;
+}
+
+.creteOpenInput {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.creteOpenBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.creteOpenBox label {
+    color: var(--gray-300);
+}
+
+.createCategoryButton{
+    display: flex;
+    margin-top: 1rem;
+    font-size: 2rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--primary-dark);
+    border: none;
+    color: inherit;
+    transition: all 0.2s ease-in-out;
+    justify-content: end;
+    width: auto;
+    align-content: end;
+}
+
+.createCategoryButton:hover {
+    background-color: var(--gray-300);
+    color: var(--gray-800);
+}
+
+.createCategoryFooter {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 1rem;
+}
+
+.createCategoryButton{
+    padding: 1rem 3rem;
+    border-radius: 0.5rem;
+}
+
+hr.categoryListHr {
+    border: 0.1rem solid var(--gray-400);
+    margin: 1rem 0;
+}
+
+.categoryListHeader {
+    display: grid;
+    grid-template-columns: 1fr 2fr 0.2fr;
+    align-items: center;
+    padding: 1rem;
+}
+
+/* Valores da lista */
+.categoryList hr{
+    margin: 0.5rem 0;
+    border: 0.1rem solid var(--gray-600);
+}
+
+.categoryListValues {
+    display: grid;
+    grid-template-columns: 1fr 2fr 0.2fr;
+    align-items: center;
+    padding: 1rem;
+}
+
+.categoryListValues svg {
+    color: var(--error);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.categoryListValues svg:hover {
+    color: var(--gray-400);
+}
+
+.categoryListDescription {
+    color: var(--gray-300);
+
+}
+
+.categoryListCancel {
+    align-self: center;
+    width: auto;
+    padding: 1rem 3rem;
+    margin-top: 2rem;
+    min-height: 5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    gap: 1rem;
+    border: none;
+    transition: all 0.2s ease-in-out;
+        background-color: var(--gray-400);
+    color: var(--gray-100);
+}
+
+.categoryListCancel:hover{
+    background-color: var(--gray-300);
+    color: var(--gray-800);
+    transform: scale(1.02);
+}

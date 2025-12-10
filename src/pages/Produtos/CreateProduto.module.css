@@ -1,3 +1,4 @@
+/* Main Crete Form  */
 .formContent{
     margin-top: 4rem;
     background-color: var(--gray-700);
@@ -101,14 +102,17 @@
     width: 100%;
     overflow: hidden; 
     pointer-events: none; 
+    max-height: 20rem;
 }
 
+
 .dropdownContent.open {
-    max-height: 30rem;
+    max-height: 16rem; 
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
     z-index: 999;
+    overflow-y: auto;
 }
 
 .dropdownContent a {
@@ -122,6 +126,14 @@
 
 .dropdownContent a:hover {
   background-color: var(--gray-600);
+}
+
+.dropdownContent::-webkit-scrollbar {
+    width: 0.8rem;
+}
+.dropdownContent::-webkit-scrollbar-thumb {
+  background: var(--gray-200);
+  border-radius: 0.8rem;
 }
 
 /* Description */
@@ -138,11 +150,16 @@
 /* Buttons */
 .buttons{
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     gap: 2rem;
 }
 
-.cancel, .save{
+.saveAndCancelDiv {
+    display: flex;
+    gap: 2rem;
+}
+
+.cancel, .save, .categoryButton{
     padding: 1rem 3rem;
     margin-top: 2rem;
     min-height: 5rem;
@@ -155,7 +172,12 @@
     transition: all 0.2s ease-in-out;
 }
 
-.cancel {
+.categoryButton {
+    background-color: var(--primary-dark);
+    color: var(--gray-100);
+}
+
+.cancel{
     background-color: var(--gray-400);
     color: var(--gray-100);
 }
@@ -165,7 +187,7 @@
     color: var(--gray-100);
 }
 
-.cancel:hover, .save:hover{
+.cancel:hover, .save:hover, .categoryButton:hover{
     background-color: var(--gray-300);
     color: var(--gray-800);
     transform: scale(1.02);

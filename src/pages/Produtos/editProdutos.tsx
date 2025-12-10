@@ -7,6 +7,8 @@ import { ChevronDownIcon, SaveIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
+import { CategoryBox } from "../../components/CategoryBox";
+import { getProductTypes, type ProductType } from "../../services/productTypeApi";
 
 export function EditProdutos() {
     const navigate = useNavigate();
@@ -25,8 +27,27 @@ export function EditProdutos() {
     const [ selectCategory, setSelectCategory ] = useState("Selecione uma categoria");
     const [ selectUn, setSelectUn ] = useState("Selecione uma unidade");
 
+    const [ productTypes, setProductTypes ] = useState<ProductType[]>([]);
+
+    const [ openCreateCategory, setOpenCreateCategory ] = useState(false);
+    const [ openCreateBox, setOpenCreateBox ] = useState(false);    
+
     const { id } = useParams<{id: string}>();
     const [ loading, setLoading ] = useState(true);
+
+    useEffect(() => {
+        const loadProductTypes = async () => {
+            try{
+                const data = await getProductTypes()
+                setProductTypes(data)
+            } catch(error){
+                console.log("Erro ao carregar os tipos dos produtos:", error)
+                Messages.error("Erro ao carregar os cateorias")
+            }
+        } 
+
+        loadProductTypes()
+    }, [])
 
     useEffect(() => {
         document.title = "Editar Produto - Comanda"
@@ -142,6 +163,16 @@ export function EditProdutos() {
                     subtitle="Edite os dados do produto antes de salvar as alterações"
                 />
 
+                {openCreateCategory && (
+                    <CategoryBox
+                        setOpenCreateBox={setOpenCreateBox}
+                        openCreateBox={openCreateBox}
+                        setOpenCreateCategory={setOpenCreateCategory}
+                        productTypes={productTypes}
+                        setProductTypes={setProductTypes}
+                    />
+                )}
+
                 <div className={styles.formContent}>
                     <form onSubmit={handleSubmit}>
                         {/* Inputs Padrão */}
@@ -183,19 +214,18 @@ export function EditProdutos() {
                                         {selectCategory}
                                         <ChevronDownIcon/>
                                     </button>
-                                    <div className={`${styles.dropdownContent} ${isCategoryOpen ? styles.open : ""}`}>
-                                        <a onClick={() => 
-                                            selectOption("Doce", "category")}>Doce
-                                        </a>
-                                        <a onClick={() => 
-                                            selectOption("Salgado", "category")}>Salgado
-                                        </a>
-                                        <a onClick={() => 
-                                            selectOption("Bolo", "category")}>Bolo
-                                        </a>
-                                        <a onClick={() => 
-                                            selectOption("Sobremesa", "category")}>Sobremesa
-                                        </a>
+                                    <div 
+                                        className={`${styles.dropdownContent} ${isCategoryOpen ? styles.open : ""}`}
+                                    >
+                                        {productTypes.map(type => {
+                                            return (
+                                                <a onClick={() => 
+                                                    selectOption(`${type.name}`, "category")}
+                                                >
+                                                    {type.name}
+                                                </a>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             </div>
@@ -238,22 +268,30 @@ export function EditProdutos() {
                         {/* Botões */}
                         <div className={styles.buttons}>
                             <button 
-                                onClick={() => {navigate("/produtos")}} 
-                                className={styles.cancel}
+                                className={styles.categoryButton} 
                                 type="button"
-                            >
-                                Cancelar
-                            </button>
-                            <button 
-                                className={styles.save} 
-                                type="submit"
-                                disabled={isSubmitting}
+                                onClick={() => setOpenCreateCategory(true)}
                             >        
-                                <SaveIcon />
-                                {isSubmitting ? "Salvando..." : "Salvar Produto"}
+                                Gerenciar Categorias
                             </button>
+                            <div className={styles.saveAndCancelDiv}>
+                                <button
+                                    onClick={() => {navigate("/produtos")}}
+                                    className={styles.cancel}
+                                    type="button"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    className={styles.save}
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                >
+                                    <SaveIcon />
+                                    {isSubmitting ? "Salvando..." : "Salvar Produto"}
+                                </button>
+                            </div>
                         </div>
-
                     </form>
                 </div>
             </Container>

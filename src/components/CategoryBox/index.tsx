@@ -1,7 +1,7 @@
 import { ChevronDownIcon, TrashIcon } from "lucide-react"
 import styles from "./CategoryBox.module.css"
 import { Messages } from "../Messages"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createProductType, deleteProductType, type ProductType } from "../../services/productTypeApi"
 
 type CategoryBoxProps = {
@@ -23,6 +23,22 @@ export function CategoryBox({
     const [ createCategoryDescription, setCreateCategoryDescription ] = useState(""); 
 
     const [ isSubmittingCategory, setSubmittingCategory ] = useState(false);
+    const [ isMobile, setIsMobile ] = useState(false);   
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQuery.matches)
+
+        const handleMediaQuery = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQuery.addEventListener("change", handleMediaQuery)
+
+        return () => {
+            mediaQuery.removeEventListener("change", handleMediaQuery)
+        }
+    },[])
 
     const newCategory = async () => {
         if (createCategoryName === "") {
@@ -75,9 +91,9 @@ export function CategoryBox({
                     <h3>Categorias</h3>
 
                     {/* Abrir Criação de Categoria */}
-                    <div className={styles.creteOpen}>   
+                    <div className={styles.createOpen}>   
                         <div 
-                            className={styles.creteOpenHeader}
+                            className={styles.createOpenHeader}
                             onClick={() => setOpenCreateBox(!openCreateBox)}
                         >
                             <p>
@@ -85,13 +101,13 @@ export function CategoryBox({
                                     className={openCreateBox ? `${styles.openCategory}` : ``}
                                 />
                             </p>
-                            <p>Criar Categoria:</p>
+                            <p>Criar Categoria</p>
                         </div>
                         {openCreateBox && (
                             <div>
                                 {/* Inputs */}
-                                <div className={styles.creteOpenInput}>
-                                    <div className={styles.creteOpenBox}>
+                                <div className={styles.createOpenInput}>
+                                    <div className={styles.createOpenBox}>
                                         <label>Nome</label>
                                         <input
                                             placeholder="Categoria A"
@@ -101,7 +117,7 @@ export function CategoryBox({
                                             }
                                         />
                                     </div>
-                                    <div className={styles.creteOpenBox}>
+                                    <div className={styles.createOpenBox}>
                                         <label>Descrição (Opcional)</label>
                                         <input
                                             placeholder="Add Observações"
@@ -134,8 +150,15 @@ export function CategoryBox({
                     {/* Lista de Categorias */}
                     <div>
                         <div className={styles.categoryListHeader}>
-                            <h4>Nome</h4>
-                            <h4>Descrição</h4>
+                            {isMobile ? (
+                                <h4>Nome e Descrição</h4>
+                            ):(
+                                <>
+                                    <h4>Nomes</h4>
+                                    <h4>Descrição</h4>
+                                </>
+                            )}
+                            
                         </div>
                     </div>
                     
@@ -146,14 +169,29 @@ export function CategoryBox({
                             return (
                                 <>
                                     <div className={styles.categoryListValues}>
-                                        <p>{type.name}</p>
-                                        <p className={styles.categoryListDescription}>
-                                            {   
-                                                type.description ? 
-                                                type.description : "Sem descrição "
-                                            }
-                                        </p>
-                                        <p>
+                                        {isMobile ? (
+                                            <div>
+                                                <p>{type.name}</p>
+                                                <p className={styles.mobileDescription}>
+                                                    {
+                                                        type.description ?
+                                                        type.description : "Sem descrição "
+                                                    }
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <p>{type.name}</p>
+                                                <p className={styles.categoryListDescription}>
+                                                    {   
+                                                        type.description ? 
+                                                        type.description : "Sem descrição "
+                                                    }
+                                                </p>
+                                            </>
+                                        )}
+                                        
+                                        <p className={styles.trashIcon}>
                                             <TrashIcon
                                                 onClick={() => 
                                                     removeProductCategory(type._id!)

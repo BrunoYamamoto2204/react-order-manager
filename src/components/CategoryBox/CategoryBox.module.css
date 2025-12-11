@@ -35,19 +35,19 @@
     margin: 3rem 0;
 }
 
-.creteOpen {
+.createOpen {
     display: flex;
     flex-direction: column;
 }
 
-.creteOpen p svg{
+.createOpen p svg{
     transition: all 0.2s ease-in-out;
 }
-.creteOpen p svg.openCategory{
+.createOpen p svg.openCategory{
     transform: rotate(180deg);
 }
 
-.creteOpen input, .creteOpen textarea{
+.createOpen input, .createOpen textarea{
     background-color: var(--gray-800);
     border: 2px solid transparent; 
     padding: 0.5rem 1rem;
@@ -62,39 +62,39 @@
     width: 100%;
 }
 
-.creteOpen input:focus {
+.createOpen input:focus {
     outline: none;
     border-color: var(--primary);
 }
 
-.creteOpen input::placeholder, .creteOpen textarea::placeholder {
+.createOpen input::placeholder, .createOpen textarea::placeholder {
     color: var(--gray-400); 
     opacity: 1; 
 }
 
-.creteOpenHeader {
+.createOpenHeader {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
     cursor: pointer;
 }
 
-.creteOpenHeader p{
+.createOpenHeader p{
     font-size: 2rem;
 }
 
-.creteOpenInput {
+.createOpenInput {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-.creteOpenBox {
+.createOpenBox {
     display: flex;
     flex-direction: column;
 }
 
-.creteOpenBox label {
+.createOpenBox label {
     color: var(--gray-300);
 }
 
@@ -139,6 +139,21 @@ hr.categoryListHr {
     grid-template-columns: 1fr 2fr 0.2fr;
     align-items: center;
     padding: 1rem;
+}
+
+.categoryList {
+    overflow-y: auto; 
+    max-height: 40vh; 
+    flex: 1;
+    min-height: 0; 
+}
+
+.categoryList::-webkit-scrollbar {
+    width: 0.8rem;
+}
+.categoryList::-webkit-scrollbar-thumb {
+    background: var(--gray-200);
+    border-radius: 0.8rem;
 }
 
 /* Valores da lista */
@@ -191,3 +206,40 @@ hr.categoryListHr {
     color: var(--gray-800);
     transform: scale(1.02);
 }
+
+@media(max-width: 1050px){
+    .createCategoryDiv {
+        padding: 2rem;
+        width: 90%;
+        overflow-y: auto;
+    }
+
+    .createOpenInput {
+        grid-template-columns: 1fr;
+    }
+
+    .categoryListHeader {
+        grid-template-columns: 1fr;
+    }
+
+    .categoryListValues {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .categoryListValues .trashIcon {
+        display: flex;
+        justify-content: end;
+    }
+
+    .mobileDescription{
+        color: var(--gray-300);
+    }
+
+    .categoryList {
+        max-height: 30vh; 
+    }
+}
+

@@ -33,17 +33,8 @@ export function CreateProdutos() {
 
     const [ openCreateCategory, setOpenCreateCategory ] = useState(false);
     const [ openCreateBox, setOpenCreateBox ] = useState(false);    
-
-    const selectOption = (option : string, type : string) => {
-        if (type === "category") {
-            setSelectCategory(option)
-            setIsCategoryOpen(!isCategoryOpen)
-        }
-        else{
-            setSelectUn(option)
-            setIsUnOpen(!isUnOpen)
-        }
-    }
+    
+    const [ isMobile, setIsMobile ] = useState(false);    
 
     useEffect(() => {
         const loadProductTypes = async () => {
@@ -55,9 +46,33 @@ export function CreateProdutos() {
                 Messages.error("Erro ao carregar os cateorias")
             }
         } 
-
+        
         loadProductTypes()
+
+        const mediaQuery = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQuery.matches)
+
+        const handleMediaQuery = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQuery.addEventListener("change", handleMediaQuery)
+
+        return () => {
+            mediaQuery.removeEventListener("change", handleMediaQuery)
+        }
     }, [])
+
+    const selectOption = (option : string, type : string) => {
+        if (type === "category") {
+            setSelectCategory(option)
+            setIsCategoryOpen(!isCategoryOpen)
+        }
+        else{
+            setSelectUn(option)
+            setIsUnOpen(!isUnOpen)
+        }
+    }
 
     const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
@@ -231,15 +246,30 @@ export function CreateProdutos() {
                             </div>
                         </div>
 
+                        
+                        {isMobile && (
+                            <div className={styles.mobileCategoryButton}>
+                                <button
+                                    className={styles.categoryButton}
+                                    type="button"
+                                    onClick={() => setOpenCreateCategory(true)}
+                                >
+                                    Gerenciar Categorias
+                                </button>
+                            </div>
+                        )}
+
                         {/* Botões */}
                         <div className={styles.buttons}>
-                            <button 
-                                className={styles.categoryButton} 
-                                type="button"
-                                onClick={() => setOpenCreateCategory(true)}
-                            >        
-                                Gerenciar Categorias
-                            </button>
+                            {!isMobile && (
+                                <button 
+                                    className={styles.categoryButton} 
+                                    type="button"
+                                    onClick={() => setOpenCreateCategory(true)}
+                                >        
+                                    Gerenciar Categorias
+                                </button>
+                            )}
                             <div className={styles.saveAndCancelDiv}>
                                 <button
                                     onClick={() => {navigate("/produtos")}}

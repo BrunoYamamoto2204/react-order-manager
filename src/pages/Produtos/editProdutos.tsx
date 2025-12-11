@@ -35,6 +35,8 @@ export function EditProdutos() {
     const { id } = useParams<{id: string}>();
     const [ loading, setLoading ] = useState(true);
 
+    const [ isMobile, setIsMobile ] = useState(false);   
+
     useEffect(() => {
         const loadProductTypes = async () => {
             try{
@@ -47,6 +49,19 @@ export function EditProdutos() {
         } 
 
         loadProductTypes()
+
+        const mediaQuery = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQuery.matches)
+
+        const handleMediaQuery = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQuery.addEventListener("change", handleMediaQuery)
+
+        return () => {
+            mediaQuery.removeEventListener("change", handleMediaQuery)
+        }
     }, [])
 
     useEffect(() => {
@@ -265,15 +280,29 @@ export function EditProdutos() {
                             </div>
                         </div>
 
+                        {isMobile && (
+                            <div className={styles.mobileCategoryButton}>
+                                <button
+                                    className={styles.categoryButton}
+                                    type="button"
+                                    onClick={() => setOpenCreateCategory(true)}
+                                >
+                                    Gerenciar Categorias
+                                </button>
+                            </div>
+                        )}
+
                         {/* Botões */}
                         <div className={styles.buttons}>
-                            <button 
-                                className={styles.categoryButton} 
-                                type="button"
-                                onClick={() => setOpenCreateCategory(true)}
-                            >        
-                                Gerenciar Categorias
-                            </button>
+                            {!isMobile && (
+                                <button 
+                                    className={styles.categoryButton} 
+                                    type="button"
+                                    onClick={() => setOpenCreateCategory(true)}
+                                >        
+                                    Gerenciar Categorias
+                                </button>
+                            )}
                             <div className={styles.saveAndCancelDiv}>
                                 <button
                                     onClick={() => {navigate("/produtos")}}

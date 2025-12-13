@@ -618,6 +618,11 @@ export function Pedidos() {
                             <button onClick={() => navigate("/pedidos/novo")}>
                                 <PlusIcon/> Adicionar Pedido
                             </button>
+                            <button className={styles.buttonHeader}
+                                onClick={() => setOpenExport(true)}
+                            >
+                                <DownloadIcon/> 
+                            </button>
                         </div>
                     </div>
                     <div className={styles.searchOrder}>

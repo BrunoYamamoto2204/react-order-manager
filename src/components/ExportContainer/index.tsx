@@ -5,6 +5,7 @@ import { getProductTypes, type ProductType } from "../../services/productTypeApi
 import { Messages } from "../Messages"
 import type { Order } from "../../services/ordersApi"
 import { MainTemplate } from "../../templates/MainTemplate"
+import { ExportToExcel } from "../ExportToExcel"
 
 type ExportContainerProps = {
     setOpenExport: (open: boolean) => void
@@ -19,10 +20,12 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
     const [ categoryChoiceOpen, setCategoryChoiceOpen ] = useState(false)
     const [ categoryChoiceValue, setCategoryChoiceValue ] = useState("Escolha uma opção")
 
-    const [ loading, setLoading ] = useState(true);
+    const [ loading, setLoading ] = useState(false);
+    const [ exporting, setExporting ] = useState(false);
+    
     const [ categories, setCategories ] = useState<ProductType[]>([])
 
-    const [ isActive, setIsActive ] = useState("Category")
+    const [ isActive, setIsActive ] = useState("All")
 
     useEffect(() => {
         const loadCategories = async () => {
@@ -38,7 +41,9 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
         }
 
         loadCategories()
-    }, [])
+
+        setExportList(orders)
+    }, [orders])
 
     useEffect(() => {
         console.log(exportList)
@@ -167,6 +172,50 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
         }
     }
 
+    const handleExportExcel = async () => {
+        try {
+            setExporting(true)
+            Messages.dismiss()
+
+            // Nenhum pedido no período ou nenhum pedido na categoria
+            if (orders.length === 0 || 
+                categoryChoiceValue !== "Escolha uma opção" && exportList.length === 0
+            ) {
+                Messages.error("Nenhum pedido disponível para exportar");
+                setExporting(false);
+                return;
+            }
+            
+            // Não selecionou valores do tipo 
+            if (isActive === "Category" || isActive === "Delivery" || isActive === "Status") {
+                if (exportList.length === 0) {
+                    Messages.error("Selecione uma opção antes de exportar");
+                    setExporting(false);
+                    return;
+                }
+            }
+
+            // Função de exportação do Excel 
+            await ExportToExcel(
+                exportList, 
+                isActive,
+                categoryChoiceValue !== "Escolha uma opção" ? categoryChoiceValue : undefined
+            );
+
+            setIsActive("All")
+            setExportList(orders)
+
+            Messages.success(`${exportList.length} pedido(s) exportado(s) com sucesso!`);
+            setExportOptions(false);
+
+        } catch (error) {
+            console.error("Erro ao exportar:", error);
+            Messages.error("Erro ao gerar arquivo Excel");
+        } finally {
+            setExporting(false)
+        }
+    }
+
     if (loading) {
         return (
             <MainTemplate>
@@ -209,6 +258,7 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
                                     onClick={() => {
                                         setIsActive("All")
                                         setCategoryChoiceValue("Escolha uma opção")
+                                        setExportList(orders)
                                     }}
                                 >
                                     <p>Todos os Pedidos</p>
@@ -222,6 +272,7 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
                                     onClick={() => {
                                         setIsActive("Category")
                                         setCategoryChoiceValue("Escolha uma opção")
+                                        setExportList([])
                                     }}
                                 >
                                     <p>Por Categoria</p>
@@ -235,6 +286,7 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
                                     onClick={() => {
                                         setIsActive("Delivery")
                                         setCategoryChoiceValue("Escolha uma opção")
+                                        setExportList([])
                                     }}
                                 >
                                     <p>Por Entrega</p>
@@ -248,6 +300,7 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
                                     onClick={() => {
                                         setIsActive("Status")
                                         setCategoryChoiceValue("Escolha uma opção")
+                                        setExportList([])
                                     }}
                                 >
                                     <p>Por Status</p>
@@ -269,14 +322,22 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
                                 type="button"
                                 className={styles.cancelButton}
                                 onClick={() => setExportOptions(false)}
+                                disabled={exporting}
                             >
                                 Cancelar
                             </button>
                             <button 
                                 type="button"
                                 className={styles.sendButton}
+                                disabled={exporting}
+                                onClick={handleExportExcel}
                             >
-                                Enviar
+                                {exporting ? ( 
+                                    <>Exportando...</> 
+                                ) : (
+                                    <><DownloadIcon/> Exportar Excel</>
+                                )}
+                                
                             </button>
                         </div>
                     </div>

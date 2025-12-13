@@ -15,6 +15,7 @@ export function MessageContainer({ children } : MessagesContainerProps) {
                 pauseOnHover={false}
                 pauseOnFocusLoss={false} 
                 closeOnClick
+                style={{ zIndex: 99999 }}
             />
         </>
     )

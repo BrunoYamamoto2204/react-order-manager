@@ -163,6 +163,7 @@
     padding: 3rem 8rem;
     background-color: var(--gray-800);
     transition: all 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .exportOptionsChoice p { 
@@ -175,6 +176,7 @@
     display: block;
     text-align: center;
     color: var(--gray-300);
+    cursor: pointer;
 }
 
 .isActive {

@@ -14,6 +14,7 @@ type Product = {
 }
 
 export type Order = {
+    localeCompare(b: Order): number;
     _id?: string; 
     customerId?: string | null;
     isDelivery: boolean,

@@ -83,9 +83,11 @@ export async function ExportToExcel (
       };
     });
 
-    const sortedOrders = [...orders].sort((orderA, orderB) => 
-        orderA.time.localeCompare(orderB.time)
-    )
+    const sortedOrders = [...orders].sort((orderA, orderB) => { 
+            const timeA: string = orderA.time;
+            const timeB: string = orderB.time;
+            return timeA.localeCompare(timeB);
+    })
 
     // Formata cada pedido dentro 1 linha 
     sortedOrders.forEach((order, index) => {
@@ -161,7 +163,7 @@ export async function ExportToExcel (
     })
     
     // Nome do arquivo 
-    const fileName = getFileName(filterValue!, exportType)
+    const fileName = getFileName(filterValue || "", exportType)
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { 

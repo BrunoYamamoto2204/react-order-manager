@@ -197,7 +197,7 @@ hr.categoryListHr {
     gap: 1rem;
     border: none;
     transition: all 0.2s ease-in-out;
-        background-color: var(--gray-400);
+    background-color: var(--gray-400);
     color: var(--gray-100);
 }
 

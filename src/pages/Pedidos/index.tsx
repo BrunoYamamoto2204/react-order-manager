@@ -8,7 +8,7 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { CalendarIcon, ChevronDownIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon, DownloadIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
@@ -16,6 +16,7 @@ import { formatDate, formatStringDateTime } from "../../utils/format-date";
 import { CompleteOrder } from "../../components/CompleteOrder";
 import { MediaQueryOrderList } from "../../components/MediaQueryOrderList";
 import CustomDatePicker from "../../components/CustomDatePicker";
+import { ExportContainer } from "../../components/ExportContainer";
 
 export function Pedidos() {
     const navigate = useNavigate();
@@ -41,6 +42,7 @@ export function Pedidos() {
     const [ openDateFilter, setOpenDateFilter ] = useState(false)
     const [ mobileOpenDateFilter, setMobileOpenDateFilter ] = useState(false)
     
+    const [ openExport, setOpenExport ] = useState(false);
 
     // Converte p/ string
     const formatDateString = (date : Date) => {
@@ -550,6 +552,13 @@ export function Pedidos() {
                         />
                     )}
 
+                    {openExport && (
+                        <ExportContainer 
+                            setOpenExport={setOpenExport}
+                            orders={orders}
+                        />
+                    )}
+
                     {openDateFilter && (
                         <>
                             <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
@@ -783,6 +792,13 @@ export function Pedidos() {
                     </>
                 )}
 
+                {openExport && (
+                    <ExportContainer 
+                        setOpenExport={setOpenExport}
+                        orders={orders}
+                    />
+                )}
+
                 <div className={styles.header}>
                     <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
                     <div className={styles.headerButtons}>
@@ -794,6 +810,11 @@ export function Pedidos() {
                         </button>
                         <button onClick={() => navigate("/pedidos/novo")}>
                             <PlusIcon/> Adicionar Pedido
+                        </button>
+                        <button className={styles.buttonHeader}
+                            onClick={() => setOpenExport(true)}
+                        >
+                            <DownloadIcon/> 
                         </button>
                     </div>
                 </div>

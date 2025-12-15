@@ -20,11 +20,6 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
             const orders = await getOrders()
 
             // Registro da quantidade de pedidos de cada um dos clientes 
-            // const customerMap = customersList.reduce((acc, customer) => {
-            //     acc[customer._id!] = customer
-            //     return acc
-            // }, {} as Record<string, Customer>)
-
             const pendingOrders: Record<string, number> = {}
             const concluedOrders: Record<string, number> = {}
 
@@ -80,7 +75,7 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
                                 </td>
                             ) : (
                                 <td className={styles.noPendingOrders}>
-                                    <CheckLineIcon/> {`${concluedQuantity || 1} Concluídos`}
+                                    <CheckLineIcon/> {`${concluedQuantity || 0} Pedidos Totais`}
                                 </td> 
                             )
                         }

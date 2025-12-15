@@ -22,6 +22,7 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
 
     const [ loading, setLoading ] = useState(false);
     const [ exporting, setExporting ] = useState(false);
+    const [ isMobile, setIsMobile ] = useState(false);
     
     const [ categories, setCategories ] = useState<ProductType[]>([])
 
@@ -48,6 +49,21 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
     useEffect(() => {
         console.log(exportList)
     }, [exportList])
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQuery.matches)
+
+        const handleMediaQuery = (e:MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQuery.addEventListener("change", handleMediaQuery)
+
+        return () => {
+            mediaQuery.removeEventListener("change", handleMediaQuery)
+        }
+    }, [])
 
     const deliveryCount = orders.filter(order => order.isDelivery)
     const pendingCount = orders.filter(order => order.status === "Pendente")
@@ -348,7 +364,9 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
             <div className={styles.exportDiv}>
                 <div className={styles.headerExportDiv}>
                     <h2>Exportar Pedidos para Excel</h2>
-                    <button onClick={() => setOpenExport(false)}>Fechar</button>
+                    {!isMobile && (
+                        <button onClick={() => setOpenExport(false)}>Fechar</button>
+                    )}
                 </div>
 
                 <button 
@@ -381,6 +399,12 @@ export function ExportContainer({ setOpenExport, orders }: ExportContainerProps)
                         <p>{pendingCount.length}</p>
                     </div>
                 </div>
+
+                {isMobile && (
+                    <div className={styles.headerExportDiv}>
+                        <button onClick={() => setOpenExport(false)}>Fechar</button>
+                    </div>
+                )}
             </div>
         </>
     )

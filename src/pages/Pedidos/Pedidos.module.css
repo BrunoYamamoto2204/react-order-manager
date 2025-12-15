@@ -100,6 +100,7 @@
 .filteredDate {
     display: flex;
     align-items: center;
+    gap: 1rem;
 }
 
 .filterAndDate {
@@ -230,6 +231,7 @@ label.filteredDateValue {
     font-weight: 500;
     display: flex;
     gap: 1rem;
+    align-items: center;
 }
 
 .header button:hover {
@@ -370,18 +372,34 @@ tr:hover .status button:hover{
     display: flex;
 }
 
-.mobileAddButton{
+.mobileButtons{
     position: fixed;
     bottom: 20px;   
     right: 2%;    
     z-index: 100;   
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
+    
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+
+.mobileAddButton, .buttonHeader{
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    border-radius: 50%;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button.buttonHeader {
+    background-color: var(--primary-dark);
+    color: inherit;
 }
 
 .filterButton{
@@ -553,35 +571,8 @@ div:hover .status button:hover{
     .seeOrder {
         font-size: clamp(2rem, 2.5vw, 5rem);
     }
-}
 
-@media (max-width: 550px) {
-    .mobileBoxHeader h3{
-        font-size: clamp(2.5rem, 4.5vw, 5rem);
-    }
-    .infoFooter {
-        flex-direction: column;
-        align-items: start;
-    }
-    .mobileBoxInfo{
-        align-items: end;
-    }
-    .mobilePrice{
-        justify-content: flex-end;
-    }
-
-    .mobileValue {
-        display: flex;
-        flex-direction: column;
-        justify-content: end;
-        gap: 1rem;
-    }
-
-    .seeOrder {
-        font-size: clamp(1.5rem, 4.5vw, 5rem);
-    }
-
-    .filterAndDate {
+        .filterAndDate {
         flex-direction: column;
         gap: 0.5rem;
     }
@@ -615,11 +606,38 @@ div:hover .status button:hover{
 
     .periodFilter {
         flex-direction: column;
-        gap: 1rem;
+        gap: 3rem;
         margin-bottom: 2rem;
         background-color: var(--gray-600);
         padding: 1rem;
         border-radius: 1rem;
+    }
+}
+
+@media (max-width: 550px) {
+    .mobileBoxHeader h3{
+        font-size: clamp(2.5rem, 4.5vw, 5rem);
+    }
+    .infoFooter {
+        flex-direction: column;
+        align-items: start;
+    }
+    .mobileBoxInfo{
+        align-items: end;
+    }
+    .mobilePrice{
+        justify-content: flex-end;
+    }
+
+    .mobileValue {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        gap: 1rem;
+    }
+
+    .seeOrder {
+        font-size: clamp(1.5rem, 4.5vw, 5rem);
     }
 
     .dateFilter {

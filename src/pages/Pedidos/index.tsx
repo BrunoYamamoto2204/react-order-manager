@@ -360,6 +360,13 @@ export function Pedidos() {
                         />
                     )}
 
+                    {openExport && (
+                        <ExportContainer 
+                            setOpenExport={setOpenExport}
+                            orders={orders}
+                        />
+                    )}
+
                     {openDateFilter && (
                         <>
                             <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
@@ -409,12 +416,19 @@ export function Pedidos() {
 
                     <div className={styles.header}>
                         <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
-                        <button
-                            onClick={() => navigate("/pedidos/novo")}
-                            className={styles.mobileAddButton}
-                        >
-                            <PlusIcon/>
-                        </button>
+                        <div className={styles.mobileButtons}>
+                            <button
+                                onClick={() => navigate("/pedidos/novo")}
+                                className={styles.mobileAddButton}
+                            >
+                                <PlusIcon/>
+                            </button>
+                            <button className={styles.buttonHeader}
+                                onClick={() => setOpenExport(true)}
+                            >
+                                <DownloadIcon/>
+                            </button>
+                        </div>
                     </div>
 
                     <div className={styles.searchOrder}>

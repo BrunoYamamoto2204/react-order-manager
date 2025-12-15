@@ -276,6 +276,9 @@
     background: color-mix(in srgb, var(--info) 20%, transparent);
     padding: 2rem;
     border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .exportButtons {
@@ -310,4 +313,65 @@
 .cancelButton:hover, .sendButton:hover{
     background-color: var(--gray-300);
     color: var(--gray-800);
+}
+
+@media(max-width: 1050px) {
+    .exportDiv {
+        width: 95%;
+        max-height: 90vh;
+        padding: 3rem 1.5rem;
+    }
+
+    .orderInfoContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .headerExportDiv button{
+        flex-direction: column;
+        margin: auto;
+        margin-top: 2rem;
+    }
+
+    .headerExportDiv {
+        text-align: center;
+        font-size: 1.4rem;
+    }
+
+    .headerExportDiv h2{
+        margin: auto;
+    }
+
+    .exportButton {
+        margin: auto;
+        margin-top: 2rem;
+    }
+
+    /* Tipo de Exportação */
+    .exportOptionsDivContent {
+        width: 90%;
+    }
+
+    .exportOptionsDivHeader {
+        padding: 1.5rem;
+    }
+
+    .exportOptionsDivBody {
+        padding: 1.5rem;
+    }
+
+    .exportOptionsChoiceContainer{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cancelButton {
+        align-items: center;
+        font-size: 1.6rem;
+    }
+
+    .sendButton {
+        align-items: center;
+        font-size: 1.6rem;
+    }
 }

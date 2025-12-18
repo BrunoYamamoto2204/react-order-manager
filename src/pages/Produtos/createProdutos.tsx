@@ -225,8 +225,10 @@ export function CreateProdutos() {
                                     </button>
                                     <div className={`${styles.dropdownContent} ${isUnOpen ? styles.open : ""}`}>
                                         <a onClick={() => selectOption("UN", "un")}>UN</a>
-                                        <a onClick={() => selectOption("KG", "un")}>Kg</a>
+                                        <a onClick={() => selectOption("KG", "un")}>KG</a>
                                         <a onClick={() => selectOption("g", "un")}>g</a>
+                                        <a onClick={() => selectOption("M", "un")}>M</a>
+                                        <a onClick={() => selectOption("cm", "un")}>cm</a>
                                     </div>
                                 </div>
                             </div>

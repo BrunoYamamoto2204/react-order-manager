@@ -212,90 +212,90 @@ export function Produtos() {
     if (isMobile) {
         return(
             <MainTemplate>
-                    <Container>
-                        {showProduct && (
-                            <CompleteProduct 
-                                product={product!}
-                                removeProduct={removeProduct}
-                                setShowProduct={setShowProduct}
-                            />
-                        )}
+                <Container>
+                    {showProduct && (
+                        <CompleteProduct 
+                            product={product!}
+                            removeProduct={removeProduct}
+                            setShowProduct={setShowProduct}
+                        />
+                    )}
 
-                        <div className={styles.header}>
-                            <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
-                            <button 
-                                onClick={() => navigate("/produtos/criar")}
-                                className={styles.mobileAddButton}
-                            >
-                                <PlusIcon/>
-                            </button>
-                        </div>
+                    <div className={styles.header}>
+                        <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
+                        <button 
+                            onClick={() => navigate("/produtos/criar")}
+                            className={styles.mobileAddButton}
+                        >
+                            <PlusIcon/>
+                        </button>
+                    </div>
 
-                        <div className={styles.searchProduct}>
-                            <SearchIcon className={styles.searchIcon} />
-                            <input 
-                                onChange={e => handleChange(e.target.value)}
-                                placeholder="Buscar produto"
-                            />
+                    <div className={styles.searchProduct}>
+                        <SearchIcon className={styles.searchIcon} />
+                        <input 
+                            onChange={e => handleChange(e.target.value)}
+                            placeholder="Buscar produto"
+                        />
 
-                            <div className={styles.mobileFilterBox}>
-                                <div className={styles.filterButton}>
-                                    <ListFilterIcon/>
-                                </div>
-                                <div className={styles.dropDownFilter}>
-                                    <button onClick={() => {handleMobileFilterClick("Product")}}>
-                                        Produto
-                                        <ChevronDownIcon
-                                            className={handleClickClass(nameIsDown)}
-                                            style={{
-                                                opacity: activeFilter === "Product" ? 1 : 0,
-                                                pointerEvents: 'none'
-                                            }}
-                                        />
-                                    </button>
-                                    <button onClick={() => {handleMobileFilterClick("Price")}}>
-                                        Preço
-                                        <ChevronDownIcon
-                                            className={handleClickClass(priceIsDown)}
-                                            style={{
-                                                opacity: activeFilter === "Price" ? 1 : 0,
-                                                pointerEvents: 'none'
-                                            }}
-                                        />
-                                    </button>
-                                    <button onClick={() => {handleMobileFilterClick("Category")}}>
-                                        Categoria
-                                        <ChevronDownIcon
-                                            className={handleClickClass(categoryIsDown)}
-                                            style={{
-                                                opacity: activeFilter === "Category" ? 1 : 0,
-                                                pointerEvents: 'none'
-                                            }}
-                                        />
-                                    </button>
-                                    <button onClick={() => {handleMobileFilterClick("Unit")}}>
-                                        Unidade
-                                        <ChevronDownIcon
-                                            className={handleClickClass(unitIsDown)}
-                                            style={{
-                                                opacity: activeFilter === "Unit" ? 1 : 0,
-                                                pointerEvents: 'none'
-                                            }}
-                                        />
-                                    </button>
-                                </div>
+                        <div className={styles.mobileFilterBox}>
+                            <div className={styles.filterButton}>
+                                <ListFilterIcon/>
+                            </div>
+                            <div className={styles.dropDownFilter}>
+                                <button onClick={() => {handleMobileFilterClick("Product")}}>
+                                    Produto
+                                    <ChevronDownIcon
+                                        className={handleClickClass(nameIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Product" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Price")}}>
+                                    Preço
+                                    <ChevronDownIcon
+                                        className={handleClickClass(priceIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Price" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Category")}}>
+                                    Categoria
+                                    <ChevronDownIcon
+                                        className={handleClickClass(categoryIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Category" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
+                                <button onClick={() => {handleMobileFilterClick("Unit")}}>
+                                    Unidade
+                                    <ChevronDownIcon
+                                        className={handleClickClass(unitIsDown)}
+                                        style={{
+                                            opacity: activeFilter === "Unit" ? 1 : 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                    />
+                                </button>
                             </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <div className={styles.MobileList}>
-                                <MediaQueryProductList
-                                    productsList={products}
-                                    handleClickproduct={handleClickproduct}
-                                />
-                            </div>
+                    <div>
+                        <div className={styles.MobileList}>
+                            <MediaQueryProductList
+                                productsList={products}
+                                handleClickproduct={handleClickproduct}
+                            />
                         </div>
-                    </Container>
+                    </div>
+                </Container>
             </MainTemplate>
         )
     }

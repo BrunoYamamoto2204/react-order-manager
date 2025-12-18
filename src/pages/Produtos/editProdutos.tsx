@@ -137,7 +137,7 @@ export function EditProdutos() {
 
             await updateProduct(id, editedProduct)
 
-            Messages.success("Produto criado com sucesso");
+            Messages.success("Produto editado com sucesso");
             navigate("/produtos");
         } catch(error) {
             console.log("[-] Erro ao editar produto: ", error)
@@ -261,6 +261,8 @@ export function EditProdutos() {
                                         <a onClick={() => selectOption("UN", "un")}>UN</a>
                                         <a onClick={() => selectOption("KG", "un")}>Kg</a>
                                         <a onClick={() => selectOption("g", "un")}>g</a>
+                                        <a onClick={() => selectOption("M", "un")}>M</a>
+                                        <a onClick={() => selectOption("cm", "un")}>cm</a>
                                     </div>
                                 </div>
                             </div>

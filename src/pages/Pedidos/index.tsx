@@ -52,12 +52,14 @@ export function Pedidos() {
     // Data em tipo Date
     const today = new Date()
     today.setDate(today.getDate());
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+    
     const firstDay = new Date(today)
     firstDay.setDate(1)
 
     // Data em String 
     const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
-    const [ endDate, setEndDate ] = useState(formatDateString(today))  
+    const [ endDate, setEndDate ] = useState(formatDateString(lastDay))  
 
     useEffect(() => {
         // Telas menores de 1650px (Tablet)

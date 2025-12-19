@@ -31,6 +31,7 @@ export function CreateCliente() {
     const [email, setEmail] = useState("");
     const [road, setRoad] = useState("");
     const [num, setNum] = useState("");
+    const [additionalAddress, setAdditionalAddress] = useState("");
     const [neighborhood, setNeighborhood] = useState("");
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
@@ -42,10 +43,7 @@ export function CreateCliente() {
         Messages.dismiss()
 
         if (name === "" || 
-            cpfCnpj === "" || 
-            phone === "" || 
-            email === "" ||
-            cpfCnpj === ""
+            phone === "" 
         ) {
             Messages.error("Preecha todos os campo obrigatórios")
             return
@@ -57,12 +55,13 @@ export function CreateCliente() {
 
         const newCustomer = {
             name: name.trim(), 
-            cpfCnpj, 
+            cpfCnpj: cpfCnpj.trim() || "-", 
             phone, 
-            email: email.trim(),
+            email: email.trim() || "-",
             pendingOrders: false,
             road: road.trim(),
             num: num.trim(),
+            additionalAddress: additionalAddress.trim(),
             neighborhood: neighborhood.trim(), 
             city: city.trim(),
             state: state.trim(),
@@ -78,6 +77,7 @@ export function CreateCliente() {
             setPhone("");
             setRoad("");
             setNum("");
+            setAdditionalAddress("")
             setCity("");
             setState("");
             setCep("");
@@ -134,17 +134,6 @@ export function CreateCliente() {
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Ex: João Silva"/>
                             </div>
-                            {/* CPF/CNPJ */}
-                            <div className={styles.inputBox}>
-                                <label htmlFor="cpf-cnpj">CPF/CNPJ *</label>
-                                <input
-                                    id="cpf-cnpj"
-                                    autoComplete="off"
-                                    value={cpfCnpj}
-                                    onChange={(e) => setCpfCnpj(formatCpfCpnj(e.target.value))}
-                                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
-                                    maxLength={18}/>
-                            </div>
                             {/* Telefone */}
                             <div className={styles.inputBox}>
                                 <label htmlFor="telefone">Telefone *</label>
@@ -156,9 +145,20 @@ export function CreateCliente() {
                                     placeholder="(41) 90000-0000"
                                     maxLength={15}/>
                             </div>
+                            {/* CPF/CNPJ */}
+                            <div className={styles.inputBox}>
+                                <label htmlFor="cpf-cnpj">CPF/CNPJ (Opcional)</label>
+                                <input
+                                    id="cpf-cnpj"
+                                    autoComplete="off"
+                                    value={cpfCnpj}
+                                    onChange={(e) => setCpfCnpj(formatCpfCpnj(e.target.value))}
+                                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                                    maxLength={18}/>
+                            </div>
                             {/* Email */}
                             <div className={styles.inputBox}>
-                                <label htmlFor="email">E-mail *</label>
+                                <label htmlFor="email">E-mail (Opcional)</label>
                                 <input
                                     id="email"
                                     autoComplete="off"
@@ -188,6 +188,15 @@ export function CreateCliente() {
                                     value={num}
                                     onChange={(e) => setNum(e.target.value)}
                                     placeholder="Ex: 123"/>
+                            </div>
+                            <div className={styles.addressBox}>
+                                <label htmlFor="bairro">Complemento</label>
+                                <input
+                                    id="bairro"
+                                    autoComplete="off"
+                                    value={additionalAddress}
+                                    onChange={(e) => setAdditionalAddress(e.target.value)}
+                                    placeholder="Ap. 1"/>
                             </div>
                             <div className={styles.addressBox}>
                                 <label htmlFor="bairro">Bairro</label>

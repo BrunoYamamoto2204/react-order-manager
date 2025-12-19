@@ -144,7 +144,7 @@ export function Clientes() {
             case "Email": {
                 if (emailIsDown){
                     const sortedList = [...customers].sort((a, b) => 
-                        a.email.localeCompare(b.email)
+                        a.email!.localeCompare(b.email!)
                     )
                     setCustomers(sortedList)
                     setEmailIsDownIsDown(false)
@@ -154,7 +154,7 @@ export function Clientes() {
                     setConcluedOrderIsDown(true)
                 } else {
                     const sortedList = [...customers].sort((a, b) => 
-                        b.email.localeCompare(a.email)
+                        b.email!.localeCompare(a.email!)
                     )
                     setCustomers(sortedList)
                     setEmailIsDownIsDown(true)

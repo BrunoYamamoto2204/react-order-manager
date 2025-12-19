@@ -2,12 +2,13 @@ import mongoose, { Schema, Document } from "mongoose"
 
 interface ICustomer extends Document { 
     name: string,
-    cpfCnpj: string,
+    cpfCnpj?: string,
     phone: string,
-    email: string,
+    email?: string,
     pendingOrders: boolean,
     road?: string,
     num?: string,
+    additionalAddress?: string
     neighborhood?: string, 
     city?: string,
     state?: string,
@@ -19,12 +20,13 @@ interface ICustomer extends Document {
 
 const customerSchema = new Schema<ICustomer>({
     name: {type: String, required: true},
-    cpfCnpj: {type: String, required: true},
+    cpfCnpj: {type: String},
     phone: {type: String, required: true},
-    email: {type: String, required: true},
+    email: {type: String},
     pendingOrders: {type: Boolean, required: true},
     road: {type: String, required: false},
     num: {type: String, required: false},
+    additionalAddress: {type: String, required: false},
     neighborhood: {type: String, required: false}, 
     city: {type: String, required: false},
     state: {type: String, required: false},

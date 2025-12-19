@@ -86,7 +86,9 @@ export function CompleteCustomer({
             customer.road === "" && 
             customer.num === "" && 
             customer.neighborhood === "" && 
-            customer.city === "" 
+            customer.additionalAddress === "" &&
+            customer.city === "" &&
+            customer.state === "" 
         ) {
             return <label>Sem Endereço</label>
         } else {
@@ -104,9 +106,17 @@ export function CompleteCustomer({
                         ? titleAndValue("Bairro", customer.neighborhood) 
                         : titleAndValue("Bairro", "-")
                     }
+                    {customer.additionalAddress 
+                        ? titleAndValue("Complemento", customer.additionalAddress) 
+                        : titleAndValue("Complemento", "-")
+                    }
                     {customer.city 
                         ? titleAndValue("Cidade", customer.city) 
                         : titleAndValue("Cidade", "-")
+                    }
+                    {customer.state 
+                        ? titleAndValue("Estado", customer.state) 
+                        : titleAndValue("Estado", "-")
                     }
                 </div>
             )
@@ -157,8 +167,8 @@ export function CompleteCustomer({
                                 <div className={styles.infoLine}>
                                     {titleAndValue("Nome Completo", customer.name)}
                                     {titleAndValue("Número", customer.phone.toString())}
-                                    {titleAndValue("E-mail", customer.email)}
-                                    {titleAndValue("CPF/CNPJ", customer.cpfCnpj)}
+                                    {titleAndValue("E-mail", customer.email!)}
+                                    {titleAndValue("CPF/CNPJ", customer.cpfCnpj!)}
                                 </div>
                                 <h3 style={{marginTop:"5rem"}}>
                                     Endereço 
@@ -243,8 +253,8 @@ export function CompleteCustomer({
                         <div className={styles.infoLine}>
                             {titleAndValue("Nome Completo", customer.name)}
                             {titleAndValue("Número", customer.phone.toString())}
-                            {titleAndValue("E-mail", customer.email)}
-                            {titleAndValue("CPF/CNPJ", customer.cpfCnpj)}
+                            {titleAndValue("E-mail", customer.email!)}
+                            {titleAndValue("CPF/CNPJ", customer.cpfCnpj!)}
                         </div>
                         <h3 style={{marginTop:"5rem"}}>
                             Endereço 

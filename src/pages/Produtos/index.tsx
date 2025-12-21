@@ -33,6 +33,7 @@ export function Produtos() {
     const [ showProduct, setShowProduct ] = useState(false)
     const [ product, setProduct ] =  useState<Product>()
 
+    // Título e MediaQuery
     useEffect(() => {
         document.title = "Produtos - Comanda"
         loadProducts()
@@ -233,7 +234,6 @@ export function Produtos() {
         }
 
         document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
-        console.log("pageNumber:", pageNumber)
 
         // Não tem mais de 5
         if (ablePages < 5) {
@@ -481,12 +481,32 @@ export function Produtos() {
 
                     <div>
                         <div className={styles.MobileList}>
-                            <MediaQueryProductList
-                                productsList={products}
-                                handleClickproduct={handleClickproduct}
-                            />
+                            {products.length > 0 ? (
+                                <MediaQueryProductList
+                                    handleClickproduct={handleClickproduct}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
+                                />
+                            ) : (
+                                <div className={styles.noOrdersMQ}>
+                                    <p>Sem Produtos disponíveis</p>
+                                </div>
+                            )}
                         </div>
                     </div>
+
+                    {products.length > 15 && (
+                        <div className={styles.pagesContainer}>
+                            <div className={styles.pagesHeader}>
+                                <h3>Acesse mais Produtos: </h3>
+                                <label>Página {pageNumber + 1} de {ablePages}</label>
+                            </div>
+                            
+                            <div className={styles.pagesList}>
+                                {handlePages()}
+                            </div>
+                        </div>
+                    )}
                 </Container>
             </MainTemplate>
         )
@@ -548,7 +568,7 @@ export function Produtos() {
                                     pageNumber={pageNumber}
                                     pagesList={pagesList}
                                 />
-                            ): (
+                            ) : (
                                 <tr>
                                     <td className={styles.noProducts}>
                                         <p>Sem Produtos disponíveis</p>

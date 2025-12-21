@@ -65,7 +65,11 @@ export function Pedidos() {
     const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
     const [ endDate, setEndDate ] = useState(formatDateString(lastDay))  
 
+    // Título e MediaQuery
     useEffect(() => {
+        document.title = "Pedidos - Comanda"
+        loadOrders()
+
         // Telas menores de 1650px (Tablet)
         const mediaQueryTablet = window.matchMedia("(max-width: 1650px)")
         setIsTablet(mediaQueryTablet.matches) 
@@ -91,12 +95,6 @@ export function Pedidos() {
     },[])
 
     useEffect(() => {
-        document.title = "Pedidos - Comanda"
-        loadOrders()
-        
-    },[])
-
-    useEffect(() => {
         const filtered = allOrders.filter(o => {
             const orderDate = formatStringDateTime(o.date);
             return orderDate >= startDate && orderDate <= endDate;
@@ -111,7 +109,7 @@ export function Pedidos() {
             const numberOfPages = Math.ceil(orders.length / 15)
             setAblePages(numberOfPages)
         }
-    },[orders, setAblePages])
+    },[orders])
 
     const loadOrders = async () => {
         try{
@@ -140,10 +138,8 @@ export function Pedidos() {
         for (let i = 0; i < orders.length; i += jump) {
             groupsList.push(orders.slice(i, i + jump))
         }
-        console.log(groupsList)
         return groupsList[page]
     }
-
 
     const removeOrder = async (filteredOrder: Order) => {
         setPageNumber(0)
@@ -178,8 +174,12 @@ export function Pedidos() {
     const searchCustomer = async (id: string) => await getCustomerById(id)
 
     const handleChange = async (searchOrder: string) => {
-        if (!searchOrder || searchOrder.trim() === "") {
-            setOrders(allOrders);
+        setPageNumber(0)
+
+        const currentOrders = await getOrders()
+        console.log("Carrega handleChange")
+        if (searchOrder && searchOrder.trim() === "") {
+            setOrders(currentOrders);
             return;
         }
 
@@ -383,7 +383,7 @@ export function Pedidos() {
             pages.push(i)
         }
 
-        // document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
+        document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
 
         // Não tem mais de 5
         if (ablePages < 5) {
@@ -735,7 +735,7 @@ export function Pedidos() {
                                 className={styles.cleanFilter} 
                                 onClick={() => {
                                     setStartDate(formatDateString(firstDay))
-                                    setEndDate(formatDateString(today))
+                                    setEndDate(formatDateString(lastDay))
                                 }}
                             >
                                 Limpar Filtro
@@ -745,13 +745,34 @@ export function Pedidos() {
                     
                     <div>
                         <div className={styles.MobileList}>
-                            <MediaQueryOrderList
-                                ordersList={orders}
-                                handleClickOrder={handleClickOrder}
-                                setOrders={setOrders}
-                            />
+                            {orders.length > 0 ? (
+                                <MediaQueryOrderList
+                                    ordersList={orders}
+                                    handleClickOrder={handleClickOrder}
+                                    setOrders={setOrders}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
+                                />
+                            ) : (
+                                <div className={styles.noOrdersMQ}>
+                                    <p>Sem Pedidos disponíveis</p>
+                                </div>
+                            )}
                         </div>
                     </div>
+
+                    {orders.length > 10 && (
+                        <div className={styles.pagesContainer}>
+                            <div className={styles.pagesHeader}>
+                                <h3>Acesse mais Produtos: </h3>
+                                <label>Página {pageNumber + 1} de {ablePages}</label>
+                            </div>
+                            
+                            <div className={styles.pagesList}>
+                                {handlePages()}
+                            </div>
+                        </div>
+                    )}
                 </Container>
             </MainTemplate>
         )
@@ -935,7 +956,7 @@ export function Pedidos() {
                             className={styles.cleanFilter} 
                             onClick={() => {
                                 setStartDate(formatDateString(firstDay))
-                                setEndDate(formatDateString(today))
+                                setEndDate(formatDateString(lastDay))
                             }}
                         >
                             Limpar Filtro
@@ -944,13 +965,34 @@ export function Pedidos() {
 
                     <div>
                         <div className={styles.MobileList}>
-                            <MediaQueryOrderList 
-                                ordersList={orders}
-                                handleClickOrder={handleClickOrder}
-                                setOrders={setOrders}
-                            />
+                            {orders.length > 0 ? (
+                                <MediaQueryOrderList 
+                                    ordersList={orders}
+                                    handleClickOrder={handleClickOrder}
+                                    setOrders={setOrders}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
+                                />
+                            ) : (
+                                <div className={styles.noOrdersMQ}>
+                                    <p>Sem Pedidos disponíveis</p>
+                                </div>
+                            )}
                         </div>
                     </div>
+
+                    {orders.length > 15 && (
+                        <div className={styles.pagesContainer}>
+                            <div className={styles.pagesHeader}>
+                                <h3>Acesse mais Produtos: </h3>
+                                <label>Página {pageNumber + 1} de {ablePages}</label>
+                            </div>
+                            
+                            <div className={styles.pagesList}>
+                                {handlePages()}
+                            </div>
+                        </div>
+                    )}
                 </Container>
             </MainTemplate>
         )
@@ -1062,7 +1104,7 @@ export function Pedidos() {
                         className={styles.cleanFilter} 
                         onClick={() => {
                             setStartDate(formatDateString(firstDay))
-                            setEndDate(formatDateString(today))
+                            setEndDate(formatDateString(lastDay))
                         }}
                     >
                         Limpar Filtro

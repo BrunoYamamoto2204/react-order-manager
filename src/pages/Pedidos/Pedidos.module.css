@@ -444,7 +444,7 @@ tr:hover .status button:hover{
 
 .mobileButtons{
     position: fixed;
-    bottom: 20px;   
+    bottom: 8rem;   
     right: 2%;    
     z-index: 100;   
     
@@ -628,6 +628,17 @@ div:hover .status button:hover{
     .date {
         flex-direction: column;
     }
+
+    .noOrdersMQ{
+        background-color: var(--gray-600);
+        padding: 2rem;
+        border-radius: 1rem;
+        font-size: 2rem;
+        margin-top: 2rem;
+        text-align: center;
+        font-style: italic;
+        color: var(--gray-300);
+    }
 }
 
 @media (max-width: 1050px) {
@@ -642,7 +653,15 @@ div:hover .status button:hover{
         font-size: clamp(2rem, 2.5vw, 5rem);
     }
 
-        .filterAndDate {
+    label.filteredDateValue {
+        background-color: #103839;
+        color: #12c58d;
+        padding: 0.5rem;
+        border-radius: 2rem;
+    }
+
+
+    .filterAndDate {
         flex-direction: column;
         gap: 0.5rem;
     }
@@ -676,11 +695,16 @@ div:hover .status button:hover{
 
     .periodFilter {
         flex-direction: column;
-        gap: 3rem;
+        gap: 2rem;
         margin-bottom: 2rem;
         background-color: var(--gray-600);
         padding: 1rem;
         border-radius: 1rem;
+    }
+    
+    .pagesHeader{
+        flex-direction: column;
+        align-items: start;
     }
 }
 
@@ -716,5 +740,21 @@ div:hover .status button:hover{
 
     .calendarBox {
         flex-direction: column;
+    }
+
+    .pagesContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 3rem;
+    }
+
+    .pagesHeader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
     }
 }

@@ -105,6 +105,8 @@ export function Clientes() {
     }
 
     const handleChange = async (input: string) => {
+        setPageNumber(0)
+
         const currentCustomers = await getCustomers()
 
         if (input && input.trim() === "") {
@@ -480,12 +482,33 @@ export function Clientes() {
 
                     <div>
                         <div className={styles.MobileList}>
-                            <MediaQueryCustomerList
-                                customersList={customers}
-                                handleClickCustomer={handleClickCustomer}
-                            />
+                            {customers.length > 0 ? (
+                                <MediaQueryCustomerList
+                                    customersList={customers}
+                                    handleClickCustomer={handleClickCustomer}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
+                                />
+                            ) : (
+                                <div className={styles.noOrdersMQ}>
+                                    <p>Sem Clientes disponíveis</p>
+                                </div>
+                            )}
                         </div>
                     </div>
+
+                    {customers.length > 15 && (
+                        <div className={styles.pagesContainer}>
+                            <div className={styles.pagesHeader}>
+                                <h3>Acesse mais Produtos: </h3>
+                                <label>Página {pageNumber + 1} de {ablePages}</label>
+                            </div>
+                            
+                            <div className={styles.pagesList}>
+                                {handlePages()}
+                            </div>
+                        </div>
+                    )}
                 </Container>
             </MainTemplate>   
         )

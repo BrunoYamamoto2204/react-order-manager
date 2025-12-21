@@ -3,15 +3,19 @@ import styles from "../../pages/Produtos/Produtos.module.css"
 import type { Product } from "../../services/productsApi";
 
 type MediaQueryProductListProps = {
-    productsList: Product[]
     handleClickproduct: (product: Product) => void
-    
+    pageNumber: number
+    pagesList: (page: number) => Product[] 
 }
 
-export function MediaQueryProductList({ productsList, handleClickproduct } : MediaQueryProductListProps) {   
+export function MediaQueryProductList({ 
+    handleClickproduct,
+    pageNumber,
+    pagesList
+} : MediaQueryProductListProps) {   
     return (
         <>
-            {productsList.map((product, index) => {
+            {pagesList(pageNumber)?.map((product, index) => {
                 return (
                     <div key={`${product.product}_${index}`} className={styles.mobileOrderBox}>
                         <div className={styles.mobileProductHeader}>

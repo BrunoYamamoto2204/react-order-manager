@@ -9,6 +9,8 @@ type MediaQueryOrderListProps = {
     ordersList: Order[],
     handleClickOrder: (order: Order) => void
     setOrders: (newOrder: Order[]) => void
+    pageNumber: number,
+    pagesList: (page: number) => Order[]
 }
 
 const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
@@ -39,7 +41,9 @@ const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
 export function MediaQueryOrderList({ 
     ordersList, 
     handleClickOrder, 
-    setOrders 
+    setOrders,
+    pageNumber,
+    pagesList
 } : MediaQueryOrderListProps){
     const [ list, setList ] = useState<Order[]>()
     const [ isMobile, setIsMobile ] = useState(false) 
@@ -127,7 +131,7 @@ export function MediaQueryOrderList({
 
     return(
         <div className={styles.mobileOrderContainer}>
-            {list?.map((order, index) => 
+            {pagesList(pageNumber)?.map((order, index) => 
                 <div key={`${order.name}_${index}`} className={styles.mobileOrderBox}>
                     <div className={styles.mobileBoxHeader}>
                         <div>

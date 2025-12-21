@@ -7,11 +7,15 @@ import { useEffect, useState } from "react"
 type MediaQueryCustomerListProps = {
     customersList: Customer[]
     handleClickCustomer: (customer: Customer) => void
+    pageNumber: number
+    pagesList: (page: number) => Customer[] 
 }
 
 export function MediaQueryCustomerList({ 
     customersList, 
-    handleClickCustomer 
+    handleClickCustomer,
+    pageNumber,
+    pagesList
 } : MediaQueryCustomerListProps) {
 
     const [ pendingByCustomer, setPendingByCustomer ] = useState<Record<string, number>>({})
@@ -53,7 +57,7 @@ export function MediaQueryCustomerList({
 
     return (
         <>
-            {customersList.map((customer, index) => {
+            {pagesList(pageNumber)?.map((customer, index) => {
                 
                 const pendingQuantity = pendingByCustomer[customer._id!] 
                 const concluedQuantity = concluedByCustomer[customer._id!]

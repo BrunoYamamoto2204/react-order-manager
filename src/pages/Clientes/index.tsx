@@ -6,7 +6,7 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Clientes.module.css"
 import { useNavigate } from "react-router"
-import { ChevronDownIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react"
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react"
 import { Messages } from "../../components/Messages"
 import { deleteCustomer, getCustomers, type Customer } from "../../services/customersApi"
 import { CompleteCustomer } from "../../components/CompleteCustomer"
@@ -20,6 +20,9 @@ export function Clientes() {
     const [ customers, setCustomers ] = useState<Customer[]>([])
     const [ loading, setLoading ] = useState(true)
     const [ activeFilter, setActiveFilter ] = useState("Date");
+
+    const [ pageNumber, setPageNumber ] = useState(0)
+    const [ ablePages, setAblePages ] = useState(1)
 
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ phoneIsDown, setPhoneIsDown] = useState(true);
@@ -49,6 +52,15 @@ export function Clientes() {
         }
     },[])
 
+    // Rodapé das páginas
+    useEffect(() => {
+        if ( customers.length <= 1) setAblePages(1)
+        else {
+            const numberOfPages = Math.ceil(customers.length / 15)
+            setAblePages(numberOfPages)
+        }
+    },[customers, setAblePages])
+
     const loadCustomers = async () => {
         try{
             const customers = await getCustomers()
@@ -61,7 +73,19 @@ export function Clientes() {
         }
     }
 
+    const pagesList = (page: number) => {
+        const groupsList = []
+
+        const jump = 15
+        for (let i = 0; i < customers.length; i += jump) {
+            groupsList.push(customers.slice(i, i + jump))
+        }
+        return groupsList[page]
+    }
+
     const removeCustomer = async (filteredCustomer: Customer) => {
+        setPageNumber(0)
+
         try {
             if (!filteredCustomer._id) {
                 console.log("❌ Produto sem _id:", filteredCustomer);
@@ -199,6 +223,171 @@ export function Clientes() {
         setActiveFilter(filterType)
     }
     
+    const handlePages = () => {
+        const pages = []
+
+        for (let i = 1; i <= ablePages; i++) {
+            pages.push(i)
+        }
+
+        document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
+        console.log("pageNumber:", pageNumber)
+
+        // Não tem mais de 5
+        if (ablePages < 5) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    {pages.map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        // Está nas 3 primeiras páginas
+        else if (pageNumber + 1 < 4) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    {pages.slice(0, 5).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(ablePages - 1)}
+                    >
+                        ...
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        // Está nas 3 últimas páginas
+        else if (pageNumber + 1 > ablePages - 3) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(0)}
+                    >
+                        ...
+                    </button>
+                    {pages.slice(ablePages - 5, ablePages).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        else{
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(0)}
+                    >
+                        ...
+                    </button>
+                    {pages.slice(pageNumber - 2, pageNumber + 3).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(ablePages - 1)}
+                    >
+                        ...
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+    }
+
+    const handleChangePages = (direction: string) => {
+        if (direction === "back") {
+            const current = pageNumber - 1
+            if (current < 0) return 
+            else setPageNumber(prev => prev -= 1)
+        } else {
+            const current = pageNumber + 1
+            if (current >= ablePages) return 
+            setPageNumber(prev => prev += 1)
+        }
+
+        document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
+    }
+
+
     if (loading) {
         return (
             <MainTemplate>
@@ -360,8 +549,9 @@ export function Clientes() {
                         <tbody>
                             {customers.length > 0 ? (
                                 <CustomersList 
-                                    customersList={customers}
                                     handleClickCustomer={handleClickCustomer}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
                                 />   
                             ) : (
                                 <tr>
@@ -374,6 +564,19 @@ export function Clientes() {
                         </tbody>
                     </table>
                 </div>
+
+                {customers.length > 15 && (
+                    <div className={styles.pagesContainer}>
+                        <div className={styles.pagesHeader}>
+                            <h3>Acesse mais Produtos: </h3>
+                            <label>Página {pageNumber + 1} de {ablePages}</label>
+                        </div>
+                        
+                        <div className={styles.pagesList}>
+                            {handlePages()}
+                        </div>
+                    </div>
+                )}
             </Container>
         </MainTemplate>   
     )

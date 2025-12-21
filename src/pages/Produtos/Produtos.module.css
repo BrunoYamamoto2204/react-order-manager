@@ -217,6 +217,7 @@ td.categoryColumn {
     color: var(--gray-200);
     background-color: inherit;
     transition: all 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .pagesContainer button svg {
@@ -230,7 +231,6 @@ td.categoryColumn {
 .pagesContainer button:hover svg {
     color: var(--primary);
     transform: scale(1.1);
-    cursor: pointer;
 }
 
 .pagesHeader {

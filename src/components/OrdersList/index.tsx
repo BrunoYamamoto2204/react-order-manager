@@ -6,9 +6,11 @@ import { StatusSelectList } from "../StatusSelectList/indes";
 import { getCustomerById, updateCustomer } from "../../services/customersApi";
 
 type OrderListProps = {
-    ordersList: Order[],
+    ordersList: Order[]
     handleClickOrder: (order: Order) => void
     setOrders: (newOrder: Order[]) => void
+    pageNumber: number,
+    pagesList: (page: number) => Order[]
 }
 
 // Junta a lista de produtos em 1 <ul> (pronto para inserir dentro de <td>)
@@ -37,7 +39,13 @@ const OrderProducts = ({ productsStrings }: { productsStrings: string[] }) => {
     )
 }
 
-export function OrdersList({ ordersList, handleClickOrder, setOrders } : OrderListProps) {
+export function OrdersList({ 
+    ordersList,
+    handleClickOrder, 
+    setOrders,
+    pageNumber,
+    pagesList
+} : OrderListProps) {
     const [ list, setList ] = useState<Order[]>()
     const [ isMobile, setIsMobile ] = useState(false)
 
@@ -120,7 +128,7 @@ export function OrdersList({ ordersList, handleClickOrder, setOrders } : OrderLi
 
     return (
         <>
-            {list?.map((order) => {
+            {pagesList(pageNumber).map((order) => {
                 return( 
                     <tr key={order._id}>
                         {/* Name */}

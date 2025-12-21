@@ -5,11 +5,16 @@ import { useEffect, useState } from "react"
 import { getOrders } from "../../services/ordersApi"
 
 type CustomersListProps = {
-    customersList: Customer[]
     handleClickCustomer: (customer: Customer) => void
+    pageNumber: number,
+    pagesList: (page: number) => Customer[]
 }
 
-export function CustomersList({ customersList, handleClickCustomer } : CustomersListProps) {
+export function CustomersList({
+    handleClickCustomer,
+    pageNumber,
+    pagesList
+} : CustomersListProps) {
     
     const [ pendingByCustomer, setPendingByCustomer ] = useState<Record<string, number>>({})
     const [ concluedByCustomer, setConcluedByCustomer ] = useState<Record<string, number>>({})
@@ -45,7 +50,7 @@ export function CustomersList({ customersList, handleClickCustomer } : Customers
 
     return (
         <>
-            {customersList.map((customer, index) => {
+            {pagesList(pageNumber).map((customer, index) => {
 
                 const pendingQuantity = pendingByCustomer[customer._id!]
                 const concluedQuantity = concluedByCustomer[customer._id!]

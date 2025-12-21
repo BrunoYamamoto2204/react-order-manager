@@ -8,7 +8,7 @@ import styles from "./Pedidos.module.css"
 import { OrdersList } from "../../components/OrdersList";
 import { Title } from "../../components/Title";
 import { useEffect, useState } from "react";
-import { CalendarIcon, ChevronDownIcon, DownloadIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, DownloadIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
 import { getProductById, updateProduct } from "../../services/productsApi";
@@ -30,6 +30,9 @@ export function Pedidos() {
     const [ loading, setLoading ] = useState(true);
     const [ activeFilter, setActiveFilter ] = useState("Date");
     
+    const [ pageNumber, setPageNumber ] = useState(0)
+    const [ ablePages, setAblePages ] = useState(1)
+
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ dateIsDown, setDateIsDown] = useState(true);
     const [ deliveryIsDown, setDeliveryIsDown ] = useState(true);
@@ -102,6 +105,14 @@ export function Pedidos() {
         setOrders(filtered)
     }, [allOrders, endDate, startDate])
 
+    useEffect(() => {
+        if ( orders.length <= 1) setAblePages(1)
+        else {
+            const numberOfPages = Math.ceil(orders.length / 15)
+            setAblePages(numberOfPages)
+        }
+    },[orders, setAblePages])
+
     const loadOrders = async () => {
         try{
             setLoading(true)
@@ -122,7 +133,21 @@ export function Pedidos() {
         }
     }
 
+    const pagesList = (page: number) => {
+        const groupsList = []
+
+        const jump = 15
+        for (let i = 0; i < orders.length; i += jump) {
+            groupsList.push(orders.slice(i, i + jump))
+        }
+        console.log(groupsList)
+        return groupsList[page]
+    }
+
+
     const removeOrder = async (filteredOrder: Order) => {
+        setPageNumber(0)
+
         try {
             if(!filteredOrder._id) {
                 console.log("❌ Pedido sem _id:", filteredOrder);
@@ -349,6 +374,169 @@ export function Pedidos() {
     const handleMobileFilterClick = (filterType: string) => {
         thHandleClick(filterType)
         setActiveFilter(filterType)
+    }
+
+    const handlePages = () => {
+        const pages = []
+
+        for (let i = 1; i <= ablePages; i++) {
+            pages.push(i)
+        }
+
+        // document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
+
+        // Não tem mais de 5
+        if (ablePages < 5) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    {pages.map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        // Está nas 3 primeiras páginas
+        else if (pageNumber + 1 < 4) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    {pages.slice(0, 5).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(ablePages - 1)}
+                    >
+                        ...
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        // Está nas 3 últimas páginas
+        else if (pageNumber + 1 > ablePages - 3) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(0)}
+                    >
+                        ...
+                    </button>
+                    {pages.slice(ablePages - 5, ablePages).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        else{
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(0)}
+                    >
+                        ...
+                    </button>
+                    {pages.slice(pageNumber - 2, pageNumber + 3).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(ablePages - 1)}
+                    >
+                        ...
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+    }
+
+    const handleChangePages = (direction: string) => {
+        if (direction === "back") {
+            const current = pageNumber - 1
+            if (current < 0) return 
+            else setPageNumber(prev => prev -= 1)
+        } else {
+            const current = pageNumber + 1
+            if (current >= ablePages) return 
+            setPageNumber(prev => prev += 1)
+        }
+
+        document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
     }
 
     if (loading) {
@@ -918,6 +1106,9 @@ export function Pedidos() {
                                     ordersList={orders}
                                     handleClickOrder={handleClickOrder}
                                     setOrders={setOrders}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
+
                                 />
                             ) : (
                                 <tr>
@@ -929,6 +1120,19 @@ export function Pedidos() {
                         </tbody>
                     </table>
                 </div>
+
+                {orders.length > 15 && (
+                    <div className={styles.pagesContainer}>
+                        <div className={styles.pagesHeader}>
+                            <h3>Acesse mais Produtos: </h3>
+                            <label>Página {pageNumber + 1} de {ablePages}</label>
+                        </div>
+                        
+                        <div className={styles.pagesList}>
+                            {handlePages()}
+                        </div>
+                    </div>
+                )}
             </Container>
         </MainTemplate>
     )

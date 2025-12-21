@@ -52,6 +52,7 @@ export function Produtos() {
         }
     },[])
 
+    // Rodapé das páginas
     useEffect(() => {
         if ( products.length <= 1) setAblePages(1)
         else {
@@ -81,11 +82,12 @@ export function Produtos() {
         for (let i = 0; i < products.length; i += jump) {
             groupsList.push(products.slice(i, i + jump))
         }
-        console.log(groupsList)
         return groupsList[page]
     }
 
     const removeProduct = async (filteredProduct: Product) => {
+        setPageNumber(0)
+
         try{
             if (!filteredProduct._id) {
                 console.log("❌ Produto sem _id:", filteredProduct);

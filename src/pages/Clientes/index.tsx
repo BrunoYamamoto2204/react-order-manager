@@ -80,10 +80,10 @@ export function Clientes() {
         }
     }
 
-    const handleChange = async (customerName: string) => {
+    const handleChange = async (input: string) => {
         const currentCustomers = await getCustomers()
 
-        if (customerName && customerName.trim() === "") {
+        if (input && input.trim() === "") {
             setCustomers(currentCustomers)
         } else {
             const normalizeText = (text: string) =>(
@@ -92,7 +92,8 @@ export function Clientes() {
 
             const filteredCustomers = currentCustomers.filter(customer => (
                 normalizeText(customer.name.toLowerCase())
-                .includes(normalizeText(customerName.toLowerCase()))
+                .includes(normalizeText(input.toLowerCase()))
+                || customer.phone.includes(input)
             ))
 
             setCustomers(filteredCustomers)

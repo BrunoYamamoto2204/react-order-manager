@@ -6,7 +6,7 @@ import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { ChevronDownIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ListFilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { Messages } from "../../components/Messages";
 import { deleteProduct, getProducts } from "../../services/productsApi";
 import type { Product } from "../../services/productsApi";
@@ -21,6 +21,9 @@ export function Produtos() {
     const [ loading, setLoading ] = useState(true);
     const [ products, setProducts ] = useState<Product[]>([])
     const [ activeFilter, setActiveFilter ] = useState("Date");
+
+    const [ pageNumber, setPageNumber ] = useState(0)
+    const [ ablePages, setAblePages ] = useState(1)
 
     const [ nameIsDown, setNameIsDown ] = useState(true);
     const [ categoryIsDown, setCategoryIsDown] = useState(true);
@@ -49,6 +52,15 @@ export function Produtos() {
         }
     },[])
 
+    useEffect(() => {
+        if ( products.length <= 1) setAblePages(1)
+        else {
+            const numberOfPages = Math.ceil(products.length / 15)
+            setAblePages(numberOfPages)
+        }
+    },[products, setAblePages])
+    
+
     const loadProducts = async () => {
         try{
             setLoading(true)
@@ -61,6 +73,17 @@ export function Produtos() {
             setLoading(false)
         }
     } 
+
+    const pagesList = (page: number) => {
+        const groupsList = []
+
+        const jump = 15
+        for (let i = 0; i < products.length; i += jump) {
+            groupsList.push(products.slice(i, i + jump))
+        }
+
+        return groupsList[page]
+    }
 
     const removeProduct = async (filteredProduct: Product) => {
         try{
@@ -80,7 +103,8 @@ export function Produtos() {
     }
 
     const handleChange = async (productName: string) => {
-        const currentProducts = await getProducts()
+        setPageNumber(0)
+        const currentProducts = (await getProducts()).sort((a, b) => a.price - b.price )
 
         if (productName && productName.trim() === "") {
             setProducts(currentProducts)
@@ -99,6 +123,8 @@ export function Produtos() {
     }
 
     const thHandleClick = (th: string) => {
+        setPageNumber(0)
+
         switch(th) {
             case "Product": {
                 if (nameIsDown){
@@ -195,6 +221,40 @@ export function Produtos() {
     const handleMobileFilterClick = (filterType: string) => {
         thHandleClick(filterType)
         setActiveFilter(filterType)
+    }
+
+    const handlePages = () => {
+        const pages = []
+
+        for (let i = 1; i <= ablePages; i++) {
+            pages.push(i)
+        }
+
+        return (
+            <>
+                {pages.map((page, index) =>( 
+                    <p 
+                        key={`${index}_${page}`}
+                        onClick={() => setPageNumber(page - 1)}
+                        className={index === pageNumber ? styles.activePage : ""}
+                    >
+                        {page}
+                    </p>)
+                )}
+            </>
+        )
+    }
+
+    const handleChangePages = (direction: string) => {
+        if (direction === "back") {
+            const current = pageNumber - 1
+            if (current < 0) return 
+            else setPageNumber(prev => prev -= 1)
+        } else {
+            const current = pageNumber + 1
+            if (current >= ablePages) return 
+            setPageNumber(prev => prev += 1)
+        }
     }
 
     if (loading) {
@@ -352,8 +412,9 @@ export function Produtos() {
                         <tbody>
                             {products.length > 0 ? (
                                 <ProductsList 
-                                    productsList={products}
                                     handleClickproduct={handleClickproduct}
+                                    pageNumber={pageNumber}
+                                    pagesList={pagesList}
                                 />
                             ): (
                                 <tr>
@@ -365,6 +426,28 @@ export function Produtos() {
                         </tbody>
                     </table>
                 </div>
+                
+                {products.length > 15 && (
+                    <div className={styles.pagesContainer}>
+                    <h3>Acesse mais Produtos</h3>
+                    <div className={styles.pagesList}>
+                        <button 
+                            type="button"
+                            onClick={() => handleChangePages("back")}
+                        >
+                            <ChevronLeftIcon />
+                        </button>
+                        {handlePages()}
+                        <button 
+                            type="button"
+                            onClick={() => handleChangePages("front")}
+                        >
+                            <ChevronRightIcon />
+                        </button>
+                    </div>
+                </div>
+                )}
+                
             </Container>
        </MainTemplate>
     )

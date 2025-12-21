@@ -115,7 +115,7 @@ export function ProductSearch({
             unit: product.unit
         }
 
-        onChangeName(product.product)
+        onEnterPress(formattedProduct);
         setProduct(formattedProduct)
         setShowSuggestions(false)
     }
@@ -146,8 +146,8 @@ export function ProductSearch({
                 unit: onlyProduct.unit
             };
 
-            setProduct(formattedProduct);
             onEnterPress(formattedProduct);
+            setProduct(formattedProduct);
             setShowSuggestions(false);
         } 
     };

@@ -94,7 +94,6 @@
 }
 
 .dropdownContent {
-    max-height: 0;
     opacity: 0;
     transform: translateY(-10px);
     transition: all 0.3s ease;
@@ -107,7 +106,6 @@
 
 
 .dropdownContent.open {
-    max-height: 16rem; 
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;

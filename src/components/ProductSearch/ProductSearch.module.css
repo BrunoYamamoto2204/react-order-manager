@@ -30,7 +30,19 @@
     width: 100%; 
     border: 1px solid var(--gray-200);
     z-index: 10; 
+    max-height: 20rem;
+    overflow-y: auto;
+    background-color: var(--gray-800);
 }
+
+.suggestions::-webkit-scrollbar {
+    width: 0.5rem;
+}
+.suggestions::-webkit-scrollbar-thumb {
+  background: var(--gray-100);
+  border-radius: 0.8rem;
+}
+
 
 .divChoseItem{  
     border: none;

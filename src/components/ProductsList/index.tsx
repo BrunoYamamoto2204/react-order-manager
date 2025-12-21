@@ -2,15 +2,19 @@ import styles from "../../pages/Produtos/Produtos.module.css"
 import type { Product } from "../../services/productsApi";
 
 type ProductsListProps = {
-    productsList: Product[]
-    handleClickproduct: (product: Product) => void
-    
+    handleClickproduct: (product: Product) => void,
+    pageNumber: number,
+    pagesList: (page: number) => Product[]
 }
 
-export function ProductsList({ productsList, handleClickproduct } : ProductsListProps) {   
+export function ProductsList({ 
+    handleClickproduct,
+    pageNumber,
+    pagesList
+} : ProductsListProps) {   
     return (
         <>
-            {productsList.map((product, index) => {
+            {pagesList(pageNumber).map((product, index) => {
                 return (
                     <tr key={`${product.product}_${index}`}>
                         {/* Name */}

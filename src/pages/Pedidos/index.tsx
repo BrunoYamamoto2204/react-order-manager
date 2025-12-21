@@ -17,6 +17,7 @@ import { CompleteOrder } from "../../components/CompleteOrder";
 import { MediaQueryOrderList } from "../../components/MediaQueryOrderList";
 import CustomDatePicker from "../../components/CustomDatePicker";
 import { ExportContainer } from "../../components/ExportContainer";
+import { getCustomerById } from "../../services/customersApi";
 
 export function Pedidos() {
     const navigate = useNavigate();
@@ -149,30 +150,42 @@ export function Pedidos() {
         }
     }
 
-    const handleChange = async (customerName: string) => {
-        if (customerName && customerName.trim() === "") {
-            const sortedOrders = allOrders.filter(order => {
-                const formatedDate = formatStringDateTime(order.date)
-                return formatedDate >= startDate && formatedDate <= endDate
-            })
-            setOrders(sortedOrders)
-        } else {
-            const normalizeText = (text: string) =>(
-                text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            )
+    const searchCustomer = async (id: string) => await getCustomerById(id)
 
-            const filteredOrders = orders.filter(order => {
-                const formatedDate = formatStringDateTime(order.date)
-                const matchDate = formatedDate >= startDate && formatedDate <= endDate
-                const matchName = normalizeText(order.name.toLowerCase())
-                    .includes(normalizeText(customerName.toLowerCase()))
-
-                return matchDate && matchName
-            })
-
-            setOrders(filteredOrders)
+    const handleChange = async (searchOrder: string) => {
+        if (!searchOrder || searchOrder.trim() === "") {
+            setOrders(allOrders);
+            return;
         }
-    }
+
+        const normalizeText = (text: string) =>
+            text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        const ordersWithCustomerData = await Promise.all (
+            allOrders.map(async order => {
+                try {
+                    const customer = await searchCustomer(order.customerId!)
+                    return {...order, phone: customer.phone}
+                } catch(e) {
+                    console.log("Erro ao buscar número do cliente:", e)
+                    return {...order, phone: ""} 
+                }
+            })
+        )
+
+        const filteredOrders = ordersWithCustomerData.filter((order) => {
+            const formattedDate = formatStringDateTime(order.date);
+            const matchDate = formattedDate >= startDate && formattedDate <= endDate;
+            const matchName = normalizeText(order.name.toLowerCase())
+                .includes(normalizeText(searchOrder.toLowerCase()));
+            
+            const matchPhone = order.phone.includes(searchOrder);
+
+            return matchDate && (matchName || matchPhone);
+        });
+
+        setOrders(filteredOrders);
+    };
 
     const thHandleClick = (th: string) => {
         switch(th) {
@@ -844,7 +857,7 @@ export function Pedidos() {
                     <SearchIcon className={styles.searchIcon} />
                     <input 
                         onChange={e => handleChange(e.target.value)}
-                        placeholder="Buscar produto"
+                        placeholder="Buscar pedido"
                     />
                 </div>
 

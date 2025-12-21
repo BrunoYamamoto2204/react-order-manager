@@ -383,8 +383,11 @@ export function EditPedido() {
             const neighborhood = customerData.neighborhood
             const number = customerData.num
             const city = customerData.city
+            const additionalAddress = customerData.additionalAddress
 
-            const addressString = `${road} ${number} - ${neighborhood}, ${city}`
+            const addressString = (
+                `${road} ${number}, ${additionalAddress} - ${neighborhood}, ${city}`
+            )
 
             if (addressString === "  - , ") {
                 Messages.dismiss()

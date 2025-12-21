@@ -76,7 +76,8 @@ export default function CustomerSearch({
 
         const filteredList = customers.filter(customer => 
             normalizeText(customer.name).toLocaleLowerCase()
-                .includes(normalizeText(input).toLocaleLowerCase())
+                .includes(normalizeText(input).toLocaleLowerCase()) 
+            || customer.phone.includes(input)
         )
 
         const matchedCustomer = customers.find(customer =>

@@ -81,7 +81,7 @@ export function Produtos() {
         for (let i = 0; i < products.length; i += jump) {
             groupsList.push(products.slice(i, i + jump))
         }
-
+        console.log(groupsList)
         return groupsList[page]
     }
 
@@ -230,19 +230,147 @@ export function Produtos() {
             pages.push(i)
         }
 
-        return (
-            <>
-                {pages.map((page, index) =>( 
-                    <p 
-                        key={`${index}_${page}`}
-                        onClick={() => setPageNumber(page - 1)}
-                        className={index === pageNumber ? styles.activePage : ""}
+        document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
+        console.log("pageNumber:", pageNumber)
+
+        // Não tem mais de 5
+        if (ablePages < 5) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
                     >
-                        {page}
-                    </p>)
-                )}
-            </>
-        )
+                        <ChevronLeftIcon />
+                    </button>
+                    {pages.map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        // Está nas 3 primeiras páginas
+        else if (pageNumber + 1 < 4) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    {pages.slice(0, 5).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(ablePages - 1)}
+                    >
+                        ...
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        // Está nas 3 últimas páginas
+        else if (pageNumber + 1 > ablePages - 3) {
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(0)}
+                    >
+                        ...
+                    </button>
+                    {pages.slice(ablePages - 5, ablePages).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
+
+        else{
+            return (
+                <>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("back")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(0)}
+                    >
+                        ...
+                    </button>
+                    {pages.slice(pageNumber - 2, pageNumber + 3).map((page, index) => ( 
+                        <p 
+                            key={`${index}_${page}`}
+                            onClick={() => setPageNumber(page - 1)}
+                            className={page - 1 === pageNumber ? styles.activePage : ""}
+                        >
+                            {page}
+                        </p>
+                    ))}
+                    <button 
+                        type="button"
+                        onClick={() => setPageNumber(ablePages - 1)}
+                    >
+                        ...
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => handleChangePages("front")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
+                </>
+            )
+        }
     }
 
     const handleChangePages = (direction: string) => {
@@ -255,6 +383,8 @@ export function Produtos() {
             if (current >= ablePages) return 
             setPageNumber(prev => prev += 1)
         }
+
+        document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
     }
 
     if (loading) {
@@ -429,23 +559,15 @@ export function Produtos() {
                 
                 {products.length > 15 && (
                     <div className={styles.pagesContainer}>
-                    <h3>Acesse mais Produtos</h3>
-                    <div className={styles.pagesList}>
-                        <button 
-                            type="button"
-                            onClick={() => handleChangePages("back")}
-                        >
-                            <ChevronLeftIcon />
-                        </button>
-                        {handlePages()}
-                        <button 
-                            type="button"
-                            onClick={() => handleChangePages("front")}
-                        >
-                            <ChevronRightIcon />
-                        </button>
+                        <div className={styles.pagesHeader}>
+                            <h3>Acesse mais Produtos: </h3>
+                            <label>Página {pageNumber + 1} de {ablePages}</label>
+                        </div>
+                        
+                        <div className={styles.pagesList}>
+                            {handlePages()}
+                        </div>
                     </div>
-                </div>
                 )}
                 
             </Container>

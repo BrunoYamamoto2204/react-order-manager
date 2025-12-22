@@ -177,7 +177,6 @@ export function Pedidos() {
         setPageNumber(0)
 
         const currentOrders = await getOrders()
-        console.log("Carrega handleChange")
         if (searchOrder && searchOrder.trim() === "") {
             setOrders(currentOrders);
             return;
@@ -204,9 +203,15 @@ export function Pedidos() {
             const matchName = normalizeText(order.name.toLowerCase())
                 .includes(normalizeText(searchOrder.toLowerCase()));
             
-            const matchPhone = order.phone.includes(searchOrder);
+            const matchPhone = order.phone
+                .replace("-","")
+                .replace("(","")
+                .replace(") ","")
+                .includes(searchOrder);
 
-            return matchDate && (matchName || matchPhone);
+            const matchFormattedPhone = order.phone.includes(searchOrder);
+
+            return matchDate && (matchName || matchPhone || matchFormattedPhone);
         });
 
         setOrders(filteredOrders);

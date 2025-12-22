@@ -114,7 +114,7 @@ export function CreateOrderList({
                                     const validateQuantity = Math.max(0, Number(newQuantity))
                                     changeQuantity(validateQuantity, product.uniqueId.toString())
                                 }}
-                                value={product.quantity}
+                                value={product.quantity.toString()}
                                 type="number"
                             />
                         </td>

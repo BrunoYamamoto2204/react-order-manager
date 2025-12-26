@@ -374,6 +374,7 @@ td.categoryColumn {
     .mobileProductHeader {
         display: flex;
         justify-content: space-between;
+        gap: 1rem;
     }
 
     .mobileNameProduct {

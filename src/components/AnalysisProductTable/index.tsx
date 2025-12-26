@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./AnalysisProductTable.module.css"
 import type { AnalysisProductList } from "../../pages/Analises";
-import { SearchIcon } from "lucide-react";
+import { ChevronUpIcon, SearchIcon } from "lucide-react";
 
 type AnalysisProductTableProps = {
     handleShowProducts: (open: boolean) => void
@@ -67,7 +67,7 @@ export function AnalisysProductTable({ handleShowProducts, products } : Analysis
             <>
                 <div className={styles.overlay}></div>
                 <div className={styles.productTable}>
-                    <div className={styles.buttonbox}>
+                    <div id="summary" className={styles.buttonbox}>
                         <h2>Resumo de Produtos</h2>
                         <button
                             className={styles.backButton}
@@ -77,33 +77,53 @@ export function AnalisysProductTable({ handleShowProducts, products } : Analysis
                         </button>
                     </div>
 
-                    <>
-                        {products.map((product, index) => {
-                            return (
-                                <div className={styles.productInfo}>
-                                    <h3 className={styles.productTitle}>
-                                        <label>{product.position}º</label>
-                                        {product.productName}
-                                    </h3>
-                                    <div className={styles.quantityAndValue}>
-                                        <div className={styles.quantityAndValueBox}>
-                                            <label>Valor Total</label>
-                                            <p>{valueFormat(product.totalValue)} </p>
-                                        </div>
-                                        <div className={styles.quantityAndValueBox}>
-                                            <label>Quantidade Vendida</label>
-                                            <p style={{textAlign:"end"}}>
-                                                {unitFormat(product.totalQuantity)} 
-                                            </p>
-                                        </div>
-                                    </div>
+                    <div className={styles.searchProduct}>
+                        <SearchIcon className={styles.searchIcon} />
+                        <input
+                            onChange={e => handleChange(e.target.value)}
+                        />
+                    </div>
 
-                                    {index < products.length - 1 ? <hr /> : ""}
+                    <>
+                        {filteredProducts.length !== 0 ?
+                            (filteredProducts.map((product, index) => {
+                                return (
+                                    <div className={styles.productInfo}>
+                                        <h3 className={styles.productTitle}>
+                                            <label>{product.position}º</label>
+                                            {product.productName}
+                                        </h3>
+                                        <div className={styles.quantityAndValue}>
+                                            <div className={styles.quantityAndValueBox}>
+                                                <label>Valor Total</label>
+                                                <p>{valueFormat(product.totalValue)} </p>
+                                            </div>
+                                            <div className={styles.quantityAndValueBox}>
+                                                <label>Quantidade Vendida</label>
+                                                <p>
+                                                    {unitFormat(product.totalQuantity)} 
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {index < products.length - 1 ? <hr /> : ""}
+                                    </div>
+                                )
+                            })) : (
+                                <div className={styles.noProducts}>
+                                    <p>Sem produtos disponíveis</p>
                                 </div>
                             )
-                        })}
+                        }
                     </>
                 </div>
+
+                <a 
+                    href="#summary"
+                    className={styles.backToHeaderButton}
+                >
+                        <ChevronUpIcon />
+                </a>
             </>
         )
     }

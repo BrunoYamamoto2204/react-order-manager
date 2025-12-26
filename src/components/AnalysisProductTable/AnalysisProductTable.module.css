@@ -174,13 +174,20 @@ h3.seeMore:hover{
 }
 
 @media(max-width: 1050px) {
+    .productTable{
+        padding: 4rem 2rem;
+        width: 90%;
+        scroll-behavior: smooth;
+    }
+
     .buttonbox {
         flex-direction: column;
         gap: 2rem;
+        scroll-margin-top: 5rem; 
     }
 
     /* Product Table */
-        .productInfo {
+    .productInfo {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -207,7 +214,8 @@ h3.seeMore:hover{
 
     .quantityAndValue {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .quantityAndValueBox {
@@ -224,6 +232,13 @@ h3.seeMore:hover{
         font-size: clamp(1.9rem, 2.2vw, 2.6rem);
     }
 
+    .noProducts {
+        text-align: center;
+        background-color: var(--gray-700);
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+
     h3.seeMore {
         cursor: pointer;
         width: fit-content;
@@ -234,6 +249,21 @@ h3.seeMore:hover{
     /* Em breve */
     .centerBox {
         margin-top: 2rem;
+    }
+
+    .backToHeaderButton {
+        position: fixed;
+        z-index: 9999;
+        top: 90%;
+        right: 10%;
+        background-color: var(--gray-200);
+        border-radius: 50%;
+    }
+
+    .backToHeaderButton svg{
+        height: 4rem;
+        width: 4rem;
+        color: var(--gray-700);
     }
 
 }

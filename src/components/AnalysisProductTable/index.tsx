@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./AnalysisProductTable.module.css"
 import type { AnalysisProductList } from "../../pages/Analises";
+import { SearchIcon } from "lucide-react";
 
 type AnalysisProductTableProps = {
     handleShowProducts: (open: boolean) => void
@@ -9,6 +10,8 @@ type AnalysisProductTableProps = {
 
 export function AnalisysProductTable({ handleShowProducts, products } : AnalysisProductTableProps) {
     const [ isMobile, setIsMobile ] = useState(false);
+
+    const [ filteredProducts, setFilteredProducts ] = useState<AnalysisProductList[]>(products);
 
     const valueFormat = (value: number) => `R$ ${value.toFixed(2).replace(".",",")}`
     const unitFormat = (quantityToFormat: string) => {
@@ -41,6 +44,23 @@ export function AnalisysProductTable({ handleShowProducts, products } : Analysis
             mediaQueryMobile.removeEventListener("change", handleResizeMobile)
         }
     },[])
+
+    const handleChange = (input: string) => {
+        if (input && input.trim() === "") {
+            setFilteredProducts(products)
+        }
+
+        const normalizeText = (text: string) => (
+            text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        )
+
+        const filteredList = products.filter(product => (
+            normalizeText(product.productName.toLowerCase())
+                .includes(normalizeText(input).toLowerCase())
+        ))
+
+        setFilteredProducts(filteredList) 
+    }
     
     if(isMobile){
         return(
@@ -93,13 +113,23 @@ export function AnalisysProductTable({ handleShowProducts, products } : Analysis
             <div className={styles.overlay}></div>
             <div className={styles.productTable}>
                 <div className={styles.buttonbox}>
-                    <h2>Resumo de Produtos</h2>
+                    <div className={styles.title}>
+                        <h2>Resumo de Produtos</h2>
+                        <label>Total de produtos: {products.length}</label>
+                    </div>
                     <button
                         className={styles.backButton}
                         onClick={() => handleShowProducts(false)}
                     >
                         Voltar
                     </button>
+                </div>
+
+                <div className={styles.searchProduct}>
+                    <SearchIcon className={styles.searchIcon} />
+                    <input
+                        onChange={e => handleChange(e.target.value)}
+                    />
                 </div>
 
                 <table>
@@ -112,17 +142,25 @@ export function AnalisysProductTable({ handleShowProducts, products } : Analysis
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map(p => (
+                        {filteredProducts.length !== 0 ? 
+                            (filteredProducts.map(p => (
+                                <tr>
+                                    {Object.entries(p).map(([k, v]) => {
+                                        if (k === "totalValue") {
+                                            return <td key={k}>R$ {Number(v).toFixed(2).replace(".",",")}</td>
+                                        } else {
+                                            return <td key={k}>{v}</td>
+                                        }
+                                    })}
+                                </tr>
+                            ))
+                        ) : (
                             <tr>
-                                {Object.entries(p).map(([k, v]) => {
-                                    if (k === "totalValue") {
-                                        return <td key={k}>R$ {Number(v).toFixed(2).replace(".",",")}</td>
-                                    } else {
-                                        return <td key={k}>{v}</td>
-                                    }
-                                })}
+                                <td className={styles.noProducts}>
+                                    <p>Sem Produtos disponíveis</p>
+                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

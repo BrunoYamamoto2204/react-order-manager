@@ -131,7 +131,7 @@ function AppRoutes(){
 export function App(){
   return(
     <BrowserRouter>  {/*Usar navigate para navergar entre componentes */}
-      <AuthProvider>
+       <AuthProvider> {/* Verifica se há login e se o token é válido */}
         <MessageContainer > {/*Usar Mensagens do Toastify */}
           <AppRoutes />
         </MessageContainer>

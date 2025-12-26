@@ -300,6 +300,7 @@
 
 /* Description */
 .obs textarea {
+    white-space: pre-wrap;
     min-height: 15rem;
     resize: vertical; 
     font-family: inherit; 

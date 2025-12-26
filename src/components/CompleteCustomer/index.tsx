@@ -190,7 +190,9 @@ export function CompleteCustomer({
                             <div className={styles.infoBox}>
                                 <div className={styles.obs}>
                                     <h3>Observações</h3>
-                                    <p>{customer.obs ? customer.obs : "Sem observações "}</p>
+                                    <p className={styles.textWithBreak}>
+                                        {customer.obs ? customer.obs : "Sem observações "}
+                                    </p>
                                 </div>
                             </div>
 
@@ -276,7 +278,9 @@ export function CompleteCustomer({
                     <div className={styles.infoBox}>
                         <div className={styles.obs}>
                             <h3>Observações</h3>
-                            <p>{customer.obs ? customer.obs : "Sem observações "}</p>
+                            <p className={styles.textWithBreak}>
+                                {customer.obs ? customer.obs : "Sem observações "}
+                            </p>
                         </div>
                     </div>
 

@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setIsLoading(false)
         }
 
-        // Verifica se há token para pular o login 
+        // Verifica se o token é válido para pular o login 
         checkAuth()
     },[])
 

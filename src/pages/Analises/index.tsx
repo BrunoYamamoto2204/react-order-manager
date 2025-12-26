@@ -127,14 +127,14 @@ export function Analises() {
                     const totalValue = Number(product.price) * quantity
 
                     // Se o produto já estiver no Map, adicione, se não, crie um novo
-                    if (productsMap.has(nameName)){
-                        const currentProduct = productsMap.get(nameName)!
+                    if (productsMap.has(product.productId)){
+                        const currentProduct = productsMap.get(product.productId)!
                         currentProduct.totalValue += totalValue
                         currentProduct.totalQuantity += quantity
                         currentProduct.orderCount += 1
 
                     } else {
-                        productsMap.set(nameName, {
+                        productsMap.set(product.productId, {
                             productName: nameName,
                             totalValue: totalValue,
                             totalQuantity: quantity,
@@ -406,9 +406,13 @@ export function Analises() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {productList.length > 1 
+                                        {productList.length > 0 
                                             ? <AnalysisList productsList={productList}/>
-                                            : <label className={styles.noProducts}>Sem produtos nesse período</label>
+                                            : <tr>
+                                                <td className={styles.noProducts}>
+                                                    <label>Sem produtos nesse período</label>
+                                                </td>
+                                            </tr>
                                         }
                                     </tbody>
                                 </table>

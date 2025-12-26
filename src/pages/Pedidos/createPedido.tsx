@@ -157,7 +157,6 @@ export function CreatePedido() {
 
     // Cria Pedido
     const handleSubmit = async (e : React.FormEvent) => {
-        console.log("executou aqui")
         e.preventDefault()
         Messages.dismiss()
 
@@ -314,12 +313,7 @@ export function CreatePedido() {
                         subtitle="Preencha os dados para criar um novo pedido"
                     />
                     <div className={styles.formContent}>
-                        <form 
-                            onSubmit={handleSubmit}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") e.preventDefault()
-                            }}
-                        >
+                        <form onSubmit={handleSubmit}>
                             <div className={styles.inputBox}>
                                 <label htmlFor="nome">Cliente</label>
                                 <CustomerSearch 
@@ -453,13 +447,6 @@ export function CreatePedido() {
                                         onEnterPress={handleNewProduct}
                                     />
                                 </div>
-                                {/* <button
-                                    onClick={() => handleNewProduct(product!)} 
-                                    className={styles.addItemButton}
-                                    type="button"
-                                >
-                                    <PlusCircleIcon /> Adicionar Produto
-                                </button> */}
                             </div>
 
                             <hr />
@@ -563,13 +550,7 @@ export function CreatePedido() {
                 />
 
                 <div className={styles.formContent}>
-                    <form 
-                        onSubmit={handleSubmit}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") e.preventDefault()
-                        }}
-                    
-                    >
+                    <form onSubmit={handleSubmit}>
                         {/* Inputs Padrão */}
                         <div className={styles.inputGroup}>
                             <div className={styles.inputBox}>
@@ -744,7 +725,7 @@ export function CreatePedido() {
                                     placeholder="Adicione observações ao pedido..."
                                     autoComplete="off"
                                     onChange={(e) => setDescription(e.target.value)} 
-                                />                            
+                                />                         
                             </div>
                             
                             {/* Total e Descontos */}

@@ -1,4 +1,4 @@
-import { CakeIcon, ChartNoAxesCombinedIcon, ClipboardListIcon, HouseIcon, LogOutIcon, MenuIcon, ScrollText, User2Icon, XIcon } from "lucide-react";
+import { CakeIcon, ChartNoAxesCombinedIcon, ClipboardListIcon, DollarSignIcon, HouseIcon, LogOutIcon, MenuIcon, ScrollText, User2Icon, XIcon } from "lucide-react";
 import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
@@ -67,6 +67,10 @@ export function NavContainer() {
                             icon={<ChartNoAxesCombinedIcon />} 
                             sectionName="analises" 
                         />
+                        <NavButton 
+                            icon={<DollarSignIcon />} 
+                            sectionName="financeiro" 
+                        />
                     </nav>
 
                     <NavButton 
@@ -105,6 +109,10 @@ export function NavContainer() {
                 <NavButton 
                     icon={<ChartNoAxesCombinedIcon />} 
                     sectionName="analises" 
+                />
+                <NavButton 
+                    icon={<DollarSignIcon />} 
+                    sectionName="financeiro" 
                 />
             </nav>
 

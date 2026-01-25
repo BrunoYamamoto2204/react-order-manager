@@ -356,7 +356,7 @@ export function Produtos() {
                             className={page - 1 === pageNumber ? styles.activePage : ""}
                         >
                             {page}
-                        </p>
+                    </p>
                     ))}
                     <button 
                         type="button"

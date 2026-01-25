@@ -17,6 +17,7 @@ import { EditCliente } from "./pages/Clientes/editCliente";
 import { Login } from "./pages/Login";
 import { AuthProvider } from "./context/AuthProvider";
 import { useAuth } from "./hooks/useAuth";
+import { Financeiro } from "./pages/Financeiro";
 
 function ProtectedRoute({ children }: {children: React.ReactNode }){
   const { user, isLoading } = useAuth()
@@ -78,6 +79,12 @@ function AppRoutes(){
           <ProtectedRoute>
             <Pedidos />
           </ProtectedRoute>
+      }/>
+
+      <Route path="/financeiro" element={
+        <ProtectedRoute>
+          <Financeiro />
+        </ProtectedRoute>
       }/>
 
       <Route path="/produtos" element={

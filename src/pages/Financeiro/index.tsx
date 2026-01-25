@@ -12,7 +12,7 @@ export function Financeiro () {
                     subtitle="Gerencie o seu financeiro e controle suas receitas e gastos"
                 />
 
-                <div>
+                <div className={styles.text}>
                     <p>Financeiro adicionado</p>
                 </div>
             </Container>

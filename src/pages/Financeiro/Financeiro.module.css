@@ -1,3 +1,315 @@
-.text {
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.addButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.addButton button{
+    background-color: var(--primary);
+    color: inherit;
+    padding: 0rem;
+    padding: 1rem 2rem;
+    border: none;
+    font-size: 1.7rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.addButton button:hover{
+    color: var(----gray-100);
+    background-color: var(--gray-500);
+    transform: scale(1.03);
+}
+
+.analysisDate {
     margin-top: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+.analysisDate h2{
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--secondary-text);
+}
+
+.period{
+    display: flex;
+    gap: 2rem;
+    margin-left: 3rem;
+    align-items: center;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    margin-top: 3rem;
+    gap: 1rem;
+}
+
+.summaryContainer{
+    display: flex;
+    background-color: var(--gray-800);
+    padding: 3rem;
+    border-radius: 1rem;
+    justify-content: space-between;
+    border: 0.1rem solid var(--gray-500);
+}
+
+.summaryContainer h3 {
+    font-size: 1.9rem;
+    color: var(--gray-300);
+}
+
+.summaryContainer p {
+    margin-top: 3rem;
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+.summaryContainer .iconWrapper {
+    display: flex;
+    align-content: center;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.comparisionValue {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.7rem;
+    margin-top: 2rem;
+}
+
+/* Lista de contas */
+.incomesExpensesContainer {
+    background-color: var(--gray-800);
+    padding: 3rem;
+    margin-top: 3rem;
+    border-radius: 1.5rem;
+    border: 0.1rem solid var(--gray-500);
+}
+
+.incomesExpensesHeader{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.incomesExpensesHeader input {
+    flex: 1;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--gray-500);
+    background-color: var(--gray-800);
+    color: white;
+    padding-left: 5rem;
+}
+
+.incomesExpensesHeader input::placeholder {
+    color: var(--gray-300); 
+}
+
+.incomesExpensesHeader input:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.incomesExpensesHeader button {
+    border: none;
+    padding: 1.8rem;
+    border-radius: 0.5rem;
+    color: var(--gray-100);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background-color: var(--gray-600);
+    font-weight: bold;
+}
+
+.incomesExpensesHeader button.revenueButton {
+    background-color: var(--primary);
+    transform: scale(1.02);
+}
+
+.incomesExpensesHeader button.expenseButton {
+    background-color: var(--error);
+    margin-right: 2rem;
+    transform: scale(1.02);
+}
+
+.incomesExpensesHeader button:disabled {
+    background-color: var(--gray-700);
+    cursor: auto;
+    color: var(--gray-100);
+}
+
+.searchInput {
+    position: relative;
+}
+
+.incomesExpensesHeader .searchIcon{
+    position: absolute;
+    left: 2rem;
+    color: var(--gray-300);
+    width: 2rem;
+    height: 2rem;
+    top: 32%;
+}
+
+.incomesExpensesMain{
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+.incomesExpensesMain table{ 
+    border-collapse: collapse;
+    width: 100%;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.incomesExpensesMain table thead{
+    background-color: var(--gray-700);
+} 
+
+.incomesExpensesMain table th{
+    text-align: start;
+    padding: 2rem;
+} 
+
+.incomesExpensesMain table td{
+    border-bottom: 0.1rem solid var(--gray-400);
+    padding: 2rem;
+}
+
+.revenueCategory p{
+    color: #2CB183;
+    background-color: #11353b;
+    display: inline;
+    padding: 1rem;
+    border-radius: 1.5rem;
+}
+
+.expenseCategory p{
+    color: var(--error);
+    background-color: #5c1b1b7c;
+    display: inline;
+    padding: 1rem;
+    border-radius: 1.5rem;
+}
+
+.revenueValue {
+    color: var(--primary);
+    font-size: 1.8rem;
+}
+
+.expenseValue {
+    color: var(--gray-200);
+    font-size: 1.8rem;
+}
+
+.optionsContainer {
+    position: relative;
+}
+
+.options {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 0%;
+    right: -100%;
+    gap: 0.5rem;
+}
+
+.options button {
+    border: none;
+    background-color: var(--gray-400);
+    color: var(--gray-200);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.options button:hover {
+    color: var(--gray-400);
+    background-color: var(--gray-200);
+}
+
+/* Rodapé das páginas */
+.activePage {
+    color: var(--primary-light);
+}
+
+.pagesContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 3rem;
+}
+
+.pagesContainer h3 {
+    font-size: 2.3rem;
+    color: var(--gray-300);
+    font-weight: 500;
+}
+
+.pagesContainer button {
+    border: none;
+    color: var(--gray-200);
+    background-color: inherit;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.pagesContainer button svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.pagesContainer button:hover svg {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.pagesHeader {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.pagesHeader label {
+    background-color: var(--gray-300);
+    padding: 0.5rem;
+    border-radius: 1rem;
+    color: var(--gray-600);
+    font-weight: 700;
+}
+
+.pagesList{
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: center;
+}
+
+.pagesList p{
+    font-size: 2.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.pagesList p:hover {
+    cursor: pointer;
+    color: var(--gray-300);
 }

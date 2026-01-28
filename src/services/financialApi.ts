@@ -4,9 +4,14 @@ const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api`
 const API_KEY = import.meta.env.VITE_API_KEY
 
 export type Financial = {
-    fType: string,
-    name: string,
-    value: number
+    _id?: string,
+    date: string,
+    description: string,
+    category: string,
+    account: string,
+    value: number,
+    createdAt?: Date,
+    updatedAt?: Date
 }
 
 const getHeaders = () => ({

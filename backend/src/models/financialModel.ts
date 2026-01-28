@@ -1,16 +1,20 @@
 import mongoose, { Schema, Document } from "mongoose"
 
 interface IFinance extends Document {
-    fType: string,
-    name: string,
+    date: string,
+    description: string,
+    category: string,
+    account: string,
     value: number,
     createdAt?: Date,
     updatedAt?: Date
 }
 
 const FinancialSchema = new Schema<IFinance> ({
-    fType: { type: String, required: true},
-    name: { type: String, required: true},
+    date: { type: String, required: true},
+    description: { type: String, required: true},
+    category: { type: String, required: true},
+    account: { type: String, required: true},
     value: { type: Number, required: true}
 } , {
   timestamps: true

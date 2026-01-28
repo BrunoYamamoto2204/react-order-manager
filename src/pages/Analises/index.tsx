@@ -72,7 +72,7 @@ export function Analises() {
 
     const inputRef = useRef<HTMLDivElement>(null)
 
-    // Busca os produtos pelo período
+    // Busca os pedidos pelo período
     useEffect(() => {
         const loadOrders = async () => {
             try{

@@ -1075,7 +1075,7 @@ export function Pedidos() {
                             className={styles.filterDateButton}
                             onClick={() => setOpenDateFilter(true)}
                         >
-                            <CalendarIcon/> Filtrar Horário
+                            <CalendarIcon/> Filtrar Data
                         </button>
                         <button onClick={() => navigate("/pedidos/novo")}>
                             <PlusIcon/> Adicionar Pedido

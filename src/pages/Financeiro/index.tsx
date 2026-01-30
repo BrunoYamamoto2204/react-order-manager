@@ -10,7 +10,7 @@ import { getOrders, type Order } from "../../services/ordersApi"
 import type { Financial } from "../../services/financialApi"
 
 export function Financeiro () {  
-    const contas = [
+    const transactions = [
         {
             date: "2024-05-24",
             description: "Venda de Pedido #4592 - Comanda Digital",
@@ -66,7 +66,7 @@ export function Financeiro () {
         return date.toLocaleDateString("sv-SE");
     }
 
-    const [ currentTransactions, setCurrentTransactions ] = useState(contas)
+    const [ currentTransactions ] = useState(transactions)
     const [ filteredTransactions, setFilteredTransactions ] = useState<Financial[]>([])
 
     const today = new Date()
@@ -115,10 +115,9 @@ export function Financeiro () {
         }
 
         setFilteredTransactions(filtered)
-        setAblePages(Math.ceil(filteredTransactions.length / 4)) 
-
+        setAblePages(Math.ceil(filtered.length / 4)) 
         setPageNumber(0)
-    }, [currentTransactions, expenseButton, filteredTransactions.length, revenueButton])
+    }, [currentTransactions, expenseButton, revenueButton])
 
 
     // Define os pedidos pelo periodo

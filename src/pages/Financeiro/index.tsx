@@ -7,66 +7,17 @@ import CustomDatePicker from "../../components/CustomDatePicker"
 import { useEffect, useRef, useState } from "react"
 import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { getOrders, type Order } from "../../services/ordersApi"
-import type { Financial } from "../../services/financialApi"
+import { getIncomesExpenses, type Financial } from "../../services/financialApi"
+import { useNavigate } from "react-router"
 
 export function Financeiro () {  
-    const transactions = [
-        {
-            date: "2024-05-24",
-            description: "Venda de Pedido #4592 - Comanda Digital",
-            category: "Receita",
-            account: "Nubank Business",
-            value: 450.00
-        },
-        {
-            date: "2024-05-23",
-            description: "Pagamento Fornecedor AMBEV - Insumos Bebidas",
-            category: "Despesa",
-            account: "Itaú Personnalité",
-            value: 2400.00
-        },
-        {
-            date: "2024-05-22",
-            description: "Aluguel Unidade Central - Mensalidade",
-            category: "Despesa",
-            account: "Itaú Personnalité",
-            value: 5500.00
-        },
-        {
-            date: "2024-05-21",
-            description: "Serviço de Limpeza - Terceirizado",
-            category: "Despesa",
-            account: "Caixa Interno",
-            value: 180.00
-        },
-        {
-            date: "2024-05-20",
-            description: "Venda de Pedido #4588 - Take-away",
-            category: "Receita",
-            account: "Nubank Business",
-            value: 1250.00
-        },
-        {
-            date: "2024-05-20",
-            description: "Compra de ingredientes #4588 - Take-away",
-            category: "Despesa",
-            account: "Nubank Business",
-            value: 1250.00
-        },
-        {
-            date: "2024-05-20",
-            description: "Compra de ingredientes1 #4588 - Take-away",
-            category: "Despesa",
-            account: "Nubank Business",
-            value: 150.00
-        }
-    ];
+    const navigate = useNavigate()
 
     const formatDateString = (date: Date) => {
         return date.toLocaleDateString("sv-SE");
     }
 
-    const [ currentTransactions ] = useState(transactions)
+    const [ currentTransactions, setCurrentTransactions ] = useState<Financial[]>([])
     const [ filteredTransactions, setFilteredTransactions ] = useState<Financial[]>([])
 
     const today = new Date()
@@ -90,6 +41,21 @@ export function Financeiro () {
 
     const inputRef = useRef<HTMLDivElement>(null)
 
+    // Carrega as transações
+    useEffect(() => {
+        const getTransactionsData = async () => {
+            try {
+                const data = await getIncomesExpenses(); 
+                setCurrentTransactions(data);
+            } catch(error) {
+                console.error("Erro ao carregar transações:", error);
+            }
+        }
+
+        getTransactionsData()
+    },[])
+
+    // Quando clicado fora das opções
     useEffect(() => {
         const handleClickRef = (event: MouseEvent) => {
             if (
@@ -135,7 +101,6 @@ export function Financeiro () {
 
         loadOrders()
     },[endDate, startDate])
-
     
     // Estatísticas de comparação com o mês anterior
     useEffect(() => {
@@ -144,7 +109,7 @@ export function Financeiro () {
 
             const today = new Date()
             today.setDate(today.getDate())
-            // const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
             const lastMonthFirstDay = new Date(
                 today.getFullYear(),
@@ -158,13 +123,13 @@ export function Financeiro () {
             )
 
             // Receita - Mês atual
-            // const filteredCurrentOrders = ordersData.filter(order => {
-            //     const orderDateStr = formatStringDateTime(order.date)
-            //     return (
-            //         orderDateStr >= formatDateString(firstDay) && 
-            //         orderDateStr <= formatDateString(lastDay)
-            //     )
-            // })
+            const filteredCurrentOrders = ordersData.filter(order => {
+                const orderDateStr = formatStringDateTime(order.date)
+                return (
+                    orderDateStr >= formatDateString(firstDay) && 
+                    orderDateStr <= formatDateString(lastDay)
+                )
+            })
 
             // Receita - Mês anterior
             const filteredLastOrders = ordersData.filter(order => {
@@ -176,10 +141,9 @@ export function Financeiro () {
             })
 
             // Total do atual
-            // const currentTotal = filteredCurrentOrders.reduce((total, order) => 
-            //     total += Number(order.value.split(" ")[1])
-            // , 0) + 1
-            const currentTotal = 41072 as number
+            const currentTotal = filteredCurrentOrders.reduce((total, order) => 
+                total += Number(order.value.split(" ")[1])
+            , 0) + 1
 
             // Total do anterior
             const lastMonthTotal = filteredLastOrders.reduce((total, order) => 
@@ -207,6 +171,7 @@ export function Financeiro () {
 
             let revenueComparision
 
+            // ---------------- Receita ---------------- //
             // Mês atual melhor
             if (currentTotal >= lastMonthTotal) {                
                 const revenueValue = lastMonthTotal === 0 ? 0 : (
@@ -243,6 +208,7 @@ export function Financeiro () {
                     "em relação ao mês anterior"
                 )
             }
+            // ---------------------------------------- //
 
             return [
                 buildComparisionValue(
@@ -270,11 +236,11 @@ export function Financeiro () {
     }, [startDate, endDate, firstDay])
 
     //  ---- Valores Gerais ---- /
-    let revenueTotal = orders.reduce((total, order) => {
+    const revenueTotal = orders.reduce((total, order) => {
         const formattedValue = Number(order.value.split(" ")[1])
         return total += formattedValue
     }, 0)
-    revenueTotal = 41072
+    // revenueTotal = 41072
 
     const expenseValue = 10000
     const resultValue = revenueTotal - expenseValue
@@ -503,7 +469,11 @@ export function Financeiro () {
                         subtitle="Gerencie o seu financeiro e controle suas receitas e gastos"
                     />
                     <div className={styles.addButton}>
-                        <button>+ Criar conta</button>
+                        <button
+                            onClick={() => navigate("/financeiro/criar")}
+                        >
+                            + Criar conta
+                        </button>
                     </div>
                 </div>  
 

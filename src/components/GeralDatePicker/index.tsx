@@ -171,7 +171,7 @@ export function GeralDatePicker({
     
     // Determina as classes CSS do input principal
     const getInputDisplayClasses = (): string => {
-        let classes = styles.inputDisplay; // Classe base
+        let classes = `${styles.inputDisplay} ${className}`; // Classe base
         if (disabled) classes += ` ${styles.disabled}`; // Adiciona classe se desabilitado
         return classes;
     };
@@ -204,7 +204,7 @@ export function GeralDatePicker({
     return (
         <div className={styles.inputBox}>
             {/* <span className={styles.label}>{dateName}</span> */}
-            <div className={`${styles.container} ${className}`}>
+            <div className={`${styles.container}`}>
             
                 {/* SEÇÃO 1: INPUT DISPLAY - O campo que o usuário vê */}
                 <div

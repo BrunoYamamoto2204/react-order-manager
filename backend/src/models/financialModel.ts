@@ -21,6 +21,6 @@ const FinancialSchema = new Schema<IFinance> ({
 })
 
 const Financial = mongoose.models.Financial 
-    || mongoose.model<IFinance>("IncomesExpenses", FinancialSchema, "incomesExpenses")
+    || mongoose.model<IFinance>("Financial", FinancialSchema, "financial")
 
 export default Financial

@@ -18,6 +18,7 @@ import { Login } from "./pages/Login";
 import { AuthProvider } from "./context/AuthProvider";
 import { useAuth } from "./hooks/useAuth";
 import { Financeiro } from "./pages/Financeiro";
+import { CreateFinanceiro } from "./pages/Financeiro/createFinanceiro";
 
 function ProtectedRoute({ children }: {children: React.ReactNode }){
   const { user, isLoading } = useAuth()
@@ -109,6 +110,12 @@ function AppRoutes(){
           <ProtectedRoute>
             <CreatePedido />
           </ProtectedRoute>
+      }/>
+
+      <Route path="/financeiro/criar" element={
+        <ProtectedRoute>
+          <CreateFinanceiro />
+        </ProtectedRoute>
       }/>
 
       <Route path="/pedidos/editar/:id" element={

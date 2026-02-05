@@ -1,0 +1,231 @@
+/* Main Crete Form  */
+.formContent{
+    margin-top: 4rem;
+    background-color: var(--gray-700);
+    padding: 4rem;
+    border-radius: 1rem;
+}
+
+.formContent input {
+    background-color: var(--gray-400);
+    border: 2px solid transparent; 
+    padding: 2rem;
+    border-radius: 1rem;
+    min-height: 5rem;
+    font-size: 1.8rem;
+}
+
+.inputGroup{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.inputBox {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Category Input */
+.transactionTypeBox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--gray-500);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+}   
+
+.formContent .transactionTypeBox h3 {
+    color: var(--gray-100);
+    font-weight: bold;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.typeButtonBox {
+    display: flex;
+    background-color: var(--gray-400);
+    max-width: max-content;
+    padding: 1rem;
+    border-radius: 1rem;
+    gap: 1rem;
+}
+
+.transactionTypeBox button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 10rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-size: 1.5rem;
+    gap: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    background-color: var(--gray-600);
+    font-weight: bold;
+    color: var(--gray-100);
+}
+
+.transactionTypeBox button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.transactionTypeBox button:hover {
+    cursor: pointer;
+}
+
+.transactionTypeBox button:hover:disabled {
+    cursor: initial;
+}
+
+.typeButtonBox button.activeType {
+    background-color: var(--gray-500);
+    color: var(--gray-100);
+}
+
+/* InformationBox */
+.informationBox {
+    background-color: var(--gray-500);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+}
+
+.informationBox h3 {
+    color: var(--gray-100);
+    font-weight: bold;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.informationContent {
+    display: grid;
+    grid-template-columns: 1fr 0.3fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.informationLabels {
+    color: var(--gray-200);
+    font-weight: bold;
+}
+
+/* Date */
+.dateBox {
+    background-color: var(--gray-400);
+    border: 2px solid transparent; 
+    padding: 0.5rem;
+    border-radius: 1rem;
+    min-height: 5rem;
+    /* text-align: center; */
+}
+
+.dateBoxInput{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start; /* Alinha o ícone e texto à esquerda */
+    background-color: var(--gray-400); /* Garante a cor que você quer */
+    border: none; /* Remove bordas padrões se houver */
+}
+
+
+/* Details */
+.detailsBox {
+    background-color: var(--gray-500);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detailsContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.detailsBox h3 {
+    color: var(--gray-100);
+    font-weight: bold;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+/* Normal Input */
+.formContent label{
+    margin-bottom: 2rem;
+    color: var(--gray-300);
+    font-size: 2rem;
+}
+
+.formContent input {
+    color: var(--gray-100);
+}
+
+.formContent input::placeholder{
+    color: var(--gray-300);
+}
+
+.formContent input:focus{
+    border-color: var(--gray-300);
+}
+
+.priceInput input {
+    width: 100%;
+}
+
+/* Buttons */
+.buttons{
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.saveAndCancelDiv {
+    display: flex;
+    gap: 2rem;
+}
+
+.cancel, .save, .categoryButton{
+    padding: 1rem 3rem;
+    margin-top: 2rem;
+    min-height: 5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    gap: 1rem;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.categoryButton {
+    background-color: var(--primary-dark);
+    color: var(--gray-100);
+}
+
+.cancel{
+    background-color: var(--gray-400);
+    color: var(--gray-100);
+}
+
+.save {
+    background-color: var(--primary);
+    color: var(--gray-100);
+}
+
+.cancel:hover, .save:hover, .categoryButton:hover{
+    background-color: var(--gray-300);
+    color: var(--gray-800);
+    transform: scale(1.02);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

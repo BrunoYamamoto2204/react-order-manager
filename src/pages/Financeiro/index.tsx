@@ -4,7 +4,7 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Financeiro.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { getOrders, type Order } from "../../services/ordersApi"
 import { getIncomesExpenses, type Financial } from "../../services/financialApi"
@@ -21,14 +21,11 @@ export function Financeiro () {
     const [ filteredTransactions, setFilteredTransactions ] = useState<Financial[]>([])
 
     const today = new Date()
-    today.setDate(today.getDate())
-    const firstDay = new Date(today)
-    firstDay.setDate(1)
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
-    const [ comparison, setComparison ] = useState<React.ReactNode[]>([])
-
-    const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
-    const [ endDate, setEndDate ] = useState(formatDateString(today))  
+    const [ startDate, setStartDate ] = useState(formatDateString(firstDayOfMonth))
+    const [ endDate, setEndDate ] = useState(formatDateString(lastDayOfMonth))  
     const [ orders, setOrders ] = useState<Order[]>([]) 
 
     const [ pageNumber, setPageNumber ] = useState(0)
@@ -86,164 +83,79 @@ export function Financeiro () {
     }, [currentTransactions, expenseButton, revenueButton])
 
 
-    // Define os pedidos pelo periodo
+    // Atualiza os valores, segundo o período
     useEffect(() => {
-        const loadOrders = async () => {
+        const loadFilteredOrders = async () => {
             const ordersData = await getOrders()
 
             const filteredOrders = ordersData.filter(order => {
                 const orderDateStr = formatStringDateTime(order.date)
-                return orderDateStr >= startDate && orderDateStr <= endDate
+                return orderDateStr >= startDate 
+                    && orderDateStr <= endDate
             })
 
             setOrders(filteredOrders)
         }
 
-        loadOrders()
+        const loadFilteredTransactions = async () => {
+            const transactionsData = await getIncomesExpenses()
+
+            const filteredOrders = transactionsData.filter(transaction => {
+                const transactionDateStr = transaction.date
+                return transactionDateStr >= startDate 
+                    && transactionDateStr <= endDate
+            })
+
+            setCurrentTransactions(filteredOrders)
+        }
+
+        loadFilteredOrders()
+        loadFilteredTransactions()
     },[endDate, startDate])
     
-    // Estatísticas de comparação com o mês anterior
-    useEffect(() => {
-        const lastMonthComparison = async () => {
-            const ordersData = await getOrders() 
-
-            const today = new Date()
-            today.setDate(today.getDate())
-            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-
-            const lastMonthFirstDay = new Date(
-                today.getFullYear(),
-                today.getMonth() - 1,
-                1
-            )
-            const lastMonthLastDay = new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                0
-            )
-
-            // Receita - Mês atual
-            const filteredCurrentOrders = ordersData.filter(order => {
-                const orderDateStr = formatStringDateTime(order.date)
-                return (
-                    orderDateStr >= formatDateString(firstDay) && 
-                    orderDateStr <= formatDateString(lastDay)
-                )
-            })
-
-            // Receita - Mês anterior
-            const filteredLastOrders = ordersData.filter(order => {
-                const orderDateStr = formatStringDateTime(order.date)
-                return (
-                    orderDateStr >= formatDateString(lastMonthFirstDay) && 
-                    orderDateStr <= formatDateString(lastMonthLastDay)
-                )
-            })
-
-            // Total do atual
-            const currentTotal = filteredCurrentOrders.reduce((total, order) => 
-                total += Number(order.value.split(" ")[1])
-            , 0) + 1
-
-            // Total do anterior
-            const lastMonthTotal = filteredLastOrders.reduce((total, order) => 
-                total += Number(order.value.split(" ")[1])
-            , 0)
-            
-            const buildComparisionValue = (
-                icon: React.ReactElement, 
-                value: number,
-                color: string,
-                text: string
-            ) => { 
-                const roundedValue = Math.abs(value) < 0.01 ? 0 : value
-
-                return (
-                    <label 
-                        className={styles.comparisionValue}
-                        style={{color: color}}
-                    >
-                        {icon}
-                        {roundedValue.toFixed(1)} % {text}
-                    </label>
-                )
-            }
-
-            let revenueComparision
-
-            // ---------------- Receita ---------------- //
-            // Mês atual melhor
-            if (currentTotal >= lastMonthTotal) {                
-                const revenueValue = lastMonthTotal === 0 ? 0 : (
-                    ((currentTotal - lastMonthTotal) / lastMonthTotal) * 100
-                )
-
-                revenueComparision = buildComparisionValue(
-                    <TrendingUpIcon/>, 
-                    revenueValue,
-                    "var(--primary)",
-                    "em relação ao mês anterior"
-                )
-            }
-
-            // Mês passado melhor
-            else if(lastMonthTotal > currentTotal) {
-                const revenueValue = currentTotal === 0 ? 0 : (
-                    ((lastMonthTotal - currentTotal) / currentTotal) * 100
-                )
-
-                revenueComparision = buildComparisionValue(
-                    <TrendingDownIcon/>, 
-                    revenueValue,
-                    "var(--error)",
-                    "este mês"
-                )
-            }
-
-            else {                
-                revenueComparision = buildComparisionValue(
-                    <TrendingUpIcon/>,
-                    0,
-                    "white",
-                    "em relação ao mês anterior"
-                )
-            }
-            // ---------------------------------------- //
-
-            return [
-                buildComparisionValue(
-                    <TrendingDownIcon/>, 
-                    1, 
-                    "var(--error)",
-                    "em relação ao mês anterior"
-                ),
-                revenueComparision,
-                buildComparisionValue(
-                    <TrendingDownIcon/>, 
-                    0.5, 
-                    "var(--error)",
-                    "em relação ao mês anterior"
-                )
-            ]
-        }
-
-        const loadComparison = async () => {
-            const result = await lastMonthComparison()
-            setComparison(result)
-        }
-
-        loadComparison()
-    }, [startDate, endDate, firstDay])
-
-    //  ---- Valores Gerais ---- /
-    const revenueTotal = orders.reduce((total, order) => {
+    //  ---- Receita Total ---- /
+    const ordersRevenue = orders.reduce((total, order) => {
         const formattedValue = Number(order.value.split(" ")[1])
         return total += formattedValue
     }, 0)
-    // revenueTotal = 41072
 
-    const expenseValue = 10000
+    const manualRevenue = currentTransactions.reduce((total, transaction) => 
+        transaction.category === "Receita" ? total += transaction.value : total
+    , 0)
+
+    const revenueTotal = useMemo(() => {
+        return ordersRevenue + manualRevenue
+    }, [manualRevenue, ordersRevenue])
+    
+    //  ---- Despesa Total ---- /
+    const expenseValue = useMemo(() => {
+        return currentTransactions.reduce((total, transaction) => 
+            transaction.category === "Despesa" ? total += transaction.value : total
+        , 0)
+    }, [currentTransactions])
+
+    // Verifica o valor mais caro das despesas
+    const mostExpensiveExpense = currentTransactions.length > 0
+        ? Math.max(...currentTransactions
+            .filter(t => t.category === "Despesa")
+            .map(t => t.value)
+        )
+        : 0
+    
+    // Atribui a despesa com o maior valor
+    const mostExpensiveExpenseObject = currentTransactions.find(
+        t => t.category === "Despesa" && t.value === mostExpensiveExpense
+    )
+
+    //  ---- Saldo Total ---- /
     const resultValue = revenueTotal - expenseValue
+
+    const profitMargin = useMemo(() => {
+        const profit = (resultValue / revenueTotal) * 100
+
+        if (!profit) return 0
+        else return profit
+    },[resultValue, revenueTotal])
     
     const info = [
         { 
@@ -251,18 +163,64 @@ export function Financeiro () {
             value: resultValue, 
             icon: <Wallet2Icon />, 
             color: "var(--info)", 
+            extraInfo: resultValue > 0 
+                ? (
+                    <div className={styles.totalExtraInfo}>
+                        <p className={styles.goodExtraInfo}>
+                            Lucro: 
+                            <label><TrendingUpIcon/> {profitMargin.toFixed(2)}%</label>
+                        </p> 
+                    </div>
+                ) : (
+                    <div className={styles.totalExtraInfo}> 
+                        <p className={styles.badExtraInfo}>
+                            Lucro: 
+                            <label><TrendingDownIcon/> {profitMargin.toFixed(2)}%</label>
+                        </p>
+                    </div>
+                ),
+            resultIcon: resultValue > 0 
+                ? <TrendingUpIcon style={{color:"var(--primary)"}}/> 
+                : <TrendingDownIcon style={{color:"var(--error)"}}/>
         },
         { 
             title: "Receita Total", 
             value: revenueTotal, 
             icon: <ArrowUpIcon/>, 
-            color: "var(--primary)" , 
+            color: "var(--primary)",
+            extraInfo: 
+                <div className={styles.revenueExtraInfo}>
+                    <p>
+                        Pedidos: 
+                        <label className={styles.revenueExtraText}>
+                            R${ordersRevenue.toFixed(2)}
+                        </label>
+                    </p>
+                    <p className={styles.revenueInfo}>
+                        Transações adicionais: 
+                        <label className={styles.revenueExtraText}>
+                            R${manualRevenue.toFixed(2)}
+                        </label>
+                    </p>
+                </div>
         },
         { 
             title: "Despesa Total", 
             value: expenseValue, 
             icon: <ArrowDownIcon />, 
-            color: "var(--error)" , 
+            color: "var(--error)",
+            extraInfo: 
+                <div className={styles.expenseExtraInfo}>
+                    <p>
+                        Maior Gasto: 
+                        <label>
+                            {mostExpensiveExpenseObject?.description} 
+                        </label>
+                        <label className={styles.expenseInfoValue}>
+                            R${mostExpensiveExpenseObject?.value}
+                        </label>
+                    </p>
+                </div>
         }
     ]
     //  ----------------------- /
@@ -272,26 +230,24 @@ export function Financeiro () {
         value: number, 
         icon: React.ReactNode,
         color: string,
+        extraInfo: React.ReactNode,
+        resultIcon?: React.ReactNode
     ) => {
-        let comparisionValue
-
-        if (title === "Saldo Total") {
-            comparisionValue = comparison[0]
-        }
-        else if (title === "Receita Total") {
-            comparisionValue = comparison[1]
-        }
-        else {
-            comparisionValue = comparison[2]
-        }
-
         return (
             <div className={styles.summaryContainer}>
                 <>
                     <div>
                         <h3>{title}</h3>
-                        <p>R$ {value.toFixed(2)}</p>
-                        {comparisionValue}
+                        {
+                            title === "Saldo Total" 
+                                ? <p className={styles.resultText}>
+                                    {resultIcon} R$ {value.toFixed(2)}
+                                  </p>
+                                : <p>R$ {value.toFixed(2)}</p>
+                            
+                        }
+                        <hr />
+                        {extraInfo}
                     </div>
                     <label>
                         <span
@@ -507,7 +463,7 @@ export function Financeiro () {
                 <div className={styles.summary}>
                     {
                         info.map(c => createSummaryContainer(
-                            c.title, c.value, c.icon, c.color
+                            c.title, c.value, c.icon, c.color, c.extraInfo, c.resultIcon
                         ))
                     }
                 </div>
@@ -566,47 +522,59 @@ export function Financeiro () {
                                 </tr>
                             </thead>
                             <tbody>
-                                {pagesList(pageNumber).map((incExp, index) => (
-                                    <tr key={`${incExp.description}_${index}`}>
-                                        <td>{incExp.date}</td>
-                                        <td>{incExp.description}</td>
-                                        <td
-                                            className={incExp.category === "Receita" 
-                                                ? styles.revenueCategory 
-                                                : styles.expenseCategory
-                                            }
-                                        >
-                                            <p>{incExp.category}</p>
-                                        </td>
-                                        <td>{incExp.account}</td>
-                                        {
-                                            incExp.category === "Receita" ? ( 
-                                                <td className={styles.revenueValue }>
-                                                    + R$ {incExp.value}
-                                                </td> 
-                                            ) : (
-                                                <td className={styles.expenseValue }>
-                                                    - R$ {incExp.value}
-                                                </td> 
-                                            )
-                                        }
-                                        <td>
-                                            <div className={styles.optionsContainer} ref={inputRef}>
-                                                <EllipsisVerticalIcon 
-                                                    onClick={() => setOpenOptionsId(
-                                                        openOptionsId === index ? null : index
-                                                    )}
-                                                />
-                                                {openOptionsId === index && (
-                                                    <div className={styles.options}>
-                                                        <button>Editar</button>
-                                                        <button>Excluir</button>
-                                                    </div>  
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>   
-                                ))}
+                                {currentTransactions.length > 0 ? 
+                                    (
+                                        pagesList(pageNumber).map((incExp, index) => (
+                                            <tr key={`${incExp.description}_${index}`}>
+                                                <td>{incExp.date}</td>
+                                                <td>{incExp.description}</td>
+                                                <td
+                                                    className={incExp.category === "Receita" 
+                                                        ? styles.revenueCategory 
+                                                        : styles.expenseCategory
+                                                    }
+                                                >
+                                                    <p>{incExp.category}</p>
+                                                </td>
+                                                <td>{incExp.account}</td>
+                                                {
+                                                    incExp.category === "Receita" ? ( 
+                                                        <td className={styles.revenueValue }>
+                                                            + R$ {incExp.value}
+                                                        </td> 
+                                                    ) : (
+                                                        <td className={styles.expenseValue }>
+                                                            - R$ {incExp.value}
+                                                        </td> 
+                                                    )
+                                                }
+                                                <td>
+                                                    <div className={styles.optionsContainer} ref={inputRef}>
+                                                        <EllipsisVerticalIcon 
+                                                            onClick={() => setOpenOptionsId(
+                                                                openOptionsId === index ? null : index
+                                                            )}
+                                                        />
+                                                        {openOptionsId === index && (
+                                                            <div className={styles.options}>
+                                                                <button>Editar</button>
+                                                                <button>Excluir</button>
+                                                            </div>  
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>   
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={6}
+                                                className={styles.noRegister}
+                                            >
+                                                Sem contas disponíveis
+                                            </td>
+                                        </tr>
+                                    ) 
+                                }
                             </tbody>
                         </table>
                     </div>

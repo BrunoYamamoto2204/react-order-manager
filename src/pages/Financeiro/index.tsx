@@ -4,11 +4,13 @@ import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Financeiro.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { formatDate, formatStringDateTime } from "../../utils/format-date"
 import { getOrders, type Order } from "../../services/ordersApi"
-import { getIncomesExpenses, type Financial } from "../../services/financialApi"
+import { deleteIncomeExpense, getIncomesExpenses, type Financial } from "../../services/financialApi"
 import { useNavigate } from "react-router"
+import { Messages } from "../../components/Messages"
+import { DeleteConfirm } from "../../components/DeleteConfirm"
 
 export function Financeiro () {  
     const navigate = useNavigate()
@@ -36,10 +38,13 @@ export function Financeiro () {
 
     const [ openOptionsId, setOpenOptionsId ] = useState<string | number | null>(null)
 
-    const inputRef = useRef<HTMLDivElement>(null)
+    const [ confirmDelete, setConfirmDelete ] = useState(false)
+    const [ idToDeleteTransaction, setIdToDeleteTransaction ] = useState("")
 
     // Carrega as transações
     useEffect(() => {
+        document.title = "Contas - Comanda"
+
         const getTransactionsData = async () => {
             try {
                 const data = await getIncomesExpenses(); 
@@ -55,13 +60,13 @@ export function Financeiro () {
     // Quando clicado fora das opções
     useEffect(() => {
         const handleClickRef = (event: MouseEvent) => {
-            if (
-                inputRef.current && 
-                !inputRef.current.contains(event.target as Node) 
-            ) {
-                setOpenOptionsId(null)
+            const target = event.target as HTMLElement;
+
+            // Verifica se o clique NÃO foi dentro de um container de opções
+            if (!target.closest(`.${styles.optionsContainer}`)) {
+                setOpenOptionsId(null);
             }
-        }
+        };
 
         document.addEventListener("mousedown", handleClickRef)
     },[])
@@ -416,9 +421,45 @@ export function Financeiro () {
         return groupsList[page]
     }
 
+    const removeTransaction = async (id: string) => {
+        try {
+            if (!id) {
+                console.log("❌ Transação sem _id:")
+                return 
+            }
+
+            await deleteIncomeExpense(id)
+
+            setCurrentTransactions(prev => 
+                prev.filter(transaction => transaction._id !== id)
+            )
+
+            Messages.success("Transação excluída com sucesso")
+            setConfirmDelete(false)
+        } catch(error) {
+            console.log("Erro ao excluir transação:", error)
+            Messages.error("Erro ao excluir a transação")
+        }
+    }
+
+    const handleDelete = (id: string) => {
+        setConfirmDelete(true)
+        setIdToDeleteTransaction(id)
+    }
+
     return (
         <MainTemplate>
             <Container>
+                {confirmDelete && (
+                    <DeleteConfirm 
+                        name="Transação" 
+                        setOpenConfirm={setConfirmDelete}
+                        removeRegister={removeTransaction}
+                        register={idToDeleteTransaction}
+                        setShowRegister={setConfirmDelete} // Mesma função do setOpenConfirm
+                    />
+                )}
+
                 <div className={styles.header}>
                     <Title 
                         title="Financeiro"
@@ -522,7 +563,7 @@ export function Financeiro () {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentTransactions.length > 0 ? 
+                                {filteredTransactions.length > 0 ? 
                                     (
                                         pagesList(pageNumber).map((incExp, index) => (
                                             <tr key={`${incExp.description}_${index}`}>
@@ -549,7 +590,7 @@ export function Financeiro () {
                                                     )
                                                 }
                                                 <td>
-                                                    <div className={styles.optionsContainer} ref={inputRef}>
+                                                    <div className={styles.optionsContainer}>
                                                         <EllipsisVerticalIcon 
                                                             onClick={() => setOpenOptionsId(
                                                                 openOptionsId === index ? null : index
@@ -557,8 +598,21 @@ export function Financeiro () {
                                                         />
                                                         {openOptionsId === index && (
                                                             <div className={styles.options}>
-                                                                <button>Editar</button>
-                                                                <button>Excluir</button>
+                                                                <button
+                                                                    onClick={() => 
+                                                                        navigate(
+                                                                            `/financeiro/editar/${incExp._id}`
+                                                                        )
+                                                                    }
+                                                                >Editar</button>
+                                                                <button
+                                                                    onClick={
+                                                                        () => handleDelete(
+                                                                            incExp._id!
+                                                                        )}
+                                                                >
+                                                                    Excluir
+                                                                </button>
                                                             </div>  
                                                         )}
                                                     </div>

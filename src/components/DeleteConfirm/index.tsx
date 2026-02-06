@@ -23,6 +23,15 @@ export function DeleteConfirm<T>({
         }
     },[])
 
+    const handleConfirm = () => {
+        removeRegister(register)
+        setOpenConfirm(false)
+
+        if (setShowRegister !== setOpenConfirm) {
+            setShowRegister(false)
+        }
+    }
+
     return (
         <>
             <div 
@@ -38,10 +47,7 @@ export function DeleteConfirm<T>({
                     <div className={styles.confirmDeleteButtons}>
                         <button
                             className={`${styles.button} ${styles.confirmButton}`}
-                            onClick={() => { 
-                                removeRegister(register)
-                                setShowRegister(false)
-                            }}
+                            onClick={handleConfirm}
                         >
                             Sim desejo Excluir
                         </button>

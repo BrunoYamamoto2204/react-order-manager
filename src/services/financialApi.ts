@@ -50,7 +50,7 @@ export async function updateIncomeExpense(
     id: string, incomeExpense: Financial
 ): Promise<Financial> {
     const response = await fetch(`${API_URL}/financial/${id}`, {
-        method: "POST",
+        method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(incomeExpense),
     })

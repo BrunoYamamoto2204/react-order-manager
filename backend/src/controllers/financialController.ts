@@ -38,7 +38,7 @@ export const createIncomeExpense = async (req: Request, res: Response) => {
 
 export const updateIncomeExpense = async (req: Request, res: Response) => {
     try{
-        const incomeExpense = Financial.findByIdAndUpdate(req.params, req.body)
+        const incomeExpense = await Financial.findByIdAndUpdate(req.params.id, req.body)
         res.json(incomeExpense)
     } catch(e) {
         res.status(404).json({
@@ -49,7 +49,7 @@ export const updateIncomeExpense = async (req: Request, res: Response) => {
 
 export const deleteIncomeExpense = async (req: Request, res: Response) => {
     try{
-        const incomeExpense = Financial.findByIdAndDelete(req.params.id)
+        const incomeExpense = await Financial.findByIdAndDelete(req.params.id)
         res.json(incomeExpense)
     } catch(e) {
         res.status(500).json({

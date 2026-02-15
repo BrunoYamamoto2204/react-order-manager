@@ -1,3 +1,56 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px) brightness(0.8);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+}
+
+.dateFilter {
+    z-index: 10000;
+    padding: 5rem;
+    background-color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border: 0.2rem solid var(--gray-400);
+    border-radius: 1rem;
+}
+
+.calendarBox {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: center;
+}
+
+.calendarButton {
+    margin-top: 4rem;
+    font-size: 2rem;
+    padding: 1rem 4rem;
+    border-radius: 1rem;
+    background-color: var(--primary-dark);
+    border: none;
+    color: inherit;
+    transition: all 0.2s ease-in-out;
+}
+
+.calendarButton:hover {
+    background-color: var(--gray-700);
+    transform: scale(1.02);
+}
+
+/* Cabecalho */
 .header {
     display: flex;
     justify-content: space-between;
@@ -30,6 +83,10 @@
     margin-top: 4rem;
     display: flex;
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: start;
 }
 
 .analysisDate h2{
@@ -41,7 +98,6 @@
 .period{
     display: flex;
     gap: 2rem;
-    margin-left: 3rem;
     align-items: center;
 }
 
@@ -94,7 +150,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 3rem;
 }
 
 .revenueExtraText{
@@ -136,7 +192,7 @@
     font-size: 2rem;
 }
 
-/* Todos os containers de resumo */
+/* Cards de resumo */
 .summary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -159,7 +215,12 @@
 
 .summaryContainer{
     display: flex;
-    background-color: var(--gray-800);
+    background: linear-gradient(
+        135deg,
+        #103839 0%,
+        var(--gray-800) 50%,
+        #0f1f1a 100%
+    );
     padding: 3rem;
     border-radius: 1rem;
     justify-content: space-between;
@@ -435,4 +496,318 @@
 .pagesList p:hover {
     cursor: pointer;
     color: var(--gray-300);
+}
+
+/* Componentes de filtro de data */
+button.filterDateButton {
+    background-color: var(--primary-dark);
+    color: inherit;
+}
+
+.filteredDate {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filterAndDate {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.cleanFilter {
+    color: var(--primary-light);
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.cleanFilter:hover {
+    color: var(--gray-400);
+    cursor: pointer;
+}
+
+label.filteredDateValue {
+    background-color: #103839;
+    color: #12c58d;
+    padding: 0.5rem;
+    border-radius: 2rem;
+}
+
+@media(max-width: 1650px) {
+    /* Cards MediaQuery */
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    /* Container do card MQ */
+    .summaryContainerMQ {
+        background:
+        radial-gradient(
+            circle at top left,
+            rgba(18, 197, 141, 0.15),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            var(--gray-800),
+            #1f242b
+        );
+        padding: 3rem;
+        border-radius: 1rem;
+        justify-content: space-between;
+        border: 0.1rem solid var(--gray-500);
+    }
+
+    .summaryContainerMQ h3{ 
+        font-size: 2rem;
+        color: var(--primary);
+    }
+
+    .summaryContainerMQ .resultText{ 
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    .summaryContainerMQ hr {
+        border: 1px solid var(--gray-400);
+        margin: 2rem 0;
+    }
+
+    /* Card Total */
+    .totalheaderCardMQ {
+        display: flex;
+        flex-direction: column;
+        align-items: center;   /* centraliza horizontal */
+        justify-content: center; /* centraliza vertical */
+        text-align: center;
+    }
+
+    .totalExtraInfoMQ {
+        display: inline-flex;
+        gap: 1rem;
+        font-size: 1.6rem;
+        color: #12c58d;
+        background-color: #103839;
+        padding: 0.8rem 2rem;
+        border-radius: 2rem;
+        margin-top: 2rem;
+        font-weight: bold;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .badExtraInfoMQ {
+        color: var(--gray-100);
+        background-color: rgba(126, 41, 41, 0.904);
+    }
+
+    .goodExtraInfoMQ {
+        color: #12c58d;
+        background-color: #103839;
+    }
+
+    /* Cards Receita e despesa */
+    .headerCardContainerMQ {
+        display: flex;
+        gap: 2rem;
+    }
+
+    /* Icone */
+    .headerCardContainerMQ svg{ 
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .iconBox {
+        padding: 1.2rem;
+        border-radius: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .iconBox svg {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .iconBox.iconBoxRevenue {
+        background-color: #103839;
+    }
+    .iconBox.iconBoxIncome {
+        background-color: rgb(88, 2, 2);
+    }
+
+    .iconBox.iconBoxRevenue svg{
+        color: #12c58d;
+    }
+    .iconBox.iconBoxIncome svg{
+        color: red;
+    }
+
+    /* Valores e titulos */
+    .headerCardMQ label{
+        color: var(--gray-300);
+        font-size: 1.8rem;
+    }
+
+    .headerCardMQ p{ 
+        font-size: 2.3rem;
+        font-weight: bold;
+    } 
+
+    /* ExtraInfo Receita */
+    .revenueExtraInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .revenueExtraInfo p{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        font-size: 2rem;
+        color: var(--gray-300);
+    }
+
+    .revenueExtraInfo label{
+        color: var(--gray-100);
+        font-size: 2.2rem;
+    }
+
+    /* ExtraInfo Despesa */
+    .expenseExtraInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .expenseExtraInfo div{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .expenseExtraInfo p{
+        font-size: 2rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .expenseExtraInfo p label.expenseInfoValue { 
+        color: var(--gray-100);
+        font-size: clamp(1.5rem, 2.2rem, 2.3rem);
+    }
+}
+
+@media(max-width: 1050px) {
+    .mobileButtons{
+        position: fixed;
+        bottom: 8rem;   
+        right: 2%;    
+        z-index: 100;   
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .header button {
+        padding: 1rem;
+        font-size: 1.8rem;
+        font-family: inherit;
+        border-radius: 0.7rem;
+        border: none;
+        
+        background-color: var(--gray-200);
+        transition: all 0.2s ease;
+        font-weight: 500;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        width: 5rem;
+        height: 5rem;
+        justify-content: center;
+    }
+
+    .header button:hover {
+        transform: scale(1.08);
+        color: inherit;
+        background-color: var(--gray-700);
+        cursor: pointer;
+    }
+
+    /* Filtro de pesquisa */
+    .periodFilter {
+        flex-direction: column;
+        gap: 2rem;
+        background-color: var(--gray-600);
+        padding: 1rem;
+        border-radius: 1rem;
+        width: 100%;
+    }
+
+    label.filteredDateValue {
+        background-color: #103839;
+        color: #12c58d;
+        padding: 0.5rem;
+        border-radius: 2rem;
+    }
+
+    .filterAndDate {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        display: flex;
+    }
+
+    .filterAndDate label{ 
+        padding: 1rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .filterAndDate label:hover{
+        background-color: var(--gray-400);
+        color: var(--gray-100);
+    }
+
+    .filteredDate {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .filteredDate p{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+}
+
+@media(max-width: 600px) {
+    .revenueExtraInfo p{
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .expenseExtraInfo p {
+        flex-direction: column;
+        text-align: center;
+    }
+    .expenseExtraInfo p label.expenseInfoValue {
+        color: var(--gray-300);
+        font-style: italic;
+        font-size: 2.5rem;
+    }
 }

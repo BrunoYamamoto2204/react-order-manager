@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, FilterIcon, SearchIcon, TrendingDownIcon, TrendingUpIcon, Wallet2Icon } from "lucide-react"
+import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon, TrendingDownIcon, TrendingUpIcon, Wallet2Icon } from "lucide-react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
@@ -18,6 +18,12 @@ export function Financeiro () {
     const formatDateString = (date: Date) => {
         return date.toLocaleDateString("sv-SE");
     }
+
+    const [ isMobile, setIsMobile ] = useState(false)
+    const [ isTablet, setIsTablet ] = useState(false);
+
+    const [ openDateFilter, setOpenDateFilter ] = useState(false)
+    const [ mobileOpenDateFilter, setMobileOpenDateFilter ] = useState(false)
 
     const [ currentTransactions, setCurrentTransactions ] = useState<Financial[]>([])
     const [ filteredTransactions, setFilteredTransactions ] = useState<Financial[]>([])
@@ -41,10 +47,35 @@ export function Financeiro () {
     const [ confirmDelete, setConfirmDelete ] = useState(false)
     const [ idToDeleteTransaction, setIdToDeleteTransaction ] = useState("")
 
-    // Carrega as transações
     useEffect(() => {
         document.title = "Contas - Comanda"
 
+        // Telas menores de 1650px (Tablet)
+        const mediaQueryTablet = window.matchMedia("(max-width: 1650px)")
+        setIsTablet(mediaQueryTablet.matches) 
+
+        // Telas menores de 1050px (Mobile)
+        const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
+        setIsMobile(mediaQueryMobile.matches)
+
+        const handleResizeTablet = (e: MediaQueryListEvent) => {
+            setIsTablet(e.matches)
+        }
+        const handleResizeMobile = (e: MediaQueryListEvent) => {
+            setIsMobile(e.matches)
+        }
+
+        mediaQueryMobile.addEventListener("change", handleResizeMobile)
+        mediaQueryTablet.addEventListener("change", handleResizeTablet)
+
+        return () => {
+            mediaQueryMobile.removeEventListener("change", handleResizeMobile)
+            mediaQueryTablet.removeEventListener('change', handleResizeTablet)
+        }
+    },[])
+
+    // Carrega as transações
+    useEffect(() => {
         const getTransactionsData = async () => {
             try {
                 const data = await getIncomesExpenses(); 
@@ -169,20 +200,33 @@ export function Financeiro () {
             icon: <Wallet2Icon />, 
             color: "var(--info)", 
             extraInfo: resultValue > 0 
-                ? (
-                    <div className={styles.totalExtraInfo}>
-                        <p className={styles.goodExtraInfo}>
-                            Lucro: 
-                            <label><TrendingUpIcon/> {profitMargin.toFixed(2)}%</label>
-                        </p> 
-                    </div>
-                ) : (
-                    <div className={styles.totalExtraInfo}> 
-                        <p className={styles.badExtraInfo}>
-                            Lucro: 
-                            <label><TrendingDownIcon/> {profitMargin.toFixed(2)}%</label>
+                ? ( isTablet ? (
+                        <p className={`${styles.totalExtraInfoMQ} ${styles.goodExtraInfoMQ}`}>
+                            Lucro:
+                            <TrendingUpIcon/>
                         </p>
-                    </div>
+                    ) : ( 
+                        <div className={styles.totalExtraInfo}>
+                            <p className={styles.goodExtraInfo}>
+                                Lucro: 
+                                <label><TrendingUpIcon/> {profitMargin.toFixed(2)}%</label>
+                            </p> 
+                        </div>
+                    )
+                ) : ( isTablet ? (
+                        <div>
+                            <p className={`${styles.totalExtraInfoMQ} ${styles.badExtraInfoMQ}`}>
+                                <TrendingDownIcon/>Lucro {profitMargin.toFixed(2)}%
+                            </p>
+                        </div>
+                    ) : (
+                        <div className={styles.totalExtraInfo}> 
+                            <p className={styles.badExtraInfo}>
+                                Lucro: 
+                                <label><TrendingDownIcon/> {profitMargin.toFixed(2)}%</label>
+                            </p>
+                        </div>
+                    )
                 ),
             resultIcon: resultValue > 0 
                 ? <TrendingUpIcon style={{color:"var(--primary)"}}/> 
@@ -198,16 +242,17 @@ export function Financeiro () {
                     <p>
                         Pedidos: 
                         <label className={styles.revenueExtraText}>
-                            R${ordersRevenue.toFixed(2)}
+                            R$ {ordersRevenue.toFixed(2)}
                         </label>
                     </p>
                     <p className={styles.revenueInfo}>
                         Transações adicionais: 
                         <label className={styles.revenueExtraText}>
-                            R${manualRevenue.toFixed(2)}
+                            R$ {manualRevenue.toFixed(2)}
                         </label>
                     </p>
-                </div>
+                </div>,
+            resultIcon: <ArrowUpIcon />
         },
         { 
             title: "Despesa Total", 
@@ -217,15 +262,29 @@ export function Financeiro () {
             extraInfo: 
                 <div className={styles.expenseExtraInfo}>
                     <p>
-                        Maior Gasto: 
-                        <label>
-                            {mostExpensiveExpenseObject?.description} 
-                        </label>
+                        {isTablet ? (
+                            <div className={styles.expenseExtraInfoMQ}>
+                                Maior Gasto: 
+                                <label>
+                                    {mostExpensiveExpenseObject?.description} 
+                                </label>
+                            </div>
+                        ) : (
+                            <>
+                                Maior Gasto: 
+                                <label>
+                                    {mostExpensiveExpenseObject?.description} 
+                                </label>
+                            </>
+                            )
+                        }
+                        
                         <label className={styles.expenseInfoValue}>
                             R${mostExpensiveExpenseObject?.value}
                         </label>
                     </p>
-                </div>
+                </div>,
+            resultIcon: <ArrowDownIcon />
         }
     ]
     //  ----------------------- /
@@ -238,33 +297,75 @@ export function Financeiro () {
         extraInfo: React.ReactNode,
         resultIcon?: React.ReactNode
     ) => {
-        return (
-            <div className={styles.summaryContainer}>
-                <>
-                    <div>
-                        <h3>{title}</h3>
-                        {
-                            title === "Saldo Total" 
-                                ? <p className={styles.resultText}>
-                                    {resultIcon} R$ {value.toFixed(2)}
-                                  </p>
-                                : <p>R$ {value.toFixed(2)}</p>
-                            
-                        }
-                        <hr />
-                        {extraInfo}
-                    </div>
-                    <label>
-                        <span
-                            className={styles.iconWrapper}
-                            style={{ backgroundColor: color }}
-                        >
-                            {icon}
-                        </span>
-                    </label>
-                </>
+        let iconStyle;
+        
+        if (title === "Receita Total") {
+            iconStyle = <div className={`${styles.iconBox} ${styles.iconBoxRevenue}`}>
+                {resultIcon}
             </div>
-        )
+        } else if (title === "Despesa Total") {
+            iconStyle = <div className={`${styles.iconBox} ${styles.iconBoxIncome}`}>
+                {resultIcon}
+            </div>
+        }
+
+        if (isTablet) {
+            return (
+                <div>
+                    <div className={styles.summaryContainerMQ}>
+                        {
+                            title === "Saldo Total"
+                                ? <div className={styles.totalheaderCardMQ}>
+                                    <h3>{title}</h3>
+                                    <p className={styles.resultText}>
+                                        R$ {value.toFixed(2)}
+                                    </p>
+                                    {extraInfo}
+                                </div>
+                                : <>
+                                    <div className={styles.headerCardContainerMQ}>
+                                        {iconStyle}
+                                        <div className={styles.headerCardMQ}>
+                                            <label>{title}</label>
+                                            <p>R$ {value.toFixed(2)}</p>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    {extraInfo}
+                                </>
+                            }
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div className={styles.summaryContainer}>
+                    <>
+                        <div>
+                            <h3>{title}</h3>
+                            {
+                                title === "Saldo Total" 
+                                    ? <p className={styles.resultText}>
+                                        {resultIcon} R$ {value.toFixed(2)}
+                                    </p>
+                                    : <p>R$ {value.toFixed(2)}</p>
+                                
+                            }
+                            <hr />
+                            {extraInfo}
+                        </div>
+                        <label>
+                            <span
+                                className={styles.iconWrapper}
+                                style={{ backgroundColor: color }}
+                            >
+                                {icon}
+                            </span>
+                        </label>
+                    </>
+                </div>
+            )
+        }
     }
 
     const handleChangePages = (direction: string) => {
@@ -460,47 +561,149 @@ export function Financeiro () {
                     />
                 )}
 
+                {openDateFilter && (
+                    <>
+                        <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
+                            <div 
+                                className={styles.dateFilter} 
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <h3>Escolha a data</h3>
+                                <div className={styles.calendarBox}>
+                                    <div className={styles.startDate} >
+                                        <div>
+                                            <CustomDatePicker
+                                                displayValue={formatDate}
+                                                value={startDate}
+                                                onChange={setStartDate}
+                                                placeholder="Selecione a data inicial"
+                                                dateName = "Data Inicial"
+                                                maxDate={endDate} // Data inicial não pode ser depois da final
+                                            />
+                                        </div>
+                                    </div>
+                                    <p>até</p>
+                                    <div className={styles.startDate} >
+                                        <div>
+                                            <CustomDatePicker
+                                                displayValue={formatDate}
+                                                value={endDate}
+                                                onChange={setEndDate}
+                                                placeholder="Selecione a data final"
+                                                dateName = "Data Final"
+                                                minDate={startDate} // Data final não pode ser antes da inicial
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button 
+                                    type="button"
+                                    className={styles.calendarButton}
+                                    onClick={() => setOpenDateFilter(false)}
+                                >
+                                    Fechar 
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                )}
+
                 <div className={styles.header}>
                     <Title 
                         title="Financeiro"
                         subtitle="Gerencie o seu financeiro e controle suas receitas e gastos"
                     />
-                    <div className={styles.addButton}>
-                        <button
-                            onClick={() => navigate("/financeiro/criar")}
-                        >
-                            + Criar conta
-                        </button>
-                    </div>
+                    
+                        {isMobile ? (
+                            <div className={styles.mobileButtons}>
+                            <button
+                                onClick={() => navigate("/pedidos/novo")}
+                                className={styles.mobileAddButton}
+                            >
+                                <PlusIcon/>
+                            </button>
+                        </div>
+                        ) : (
+                            <div className={styles.addButton}>
+                            <button
+                                onClick={() => navigate("/financeiro/criar")}
+                                className={styles.mobileAddButton}
+                            >
+                                + Criar conta
+                            </button>
+                            </div>
+                        )}
+                        
+                    
                 </div>  
-
+                
+                {/* Filtro de data */}
                 <div className={styles.analysisDate}>
-                    <h2>Período de análise: </h2>
-                    <div className={styles.period}>
-                        <div>
-                            <CustomDatePicker
-                                displayValue={formatDate}
-                                value={startDate}
-                                onChange={setStartDate}
-                                placeholder="Selecione a data inicial"
-                                dateName = "Data Inicial"
-                                maxDate={endDate} // Data inicial não pode ser depois da final
-                            />
+                    {isMobile ? (
+                        <div className={styles.periodFilter}>
+                            <div className={styles.filterAndDate}>
+                                <div 
+                                    className={styles.filteredDate}
+                                    onClick={() => setMobileOpenDateFilter(!mobileOpenDateFilter)}
+                                >
+                                    <p><ListFilterIcon/> Filtrar Data:</p>
+                                    <p><ChevronDownIcon/></p>
+                                </div>
+
+                                {mobileOpenDateFilter && (
+                                    <label 
+                                        className={styles.filteredDateValue} 
+                                        onClick={() =>  setOpenDateFilter(true)}
+                                    >
+                                        {`${formatDate(startDate)} - ${formatDate(endDate)}`}
+                                    </label>
+                                )}
+                                
+                            </div>
+                            {mobileOpenDateFilter && (
+                                <p 
+                                    className={styles.cleanFilter} 
+                                    onClick={() => {
+                                        setStartDate(startDate)
+                                        setEndDate(endDate)
+                                    }}
+                                >
+                                    Limpar Filtro
+                                </p>
+                            )}
                         </div>
-                        <div className={styles.midText}>até</div>
-                        <div>
-                            <CustomDatePicker
-                                displayValue={formatDate}
-                                value={endDate}
-                                onChange={setEndDate}
-                                placeholder="Selecione a data final"
-                                dateName = "Data Final"
-                                minDate={startDate} // Data final não pode ser antes da inicial
-                            />
-                        </div>
-                    </div>
+                    ) : (
+                        <>
+                            <h2>Período de análise: </h2>
+                            <div className={styles.period}>
+                                <div>
+                                    <CustomDatePicker
+                                        displayValue={formatDate}
+                                        value={startDate}
+                                        onChange={setStartDate}
+                                        placeholder="Selecione a data inicial"
+                                        dateName = "Data Inicial"
+                                        maxDate={endDate} // Data inicial não pode ser depois da final
+                                    />
+                                </div>
+                                <div className={styles.midText}>até</div>
+                                <div>
+                                    <CustomDatePicker
+                                        displayValue={formatDate}
+                                        value={endDate}
+                                        onChange={setEndDate}
+                                        placeholder="Selecione a data final"
+                                        dateName = "Data Final"
+                                        minDate={startDate} // Data final não pode ser antes da inicial
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    
                 </div>
 
+                {/* Cards resumo */}
                 <div className={styles.summary}>
                     {
                         info.map(c => createSummaryContainer(

@@ -622,6 +622,7 @@ export function Pedidos() {
                         </>
                     )}
 
+                    {/* Título, Botão de exportar e adicionar */}
                     <div className={styles.header}>
                         <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
                         <div className={styles.mobileButtons}>
@@ -638,7 +639,8 @@ export function Pedidos() {
                             </button>
                         </div>
                     </div>
-
+                    
+                    {/* Busca e filtros */}
                     <div className={styles.searchOrder}>
                         <SearchIcon className={styles.searchIcon} />
                         <input
@@ -715,6 +717,7 @@ export function Pedidos() {
                         </div>
                     </div>
 
+                    {/* Pesquisa de data */}
                     <div className={styles.periodFilter}>
                         <div className={styles.filterAndDate}>
                             <div 

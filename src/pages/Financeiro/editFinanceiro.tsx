@@ -185,7 +185,7 @@ export function EditFinanceiro() {
                                 </div>
                                 {/* Conta */}
                                 <div className={styles.inputBox}>
-                                    <label htmlFor="preco">Conta *</label>
+                                    <label htmlFor="preco">Conta Bancária *</label>
                                     <input
                                         id="conta"
                                         autoComplete="off"

@@ -25,3 +25,18 @@ export function formatStringDateTime(rawDate: string) {
     const [ day, month, year ] = rawDate.split("/")
     return `${year}-${month}-${day}`
 }
+
+// "yyyy-MM-dd" --> "dia MES, ANO"
+export function formatMobileDate(dateString: string) {
+    const [year, month, day] = dateString.split('-').map(Number);
+
+    const months = [
+        "JAN", "FEV", "MAR", "ABR", "MAI", "JUN", 
+        "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"
+    ];
+
+    const formattedDay = day.toString().padStart(2, '0');
+    const formattedMonth = months[month - 1]
+
+    return `${formattedDay} ${formattedMonth}, ${year}`
+}

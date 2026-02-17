@@ -1,16 +1,17 @@
-import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, FilterIcon, ListFilterIcon, PlusIcon, SearchIcon, TrendingDownIcon, TrendingUpIcon, Wallet2Icon } from "lucide-react"
+import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, FilterIcon, ListFilterIcon, MenuIcon, PlusIcon, SearchIcon, TrendingDownIcon, TrendingUpIcon, Wallet2Icon } from "lucide-react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
 import styles from "./Financeiro.module.css"
 import CustomDatePicker from "../../components/CustomDatePicker"
 import { useEffect, useMemo, useState } from "react"
-import { formatDate, formatStringDateTime } from "../../utils/format-date"
+import { formatDate, formatMobileDate, formatStringDateTime } from "../../utils/format-date"
 import { getOrders, type Order } from "../../services/ordersApi"
 import { deleteIncomeExpense, getIncomesExpenses, type Financial } from "../../services/financialApi"
 import { useNavigate } from "react-router"
 import { Messages } from "../../components/Messages"
-import { DeleteConfirm } from "../../components/DeleteConfirm"
+// import { DeleteConfirm } from "../../components/DeleteConfirm"
+import { CompleteTransaction } from "../../components/CompleteTransaction"
 
 export function Financeiro () {  
     const navigate = useNavigate()
@@ -25,8 +26,13 @@ export function Financeiro () {
     const [ openDateFilter, setOpenDateFilter ] = useState(false)
     const [ mobileOpenDateFilter, setMobileOpenDateFilter ] = useState(false)
 
+    // Contas filtradas por data
     const [ currentTransactions, setCurrentTransactions ] = useState<Financial[]>([])
+    // Contas filtradas por parametros
     const [ filteredTransactions, setFilteredTransactions ] = useState<Financial[]>([])
+
+    const [ showTransaction, setShowTransaction ] = useState(false)
+    const [ transaction, setTransaction ] =  useState<Financial>()
 
     const today = new Date()
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
@@ -42,10 +48,8 @@ export function Financeiro () {
     const [ expenseButton, setExpenseButton ] = useState(false)
     const [ revenueButton, setRevenueButton ] = useState(false)
 
-    const [ openOptionsId, setOpenOptionsId ] = useState<string | number | null>(null)
-
-    const [ confirmDelete, setConfirmDelete ] = useState(false)
-    const [ idToDeleteTransaction, setIdToDeleteTransaction ] = useState("")
+    // const [ confirmDelete, setConfirmDelete ] = useState(false)
+    // const [ idToDeleteTransaction, setIdToDeleteTransaction ] = useState("")
 
     useEffect(() => {
         document.title = "Contas - Comanda"
@@ -86,20 +90,6 @@ export function Financeiro () {
         }
 
         getTransactionsData()
-    },[])
-
-    // Quando clicado fora das opções
-    useEffect(() => {
-        const handleClickRef = (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-
-            // Verifica se o clique NÃO foi dentro de um container de opções
-            if (!target.closest(`.${styles.optionsContainer}`)) {
-                setOpenOptionsId(null);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickRef)
     },[])
 
     // Atualiza as transações filtradas quando mudam os botões
@@ -312,27 +302,31 @@ export function Financeiro () {
         if (isTablet) {
             return (
                 <div>
-                    <div className={styles.summaryContainerMQ}>
-                        {
+                    <div className={`${styles.summaryContainerMQ} 
+                        ${title === "Saldo Total" && styles.summaryMainContainerMQ}`}>
+                        { 
                             title === "Saldo Total"
-                                ? <div className={styles.totalheaderCardMQ}>
-                                    <h3>{title}</h3>
-                                    <p className={styles.resultText}>
-                                        R$ {value.toFixed(2)}
-                                    </p>
-                                    {extraInfo}
-                                </div>
-                                : <>
-                                    <div className={styles.headerCardContainerMQ}>
-                                        {iconStyle}
-                                        <div className={styles.headerCardMQ}>
-                                            <label>{title}</label>
-                                            <p>R$ {value.toFixed(2)}</p>
-                                        </div>
+                                ? ( 
+                                    <div className={styles.totalheaderCardMQ}>
+                                        <h3>{title}</h3>
+                                        <p className={styles.resultText}>
+                                            R$ {value.toFixed(2)}
+                                        </p>
+                                        {extraInfo}
                                     </div>
-                                    <hr />
-                                    {extraInfo}
-                                </>
+                                ) : (
+                                    <>
+                                        <div className={styles.headerCardContainerMQ}>
+                                            {iconStyle}
+                                            <div className={styles.headerCardMQ}>
+                                                <label>{title}</label>
+                                                <p>R$ {value.toFixed(2)}</p>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        {extraInfo}
+                                    </>
+                                )
                             }
                     </div>
                 </div>
@@ -522,45 +516,34 @@ export function Financeiro () {
         return groupsList[page]
     }
 
-    const removeTransaction = async (id: string) => {
+    const handleClickTransaction = (transaction: Financial) => {
+        setShowTransaction(true)
+        setTransaction(transaction)
+    }  
+
+    const removeTransaction = async(filteredTransaction: Financial) => {
+        setPageNumber(0)
+
         try {
-            if (!id) {
-                console.log("❌ Transação sem _id:")
-                return 
+            if (!filteredTransaction._id) {
+                console.log("❌ Transação sem _id:", filteredTransaction);
+                return
             }
 
-            await deleteIncomeExpense(id)
-
-            setCurrentTransactions(prev => 
-                prev.filter(transaction => transaction._id !== id)
-            )
-
+            await deleteIncomeExpense(filteredTransaction._id)
             Messages.success("Transação excluída com sucesso")
-            setConfirmDelete(false)
-        } catch(error) {
-            console.log("Erro ao excluir transação:", error)
-            Messages.error("Erro ao excluir a transação")
+        } catch(error){
+            console.log("Erro ao excluir transação: ", error)
+            Messages.error("Erro ao excluir transação")
         }
-    }
 
-    const handleDelete = (id: string) => {
-        setConfirmDelete(true)
-        setIdToDeleteTransaction(id)
+        setFilteredTransactions(prev => prev.filter(t => t._id != filteredTransaction._id))
     }
 
     return (
         <MainTemplate>
             <Container>
-                {confirmDelete && (
-                    <DeleteConfirm 
-                        name="Transação" 
-                        setOpenConfirm={setConfirmDelete}
-                        removeRegister={removeTransaction}
-                        register={idToDeleteTransaction}
-                        setShowRegister={setConfirmDelete} // Mesma função do setOpenConfirm
-                    />
-                )}
-
+                {/* MediaQuery: Tela de seleção de data */}
                 {openDateFilter && (
                     <>
                         <div className={styles.overlay} onClick={() => setOpenDateFilter(false)}>
@@ -606,6 +589,14 @@ export function Financeiro () {
                             </div>
                         </div>
                     </>
+                )}
+
+                {showTransaction && (
+                    <CompleteTransaction 
+                        transaction={transaction!}
+                        removeTransaction={removeTransaction}
+                        setShowTransaction={setShowTransaction}
+                    />
                 )}
 
                 <div className={styles.header}>
@@ -711,8 +702,10 @@ export function Financeiro () {
                         ))
                     }
                 </div>
-
+                
+                {/* Contas */}
                 <div className={styles.incomesExpensesContainer}>
+                    {/* Opcoes de filtro */}
                     <div className={styles.incomesExpensesHeader}>
                         <div className={styles.searchInput}>
                             <SearchIcon className={styles.searchIcon} />
@@ -728,7 +721,7 @@ export function Financeiro () {
                             disabled={revenueButton}
                             className={styles.revenueButton}
                         >
-                            Receitas
+                            <ArrowUpIcon /> Receitas
                         </button>
                         <button
                             onClick={() => {
@@ -738,103 +731,147 @@ export function Financeiro () {
                             disabled={expenseButton}
                             className={styles.expenseButton}
                         >
-                            Despesas
+                            <ArrowDownIcon /> Despesas
                         </button>
                         <button
                             onClick={() => {
                                 setRevenueButton(false)
                                 setExpenseButton(false)
                             }}
+                            className={styles.allButton}
                         >
-                            Todos os Tipos
+                            <MenuIcon /> Todos os Tipos
                         </button>
-                        <div className={styles.filterOption}>
-                            <FilterIcon/>
-                        </div>
+                        {isMobile ? (
+                            <div className={styles.filterOption}>
+                                <p><FilterIcon/> Filtro Avançado</p>
+                            </div>
+                        ) : (
+                            <div className={styles.filterOption}>
+                                <FilterIcon/>
+                            </div>
+                        )}
+                        
                     </div>
-
-                    <div className={styles.incomesExpensesMain}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>DATA</th>
-                                    <th>DESCRIÇÃO</th>
-                                    <th>CATEGORIA</th>
-                                    <th>CONTA</th>
-                                    <th>VALOR</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredTransactions.length > 0 ? 
-                                    (
-                                        pagesList(pageNumber).map((incExp, index) => (
-                                            <tr key={`${incExp.description}_${index}`}>
-                                                <td>{incExp.date}</td>
-                                                <td>{incExp.description}</td>
-                                                <td
-                                                    className={incExp.category === "Receita" 
-                                                        ? styles.revenueCategory 
-                                                        : styles.expenseCategory
-                                                    }
-                                                >
-                                                    <p>{incExp.category}</p>
-                                                </td>
-                                                <td>{incExp.account}</td>
-                                                {
-                                                    incExp.category === "Receita" ? ( 
-                                                        <td className={styles.revenueValue }>
-                                                            + R$ {incExp.value}
-                                                        </td> 
-                                                    ) : (
-                                                        <td className={styles.expenseValue }>
-                                                            - R$ {incExp.value}
-                                                        </td> 
-                                                    )
-                                                }
-                                                <td>
-                                                    <div className={styles.optionsContainer}>
-                                                        <EllipsisVerticalIcon 
-                                                            onClick={() => setOpenOptionsId(
-                                                                openOptionsId === index ? null : index
-                                                            )}
-                                                        />
-                                                        {openOptionsId === index && (
-                                                            <div className={styles.options}>
-                                                                <button
-                                                                    onClick={() => 
-                                                                        navigate(
-                                                                            `/financeiro/editar/${incExp._id}`
-                                                                        )
-                                                                    }
-                                                                >Editar</button>
-                                                                <button
-                                                                    onClick={
-                                                                        () => handleDelete(
-                                                                            incExp._id!
-                                                                        )}
-                                                                >
-                                                                    Excluir
-                                                                </button>
-                                                            </div>  
-                                                        )}
-                                                    </div>
-                                                </td>
-                                            </tr>   
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan={6}
-                                                className={styles.noRegister}
+                    
+                    {/* Lista de contas */}
+                    {isMobile ? (
+                        <div className={styles.incomesExpensesMainMQ}>
+                            {filteredTransactions.length > 0 ? (
+                                pagesList(pageNumber).map((incExp, index) => (
+                                    <div 
+                                        className={styles.transactionContainerMQ} 
+                                        key={`${index}_${incExp.description}`}
+                                        onClick={() => handleClickTransaction(incExp)}
+                                    >   
+                                        <div
+                                            className={styles.dateTypeMQ}
+                                        >
+                                            <p className={styles.dateMQ}>
+                                                {formatMobileDate(incExp.date)}
+                                            </p>
+                                            <p
+                                                className={incExp.category === "Receita"
+                                                    ? `${styles.typeMQ} ${styles.revenueTypeMQ}` 
+                                                    : `${styles.typeMQ} ${styles.incomeTypeMQ}`}
                                             >
-                                                Sem contas disponíveis
-                                            </td>
-                                        </tr>
-                                    ) 
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                                {incExp.category}
+                                            </p>
+                                        </div>
+                                        
+                                        <div className={styles.categoryAccountMQ}>
+                                            <p
+                                                className={incExp.category === "Receita"
+                                                    ? styles.revenueTypeIconMQ
+                                                    : styles.incomeTypeIconMQ}
+                                            >
+                                                {incExp.category === "Despesa" ? (
+                                                    <ArrowDownIcon />
+                                                ) : (
+                                                    <ArrowUpIcon />
+                                                ) }
+                                            </p>
+                                            <div className={styles.accountMQ}>
+                                                <p>{incExp.description}</p>
+                                                <label>{incExp.account}</label>
+                                            </div>
+                                        </div>
+
+                                        <p className={styles.valueMQ}>
+                                            R$ {incExp.value.toFixed(2).replace(".",",")}
+                                        </p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>
+                                    Sem contas disponíveis
+                                </p>
+                            )}
+                        </div>
+                    ) : (
+                        <div className={styles.incomesExpensesMain}>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>DATA</th>
+                                        <th>DESCRIÇÃO</th>
+                                        <th>CATEGORIA</th>
+                                        <th>CONTA</th>
+                                        <th>VALOR</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredTransactions.length > 0 ? 
+                                        (
+                                            pagesList(pageNumber).map((incExp, index) => (
+                                                <tr key={`${incExp.description}_${index}`}>
+                                                    <td>{incExp.date}</td>
+                                                    <td>{incExp.description}</td>
+                                                    <td
+                                                        className={incExp.category === "Receita" 
+                                                            ? styles.revenueCategory 
+                                                            : styles.expenseCategory
+                                                        }
+                                                    >
+                                                        <p>{incExp.category}</p>
+                                                    </td>
+                                                    <td>{incExp.account}</td>
+                                                    {
+                                                        incExp.category === "Receita" ? ( 
+                                                            <td className={styles.revenueValue }>
+                                                                + R$ {incExp.value}
+                                                            </td> 
+                                                        ) : (
+                                                            <td className={styles.expenseValue }>
+                                                                - R$ {incExp.value}
+                                                            </td> 
+                                                        )
+                                                    }
+                                                    <td>
+                                                        <div className={styles.optionsContainer}>
+                                                            <EllipsisVerticalIcon 
+                                                                onClick={() => handleClickTransaction(incExp)}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                </tr>   
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={6}
+                                                    className={styles.noRegister}
+                                                >
+                                                    Sem contas disponíveis
+                                                </td>
+                                            </tr>
+                                        ) 
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    
 
                     {filteredTransactions.length > 4 && (
                         <div className={styles.pagesContainer}>

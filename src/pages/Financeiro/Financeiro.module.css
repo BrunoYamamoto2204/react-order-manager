@@ -221,6 +221,7 @@
         var(--gray-800) 50%,
         #0f1f1a 100%
     );
+    background-color: var(--gray-700);
     padding: 3rem;
     border-radius: 1rem;
     justify-content: space-between;
@@ -402,6 +403,7 @@
 
 .optionsContainer {
     position: relative;
+    cursor: pointer;
 }
 
 .options {
@@ -542,8 +544,22 @@ label.filteredDateValue {
     }
 
     /* Container do card MQ */
-    .summaryContainerMQ {
+    .summaryMainContainerMQ {
         background:
+            radial-gradient(
+                circle at top left,
+                rgba(18, 197, 141, 0.15),
+                transparent 40%
+            ),
+            linear-gradient(
+                135deg,
+                var(--gray-800),
+                #1f242b
+            );
+    }
+
+    .summaryContainerMQ {
+        /* background:
         radial-gradient(
             circle at top left,
             rgba(18, 197, 141, 0.15),
@@ -553,7 +569,8 @@ label.filteredDateValue {
             135deg,
             var(--gray-800),
             #1f242b
-        );
+        ); */
+        background-color: var(--gray-800);
         padding: 3rem;
         border-radius: 1rem;
         justify-content: space-between;
@@ -708,6 +725,10 @@ label.filteredDateValue {
 }
 
 @media(max-width: 1050px) {
+    .incomesExpensesContainer {
+        padding: 1rem;
+    }
+
     .mobileButtons{
         position: fixed;
         bottom: 8rem;   
@@ -747,7 +768,12 @@ label.filteredDateValue {
         cursor: pointer;
     }
 
-    /* Filtro de pesquisa */
+    /* Cards */
+    .headerCardContainerMQ {
+        justify-content: center;
+    }
+
+    /* Filtro de data*/
     .periodFilter {
         flex-direction: column;
         gap: 2rem;
@@ -793,6 +819,165 @@ label.filteredDateValue {
         gap: 1rem;
     }
 
+    /* Filtro de pesquisa de critérios */
+    .incomesExpensesHeader{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .incomesExpensesHeader .searchInput{
+        grid-column: 1 / -1;
+        margin-bottom: 2rem;
+    }
+
+    .incomesExpensesHeader .searchInput input{
+        width: 100%;
+    }
+
+    .incomesExpensesHeader button.expenseButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-right: 0rem;
+        padding: 1.5rem 0.5rem;
+        border-radius: 1.5rem;
+    }
+
+    .incomesExpensesHeader button.revenueButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin: 0rem;
+        padding: 1.5rem 0.5rem;
+        border-radius: 1.5rem;
+    }
+
+    .incomesExpensesHeader button.allButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.5rem 0.5rem;
+        border-radius: 1.5rem;
+    }
+    
+    .filterOption {
+        background-color: var(--gray-600);
+        width: 100%;
+        grid-column: 1 / -1;
+        padding: 2rem 1rem;
+        border-radius: 1rem;
+        margin-top: 1.5rem;
+        cursor: pointer;
+    }
+
+    .filterOption p{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Transactions List */
+    .incomesExpensesMainMQ {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .transactionContainerMQ{
+        background-color: var(--gray-700);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 0.2rem solid var(--gray-400);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .transactionContainerMQ:hover {
+        cursor: pointer;
+        border: 0.2rem solid var(--primary);
+    }
+
+    .dateTypeMQ{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .dateMQ {
+        color: var(--gray-300);
+    }
+
+    .typeMQ {
+        padding: 0.5rem 1rem;
+        border-radius: 1rem;
+        font-weight: bold;
+    }
+
+    .revenueTypeMQ {
+        background-color: #103839;
+        color: #12c58d;
+    }
+    .incomeTypeMQ {
+        background-color: var(--error);
+        color: var(--gray-100);
+    }
+
+    .revenueTypeIconMQ svg{
+        background-color: #103839;
+        color: #12c58d;
+        border-radius: 1rem;
+        padding: 1rem;
+        width: 5rem;   
+        height: 5rem;
+    }
+
+    .incomeTypeIconMQ svg{
+        background-color: rgb(88, 2, 2);
+        color: var(--gray-100);
+        border-radius: 1rem;
+        padding: 1rem;
+        width: 5rem;   
+        height: 5rem;
+    }
+
+    /* Categoria e Conta bancaria */
+    .categoryAccountMQ {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .accountMQ p{
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .accountMQ label{
+        color: var(--gray-300);
+        font-style: italic;
+    }
+
+    /* Valor da conta */
+    .valueMQ {
+        margin-top: 2rem;
+        font-size: 2rem;
+        color: var(--gray-100);
+        text-align: end;
+    }
+
+    /* Pages Footer */
+    .pagesContainer {
+        flex-direction: column;
+    }
+
+    .pagesHeader {
+        flex-direction: column;
+        margin-bottom: 2rem;
+    }
+
 }
 
 @media(max-width: 600px) {
@@ -809,5 +994,9 @@ label.filteredDateValue {
         color: var(--gray-300);
         font-style: italic;
         font-size: 2.5rem;
+    }
+
+    .calendarBox{
+        flex-direction: column;
     }
 }

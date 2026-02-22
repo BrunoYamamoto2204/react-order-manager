@@ -315,11 +315,19 @@
 }
 
 .incomesExpensesHeader button.revenueButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
     background-color: var(--primary);
     transform: scale(1.02);
 }
 
 .incomesExpensesHeader button.expenseButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
     background-color: var(--error);
     margin-right: 2rem;
     transform: scale(1.02);
@@ -329,6 +337,13 @@
     background-color: var(--gray-700);
     cursor: auto;
     color: var(--gray-100);
+}
+
+.incomesExpensesHeader button.allButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .searchInput {

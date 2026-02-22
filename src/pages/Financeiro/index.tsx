@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, FilterIcon, ListFilterIcon, MenuIcon, PlusIcon, SearchIcon, TrendingDownIcon, TrendingUpIcon, Wallet2Icon } from "lucide-react"
+import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, ListFilterIcon, MenuIcon, PlusIcon, SearchIcon, TrendingDownIcon, TrendingUpIcon, Wallet2Icon } from "lucide-react"
 import { Container } from "../../components/Container"
 import { Title } from "../../components/Title"
 import { MainTemplate } from "../../templates/MainTemplate"
@@ -10,7 +10,6 @@ import { getOrders, type Order } from "../../services/ordersApi"
 import { deleteIncomeExpense, getIncomesExpenses, type Financial } from "../../services/financialApi"
 import { useNavigate } from "react-router"
 import { Messages } from "../../components/Messages"
-// import { DeleteConfirm } from "../../components/DeleteConfirm"
 import { CompleteTransaction } from "../../components/CompleteTransaction"
 
 export function Financeiro () {  
@@ -45,6 +44,7 @@ export function Financeiro () {
     const [ pageNumber, setPageNumber ] = useState(0)
     const [ ablePages, setAblePages ] = useState(1)
 
+    const [ searchInput, setSearchInput ] = useState("")
     const [ expenseButton, setExpenseButton ] = useState(false)
     const [ revenueButton, setRevenueButton ] = useState(false)
 
@@ -95,18 +95,26 @@ export function Financeiro () {
     // Atualiza as transações filtradas quando mudam os botões
     useEffect(() => {
         let filtered = currentTransactions
-
+    
+        // 1 - Valida qual está selecionada
         if (expenseButton) {
             filtered = currentTransactions.filter(t => t.category === "Despesa")
-        }
-        else if (revenueButton) {
+        } else if (revenueButton) {
             filtered = currentTransactions.filter(t => t.category === "Receita")
+        }
+
+        // 2 - Valida correspondencia com a barra de buscar
+        if (searchInput.trim() != ""){
+            filtered = filtered.filter(t => 
+                t.description.toLowerCase().includes(searchInput.toLowerCase())
+                || t.value.toFixed(2).includes(searchInput)
+            )
         }
 
         setFilteredTransactions(filtered)
         setAblePages(Math.ceil(filtered.length / 4)) 
         setPageNumber(0)
-    }, [currentTransactions, expenseButton, revenueButton])
+    }, [currentTransactions, expenseButton, revenueButton, searchInput])
 
 
     // Atualiza os valores, segundo o período
@@ -608,7 +616,7 @@ export function Financeiro () {
                         {isMobile ? (
                             <div className={styles.mobileButtons}>
                             <button
-                                onClick={() => navigate("/pedidos/novo")}
+                                onClick={() => navigate("/financeiro/criar")}
                                 className={styles.mobileAddButton}
                             >
                                 <PlusIcon/>
@@ -710,6 +718,7 @@ export function Financeiro () {
                         <div className={styles.searchInput}>
                             <SearchIcon className={styles.searchIcon} />
                             <input
+                                onChange={e => setSearchInput(e.target.value)}
                                 placeholder="Buscar trasação...."
                             />
                         </div>
@@ -742,7 +751,7 @@ export function Financeiro () {
                         >
                             <MenuIcon /> Todos os Tipos
                         </button>
-                        {isMobile ? (
+                        {/* {isMobile ? (
                             <div className={styles.filterOption}>
                                 <p><FilterIcon/> Filtro Avançado</p>
                             </div>
@@ -750,7 +759,7 @@ export function Financeiro () {
                             <div className={styles.filterOption}>
                                 <FilterIcon/>
                             </div>
-                        )}
+                        )} */}
                         
                     </div>
                     

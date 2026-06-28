@@ -36,10 +36,6 @@ export function Login() {
         }
     }
 
-    const onClickVerSenha = () => {
-        
-    }
-
     return(
         <div className={styles.loginContainer}>
             <div className={styles.loginBox}>

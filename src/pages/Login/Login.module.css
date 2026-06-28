@@ -3,32 +3,55 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--primary-login-dark), var(--primary-login));
+    background: linear-gradient(135deg, var(--primary-login-dark), var(--primary-login-light));
 }
 
 .loginBox {
     background: #2d2d2d;
-    padding: 4rem;
     border-radius: 1.5rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 400px;
-    text-align: center;
+    max-width: 80vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 /* Título */
 .titleContainer {
-    margin-bottom: 3rem;
-    margin-top: 2rem;
+    padding: 8rem;
+    background: linear-gradient(135deg, var(--gray-600), var(--primary-dark));
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 80vh;
+    position: relative;
+    overflow: hidden;
 }
 
-.titleContainer h2 {
-    font-size: 2.5rem;
+.titleContainer::before,
+.titleContainer::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px; 
+    background-image: url('../../../dist/assets/gemini-svg.svg'); 
+    pointer-events: none;
 }
 
-.titleContainer h3 {
-    font-size: 1.5rem;
-    color: var(--secondary-text);
+.titleContainer::before {
+    opacity: 0.1;
+    transform: scale(-1, 0.6); 
+}
+
+/* Onda da frente (mais escura, combinando com o fundo do app) */
+.titleContainer::after {
+    opacity: 0.5;
+    /* Aqui você usa a mesma cor de fundo do container da direita (#2d2d2d ou o fundo geral) */
+    filter: invert(53%) sepia(84%) saturate(415%) hue-rotate(114deg) brightness(96%) contrast(90%);
 }
 
 .titleContainer svg {
@@ -42,16 +65,101 @@
     margin-top: 1rem;
 }
 
+.titleContainer .titleComanda h2 {
+    font-size: 3.5rem;
+    display: flex;
+    gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+
+.titleContainer .titleComanda h2 svg {
+    width: 3rem;
+    height: 3rem;
+}
+
+.titleContainer .titleComanda h3 {
+    color: var(--secondary-text);
+    text-align: left;
+    font-family: var(--main-font);
+    font-weight: 300;
+    font-size: 1.8rem;
+}
+
+.titleContainer .bemVindo{
+    margin-bottom: 5rem;
+}
+
+.titleContainer .bemVindo h2 {
+    display: block;
+    text-align: left;
+    color: var(--primary-light);
+    margin-bottom: 2rem;
+    font-size: 3rem;
+}
+
+.titleContainer .bemVindo p {
+    color: var(--gray-100);
+    font-weight: 300;
+    font-size: 1.8rem;
+}
+
 /* Login */
-.loginBox h1 {
+.login {
+    display: flex;
+    flex-direction: column;
+    padding: 8rem;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-login), var(--primary-login-dark));
+}
+
+.loginContainer h2 {
     color: #f5f5f5;
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
     font-size: 2.5rem;
+
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
 }
 
 .inputGroup {
     margin-bottom: 2rem;
     text-align: left;
+    position: relative;
+}
+
+.inputWithIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputWithIcon input {
+    width: 100%;
+    padding-left: 5rem;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 1.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2rem;
+    height: 2rem;
+    color: var(--gray-300);
+    pointer-events: none;
+}
+
+.eyeIcon{
+    position: absolute;
+    right: 1.6rem;
+    top: 1.2rem;
 }
 
 .inputGroup label {
@@ -70,6 +178,7 @@
     color: #f5f5f5;
     font-size: 1.6rem;
     transition: all 0.3s ease-in-out;
+    padding-left: 5rem;
 }
 
 .inputGroup input:focus {
@@ -77,6 +186,14 @@
     border-color: var(--primary);
 }
 
+.formFooter p{
+    color: var(--gray-300);
+    text-align: center;
+    font-weight: 100;
+    font-family: var(--main-font);
+}
+
+/* Configurações gerais de botões e mensagens */
 .loginBox button {
     width: 100%;
     padding: 1.5rem;

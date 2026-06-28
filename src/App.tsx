@@ -56,7 +56,6 @@ function AppRoutes(){
         path="/login" 
         element={user ? <Navigate to="/" replace /> : <Login />}
       />
-      <Route path="/login" element={<Login />}></Route>
       
       {/* Rotas protegidas */}
       <Route path="/" element={

@@ -2,6 +2,7 @@ import { getToken, isAuthenticated, logout as logoutFunction } from "../services
 import { Messages } from "../components/Messages"
 import { useEffect, useState, type ReactNode } from "react"
 import { AuthContext } from "./AuthContext"
+import { jwtDecode } from "jwt-decode"
 
 type User = {
     id: string
@@ -17,10 +18,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const checkAuth = async () => {
             if (isAuthenticated()) {
                 try {
-                    const getUser = localStorage.getItem("user")
-                    if(getUser) {
-                        setUser(JSON.parse(getUser))
-                    }
+                    const token = getToken()!
+                    const decoded = jwtDecode<User>(token)
+                    setUser({username: decoded.username, id: decoded.id, role: decoded.role})
 
                     const response = await fetch(
                         `${import.meta.env.VITE_API_URL}/api/auth/verify`, 

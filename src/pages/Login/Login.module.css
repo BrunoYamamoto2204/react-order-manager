@@ -160,6 +160,7 @@
     position: absolute;
     right: 1.6rem;
     top: 1.2rem;
+    cursor: pointer;
 }
 
 .inputGroup label {

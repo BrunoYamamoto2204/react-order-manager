@@ -63,9 +63,13 @@ export const login = async (req: Request, res: Response) => {
         }
 
         // cria o token do login
+        if (!process.env.JWT_SECRET){
+            throw new Error("JWT_SECRET não definido nas variáveis de ambiente")
+        }
+
         const token = jwt.sign(
             { userId: selectedUser._id, username: selectedUser.user, role: selectedUser.role},
-            process.env.JWT_SECRET || "secret",
+            process.env.JWT_SECRET, 
             { expiresIn: '7d' } // Token expira em 7 dias
         )
 
@@ -79,7 +83,7 @@ export const login = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
-        return res.status(403).json({
+        return res.status(500).json({
             message: `(500) - Falha no login: ${error}`
         })
     }

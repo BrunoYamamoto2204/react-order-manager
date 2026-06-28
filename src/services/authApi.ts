@@ -16,14 +16,14 @@ export const login = async (user: string, password: string) => {
     const data = await response.json()
 
     localStorage.setItem("token", data.token)
-    localStorage.setItem("user", JSON.stringify(data.user))
+    // localStorage.setItem("user", JSON.stringify(data.user))
 
     return data
 }
 
 export const logout = () => {
     localStorage.removeItem("token")
-    localStorage.removeItem("user")
+    // localStorage.removeItem("user")
 }
 
 export const getToken = () => {

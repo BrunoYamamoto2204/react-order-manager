@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import { error } from 'node:console';
 
 interface AuthenticatedRequest extends Request {
     user?: {
@@ -20,9 +21,13 @@ export const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
                 message: "(401) - Token não fornecido"
             })
         }
-    
+        
+        if (!process.env.JWT_SECRET) {
+            throw new Error("JWT_SECRET não definido nas variáveis de ambiente")
+        }
+
         // Verifica o valor do token e define os valores do user 
-        const decode = jwt.verify(token, process.env.JWT_SECRET || "secret") as { 
+        const decode = jwt.verify(token, process.env.JWT_SECRET) as { 
             userId: string; username: string; role: string 
         }
 

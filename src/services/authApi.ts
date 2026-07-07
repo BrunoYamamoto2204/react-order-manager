@@ -11,19 +11,36 @@ export const login = async (user: string, password: string) => {
         body: JSON.stringify({ user, password })
     })
 
-    if(!response.ok) throw new Error("Erro ao realizar login")
+    if(!response.ok) throw new Error("Erro ao realizar login:")
 
-    const data = await response.json()
+    return await response.json()
+}
 
+export const loginMfa = async (userId: number, code: number) => {
+    const mfaResponse = await fetch(`${API_URL}/auth/mfa`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
+        body: JSON.stringify({ 
+            userId: userId,
+            code: code
+        })
+    })
+
+    if(!mfaResponse.ok) throw new Error("Erro na autenticação MFA")
+
+    // token no localhost é utilizado pelo context provider para validar se o usuário já realizou login no navegador há menos de 7 dias
+    const data = await mfaResponse.json()
     localStorage.setItem("token", data.token)
-    // localStorage.setItem("user", JSON.stringify(data.user))
 
-    return data
+    // Retorna o user, para validar ao acessar as rotas, se está logado
+    return data.user
 }
 
 export const logout = () => {
     localStorage.removeItem("token")
-    // localStorage.removeItem("user")
 }
 
 export const getToken = () => {

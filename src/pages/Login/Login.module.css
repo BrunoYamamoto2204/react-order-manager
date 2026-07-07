@@ -16,7 +16,7 @@
     grid-template-columns: 1fr 1fr;
 }
 
-/* Título */
+/* ----------------------------- Título ----------------------------- */
 .titleContainer {
     padding: 8rem;
     background: linear-gradient(135deg, var(--gray-600), var(--primary-dark));
@@ -47,10 +47,8 @@
     transform: scale(-1, 0.6); 
 }
 
-/* Onda da frente (mais escura, combinando com o fundo do app) */
 .titleContainer::after {
     opacity: 0.5;
-    /* Aqui você usa a mesma cor de fundo do container da direita (#2d2d2d ou o fundo geral) */
     filter: invert(53%) sepia(84%) saturate(415%) hue-rotate(114deg) brightness(96%) contrast(90%);
 }
 
@@ -106,7 +104,7 @@
     font-size: 1.8rem;
 }
 
-/* Login */
+/* -----------------------------  Login -----------------------------  */
 .login {
     display: flex;
     flex-direction: column;
@@ -132,6 +130,30 @@
     margin-bottom: 2rem;
     text-align: left;
     position: relative;
+}
+
+.inputGroup label {
+    display: block;
+    color: #888;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 1.2rem;
+    background: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 0.8rem;
+    color: #f5f5f5;
+    font-size: 1.6rem;
+    transition: all 0.3s ease-in-out;
+    padding-left: 5rem;
+}
+
+.inputGroup input:focus {
+    outline: none;
+    border-color: var(--primary);
 }
 
 .inputWithIcon {
@@ -163,30 +185,6 @@
     cursor: pointer;
 }
 
-.inputGroup label {
-    display: block;
-    color: #888;
-    margin-bottom: 0.5rem;
-    font-size: 1.4rem;
-}
-
-.inputGroup input {
-    width: 100%;
-    padding: 1.2rem;
-    background: #1a1a1a;
-    border: 2px solid #444;
-    border-radius: 0.8rem;
-    color: #f5f5f5;
-    font-size: 1.6rem;
-    transition: all 0.3s ease-in-out;
-    padding-left: 5rem;
-}
-
-.inputGroup input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
 .formFooter p{
     color: var(--gray-300);
     text-align: center;
@@ -194,7 +192,7 @@
     font-family: var(--main-font);
 }
 
-/* Configurações gerais de botões e mensagens */
+/* ----------------------------- Configurações gerais de botões e mensagens  ----------------------------- */
 .loginBox button {
     width: 100%;
     padding: 1.5rem;
@@ -225,4 +223,121 @@
     border-radius: 0.5rem;
     margin-bottom: 2rem;
     font-size: 1.4rem;
+}
+
+/* ----------------------------- MFA  ----------------------------- */
+.mfaContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.mfaTitleContainer{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(
+        135deg, 
+        var(--primary) 0%, 
+        var(--primary-dark) 30%, 
+        var(--primary-login-dark) 100%
+    );
+}
+
+.mfaTitleContainerIcon {
+    padding: 2rem;
+    background: var(--primary);
+    border-radius: 2rem;
+    margin-bottom: 3rem;
+}
+
+.mfaTitleContainerIcon svg{
+    width: 8em;
+    height: 8rem;
+}
+
+.mfaTitleContainerTexts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mfaTitleContainerTexts h2{
+    color: var(--primary-light);
+    font-size: 4rem;
+}
+
+.mfaTitleContainerTexts h3{
+    color: var(--gray-200);
+    font-weight: 300;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.mfaTitleContainerTexts p{
+    width: 25vw;
+    text-align: center;
+    color: var(--gray-200);
+}
+
+.mfaTitleContainerCode h2{
+    color: var(--gray-100);
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.mfaTitleContainerCode h3{
+    font-weight: 300;
+    color: var(--gray-300);
+    margin-bottom: 2rem;
+}
+
+.mfaFormContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--gray-800), var(--primary-login));
+}
+
+.mfaTitleContainerInput{
+    display: flex;
+    gap: 2rem;
+}
+
+.mfaTitleContainerInput input{
+    border-radius: 0.8rem;
+    height: 7rem;
+    width: 7rem;
+    border: none;
+    padding: 2rem;
+    background-color: var(--gray-600);
+    border: 0.1rem solid var(--gray-400);
+    color: var(--gray-100);
+    text-align: center;
+    font-size: 3rem;
+    font-family: var(--header-font)
+}
+
+.mfaTitleContainerInput input:focus{
+    outline: none;
+}
+
+.mfaTitleContainerInputButton {
+    background: var(--primary-dark);
+    padding: 2rem;
+    border: none;
+    border-radius: 1rem;
+    margin-top: 4rem;
+    width: 100%;
+    color: var(--gray-100);
+    font-size: 2.2rem;
+    transition: all ease-in-out 0.2s;
+}
+
+.mfaTitleContainerInputButton:hover{
+    background: var(--primary);
+    color: var(--gray-800);
 }

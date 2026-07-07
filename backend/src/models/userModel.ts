@@ -13,8 +13,8 @@ const UserSchema = new Schema<IUser>({
     user: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, required: true },
-    mfaEnabled: { type: Boolean, default: false },
-    mfaSecret: { type: String }
+    mfaEnabled: { type: Boolean, required: true, default: false },
+    mfaSecret: { type: String, required: true, default: null }
 },{
     timestamps: true
 })

@@ -25,7 +25,7 @@ app.use(express.json())
 
 // --------------------- AUTENTICAÇÃO ------------------ //
 
-// Autenticação com apiKey para acessar o backend
+// Autenticação com apiKey para acessar o backend (Todas as rotas)
 app.use(apiKeyAuth)
 
 // Rota de cadastro e login 

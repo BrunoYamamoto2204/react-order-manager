@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import speakeasy from "speakeasy"
 import qrcode from "qrcode"
+import { use } from 'react';
 
 // Permite a estensão do Request, permitindo usar req.user 
 interface AuthenticatedRequest extends Request {
@@ -21,7 +22,7 @@ const createToken = (selectedUser: any) => {
     }
 
     return jwt.sign(
-        { userId: selectedUser._id, username: selectedUser.user, role: selectedUser.role},
+        { userId: selectedUser._id, username: selectedUser.user, role: selectedUser.role },
         process.env.JWT_SECRET, 
         { expiresIn: '7d' } // Token expira em 7 dias
     )
@@ -58,10 +59,11 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     try{
         const { user, password } = req.body 
-
+        
         // ------------------- 1a Etapa - Login e Senha ------------------- //
         // verifica se o cliente existe
         const selectedUser = await User.findOne({ user })
+        
         if (!selectedUser) {
             return res.status(401).json({
                 message: `(401) - Falha no login! Credenciais inválidas`
@@ -75,18 +77,18 @@ export const login = async (req: Request, res: Response) => {
                 message: `(401) - Falha no login! Credenciais inválidas`
             })
         }
-        
-        // Validação se o secret está configurado para utilizar o MFA
-        if (!selectedUser.mfaEnabled) {
-            return res.status(403).json({ message: "MFA não configurado para este usuário" })
-        }
 
+        // Validação se o secret está configurado para utilizar o MFA
+        // if (!selectedUser.mfaEnabled) {
+        //     return res.status(403).json({ message: "MFA não configurado para este usuário" })
+        // }
+        
         // ------------------- 2a Etapa - MFA ------------------- //
         // Permite que o usuário continue a autenticação
         return res.status(200).json({
-            mfaEnabled: true,
+            requiresMfa: true,
             userId: selectedUser._id
-        })
+        })  
     } catch (error) {
         return res.status(500).json({
             message: `(500) - Falha no login: ${error}`
@@ -94,6 +96,39 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
+// Valida o código das próximas vezes com o MFA já habilitado
+export const loginWithMfa = async (req: Request, res: Response) => {
+    try {
+        const { userId, code } = req.body
+
+        const selectedUser = await User.findById(userId)
+
+        if (!selectedUser){
+            
+            return res.status(404).json({ message: "Usuário não encontrado" })
+        }
+
+        // Com o secret, calcula se o código está valido
+        // const isValid = speakeasy.totp.verify({
+        //     secret: selectedUser.mfaSecret,
+        //     encoding: "base32",
+        //     token: code
+        // })
+        // if (!isValid) {
+        //     return res.status(401).json({ message: "Secret inválido ou expirado" })
+        // }
+
+        return res.status(200).json({
+            token: createToken(selectedUser),
+            user: { id: selectedUser._id, user: selectedUser.user, role: selectedUser.role }
+        }) 
+    }
+    catch(error) {
+        return res.status(500).json({ message: "Falha na verificação do MFA" })
+    }
+}
+
+// Gera o secret no primeiro acesso e salva no BD
 export const createSecret = async (req: Request, res: Response) => {
     try{
         const formattedReq = req as AuthenticatedRequest
@@ -108,6 +143,7 @@ export const createSecret = async (req: Request, res: Response) => {
         const secret = speakeasy.generateSecret({ name: "ComandaApp" })
         const qrCodeImage = await qrcode.toDataURL(secret.otpauth_url!)
 
+        // Salva o secret no registor do usuário 
         selectedUser.mfaSecret = secret.base32
         await selectedUser.save()
 
@@ -118,7 +154,7 @@ export const createSecret = async (req: Request, res: Response) => {
     }
 }
 
-// Realiza o 1a login com MFA. Define o secret como válido e salva o usuário com a permissão para utilizar MFA 
+// Valida com o secret se o código enviado pela primeira vez é válido, se for, ativa MFA
 export const confirmUserSecret = async (req: Request, res: Response) => {
     try{
         const { code } = req.body
@@ -135,7 +171,7 @@ export const confirmUserSecret = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Não foi configurado secret para este usuário" })
         }
 
-        // Verifica se o secret é válido
+       // Com o secret, calcula se o código está valido
         const isValid = speakeasy.totp.verify({
             secret: selectedUser.mfaSecret!,
             encoding: "base32",
@@ -152,34 +188,6 @@ export const confirmUserSecret = async (req: Request, res: Response) => {
         res.status(200).json({ message: "MFA foi ativado com sucesso" })
     } catch(error){
         return res.status(500).json({ message: `Erro ao confirmar MFA: Ausência de secret ou secret inválido`})
-    }
-}
-
-export const loginWithMfa = async (req: Request, res: Response) => {
-    try {
-        const { userId, code } = req.body
-
-        const selectedUser = await User.findById(userId)
-        if (!selectedUser){
-            return res.status(404).json({ message: "Usuário não encontrado" })
-        }
-
-        // Verifica se o secret é válido
-        const isValid = speakeasy.totp.verify({
-            secret: selectedUser.mfaSecret,
-            encoding: "base32",
-            token: code
-        })
-        if (!isValid) {
-            return res.status(401).json({ message: "Secret inválido ou expirado" })
-        }
-
-        return res.status(200).json({
-            token: createToken(selectedUser)
-        }) 
-    }
-    catch(error) {
-        return res.status(500).json({ message: "Falha na verificação do MFA" })
     }
 }
 

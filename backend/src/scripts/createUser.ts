@@ -30,7 +30,7 @@ const createUser = async () => {
         const newUser = new User({
             user: username,
             password: hashPassword,
-            role
+            role: role,
         })
 
         await newUser.save()

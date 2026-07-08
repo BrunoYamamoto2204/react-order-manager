@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { login, loginMfa } from "../../services/authApi";
 import { useNavigate } from "react-router";
 import { Messages } from "../../components/Messages";
-import { ClipboardListIcon, EyeClosedIcon, EyeIcon, LockIcon, ShieldUserIcon, UserIcon } from "lucide-react";
+import { ArrowLeftIcon, ClipboardListIcon, EyeClosedIcon, EyeIcon, LockIcon, ShieldUserIcon, UserIcon } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
 export function Login() {
@@ -63,6 +63,7 @@ export function Login() {
             setUser(mfaData.user)
 
             navigate("/")
+            setError("")
             Messages.success("Login bem-sucedido")
         } catch (error) {
             Messages.error("Código incorreto")
@@ -94,6 +95,13 @@ export function Login() {
             
         if (keyPressed === "ArrowRight") 
             if (index < 5) inputRef.current[index + 1].focus()
+    }
+
+    const backToLogin = () => {
+        setMfa(false)
+        setUsername("")
+        setPassword("")
+        setError("")
     }
     
     return(
@@ -164,6 +172,10 @@ export function Login() {
                             <button className={styles.mfaTitleContainerInputButton} type="submit">
                                 Enviar
                             </button>
+                            <div onClick={() => backToLogin()} className={styles.voltar}>
+                                <ArrowLeftIcon />
+                                <p>Voltar</p>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { login } from "../../services/authApi";
 import { Messages } from "../../components/Messages";
 import { ClipboardListIcon, EyeClosedIcon, EyeIcon, LockIcon, UserIcon } from "lucide-react";
 import { LoginMfa } from "./mfa";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Login() {
     const [ loading, setLoading ] = useState(false)
@@ -13,7 +14,7 @@ export function Login() {
     const [ viewPassword, setViewPassword ] = useState(false)
 
     // MFA
-    const [ mfa, setMfa ] = useState(false)
+    const [ mfa, setMfa ] = useState(true)
     const [ userId, setUserId ] = useState(0)
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -40,8 +41,6 @@ export function Login() {
 
     const backToLogin = () => {
         setMfa(false)
-        setUsername("")
-        setPassword("")
         setError("")
     }
     

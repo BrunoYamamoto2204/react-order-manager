@@ -131,8 +131,7 @@ export const loginWithMfa = async (req: Request, res: Response) => {
 // Gera o secret no primeiro acesso e salva no BD
 export const createSecret = async (req: Request, res: Response) => {
     try{
-        const formattedReq = req as AuthenticatedRequest
-        const userId = formattedReq.user?.userId
+        const { userId, code } = req.body
 
         const selectedUser = await User.findById(userId)
         if (!selectedUser){
@@ -157,9 +156,7 @@ export const createSecret = async (req: Request, res: Response) => {
 // Valida com o secret se o código enviado pela primeira vez é válido, se for, ativa MFA
 export const confirmUserSecret = async (req: Request, res: Response) => {
     try{
-        const { code } = req.body
-        const formattedReq = req as AuthenticatedRequest
-        const userId = formattedReq.user?.userId
+        const { userId, code } = req.body
 
         const selectedUser = await User.findById(userId)
         if (!selectedUser){

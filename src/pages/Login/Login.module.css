@@ -356,3 +356,208 @@
     color: var(--primary);
     cursor: pointer;
 }
+
+/* ----------------------------- SECRET ----------------------------- */
+.secretContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 2rem;
+}
+
+.secretHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    font-size: 2rem;
+    font-family: var(--main-font);
+}
+
+.secretHeader svg {
+    height: 4rem;
+    width: 4rem;
+    color: var(--gray-100);
+}
+
+.iconWrapper {
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    background: linear-gradient(var(--primary), var(--primary-dark));
+}
+
+.secretContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--gray-800);
+    height: 85%;
+    width: 40%;
+    border-radius: 2rem;
+    padding: 5rem;
+}
+
+.secretContainerHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.secretContainerHeader h2 {
+    font-size: 2.5rem;
+}
+
+.secretContainerHeader p { 
+    font-size: 1.8rem;
+    font-weight: 200;
+    color: var(--gray-300);
+}
+
+.secretQrCodeContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 4rem;
+}
+
+.secretContainerQrCodeContent{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.secretQrCode{
+    aspect-ratio: 1 / 1;
+    width: min(100%, 22rem);
+    background-color: red;
+}
+
+.secretQrCodeInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.secretQrCodeInfo h3{ 
+    color: var(--primary);
+}
+
+.secretQrCodeInfoLines {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.secretQrCodeInfoLinesNumber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 1rem;
+    margin: 0;
+    border-radius: 0.6rem;
+    background-color: var(--primary-dark);
+    color: var(--gray-100);
+    font-weight: 600;
+}
+
+.manualSecret {
+    background: var(--gray-700);
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 1.2rem;
+    border: 0.3rem solid var(--gray-600);
+    margin-bottom: 3rem;
+}
+
+.manualSecret h3{
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.9rem;
+    color: var(--gray-300);
+}
+
+.manualSecretContent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--header-font);
+    font-size: 2rem;
+    gap: 1rem;
+}
+
+.manualSecretContent svg{
+    color: var(--primary-light);
+    transition: all ease-in-out 0.2s;
+}
+
+.manualSecretContent svg:hover{
+    cursor: pointer;
+    color: var(--gray-100);
+}
+
+.manualSecretContent p {
+    background: var(--gray-500);   
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    border: 0.2rem solid var(--primary-dark);
+}
+
+.containerButtons {
+    width: 100%;
+}
+
+.containerButtonsNext{
+    background: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    justify-content: center;
+    width: 100%;
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: var(--gray-200);
+    margin-bottom: 2rem;
+    transition: all ease-in-out 0.2s;
+}
+
+.containerButtonsNext:hover{
+    background-color: var(--primary);
+    color: var(--gray-800);
+    cursor: pointer;
+}
+
+.containerButtonsNext svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.containerButtonsBack{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}   
+
+p.containerButtonsBack{
+    color: var(--gray-300);
+    font-size: 1.5rem;
+    transition: all ease-in-out 0.2s;
+}
+
+p.containerButtonsBack:hover{
+    color: var(--gray-100);
+    cursor: pointer;
+}
+
+

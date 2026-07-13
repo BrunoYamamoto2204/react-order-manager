@@ -5,6 +5,7 @@ import { Messages } from "../../components/Messages"
 import { useNavigate } from "react-router"
 import { useAuth } from "../../hooks/useAuth"
 import { loginMfa } from "../../services/authApi"
+import { Secret } from "./secret"
 
 type LoginMfaProps = {
     userId: number
@@ -14,6 +15,8 @@ type LoginMfaProps = {
 export function LoginMfa({ userId, backToLogin } : LoginMfaProps) {
     const navigate = useNavigate()
     const { setUser } = useAuth()
+
+    const [ openSecret, setOpenSecret ] = useState(true)
 
     const [ inputValue1, setInputValue1 ] = useState("")
     const [ inputValue2, setInputValue2 ] = useState("")
@@ -66,79 +69,86 @@ export function LoginMfa({ userId, backToLogin } : LoginMfaProps) {
             if (index < 5) inputRef.current[index + 1].focus()
     }
 
-    return (
-        <div className={styles.mfaContainer}>
-            <div className={styles.mfaTitleContainer}>
-                <div className={styles.mfaTitleContainerIcon}>
-                    <ShieldUserIcon />
+    return ( openSecret ? 
+        (
+            <Secret 
+                setOpenSecret={setOpenSecret}
+                backToLogin={backToLogin}
+            />
+        ) : (
+            <div className={styles.mfaContainer}>
+                <div className={styles.mfaTitleContainer}>
+                    <div className={styles.mfaTitleContainerIcon}>
+                        <ShieldUserIcon />
+                    </div>
+                    <div className={styles.mfaTitleContainerTexts}>
+                        <h2>Comanda App</h2>
+                        <h3>Proteja sua conta</h3>
+                        <p>Conta protegida com autenticação de dois fatores. Acesse o aplicativo Authenticator para obter o código.</p>
+                    </div>
                 </div>
-                <div className={styles.mfaTitleContainerTexts}>
-                    <h2>Comanda App</h2>
-                    <h3>Proteja sua conta</h3>
-                    <p>Conta protegida com autenticação de dois fatores. Acesse o aplicativo Authenticator para obter o código.</p>
-                </div>
-            </div>
-            <div className={styles.mfaFormContainer}>
-                <div className={styles.mfaTitleContainerCode}>
-                    <h2>Confirme seu acesso</h2>
-                    <h3>Digite o cõdigo de 6 digitos enviado para o seu dispositivo.</h3>
-                    <form onSubmit={handleSubmitMFA}>
-                        <div className={styles.mfaTitleContainerInput}>
-                            <input
-                                maxLength={1} type="text"
-                                ref={el => {inputRef.current[0] = el!}}
-                                onChange={(el) => {handleChangeInput(0, el.target.value, setInputValue1)}}
-                                onKeyDown={(e) => handleKeyDown(e, 0, setInputValue1)}
-                                value={inputValue1}
-                            />
-                            <input
-                                maxLength={1} type="text"
-                                ref={el => {inputRef.current[1] = el!}}
-                                onChange={(el) => {handleChangeInput(1, el.target.value, setInputValue2)}}
-                                onKeyDown={(e) => handleKeyDown(e, 1, setInputValue2)}
-                                value={inputValue2}
-                            />
-                            <input
-                                maxLength={1} type="text"
-                                ref={el => {inputRef.current[2] = el!}}
-                                onChange={(el) => {handleChangeInput(2, el.target.value, setInputValue3)}}
-                                onKeyDown={(e) => handleKeyDown(e, 2, setInputValue3)}
-                                value={inputValue3}
-                            />
-                            <input
-                                maxLength={1} type="text"
-                                ref={el => {inputRef.current[3] = el!}}
-                                onChange={(el) => {handleChangeInput(3, el.target.value, setInputValue4)}}
-                                onKeyDown={(e) => handleKeyDown(e, 3, setInputValue4)}
-                                value={inputValue4}
-                            />
-                            <input
-                                maxLength={1} type="text"
-                                ref={el => {inputRef.current[4] = el!}}
-                                onChange={(el) => {handleChangeInput(4, el.target.value, setInputValue5)}}
-                                onKeyDown={(e) => handleKeyDown(e, 4, setInputValue5)}
-                                value={inputValue5}
-                            />
-                            <input
-                                maxLength={1} type="text"
-                                ref={el => {inputRef.current[5] = el!}}
-                                onChange={(el) => {handleChangeInput(5, el.target.value, setInputValue6)}}
-                                onKeyDown={(e) => handleKeyDown(e, 5, setInputValue6)}
-                                value={inputValue6}
-                            />
-                        </div>
+                <div className={styles.mfaFormContainer}>
+                    <div className={styles.mfaTitleContainerCode}>
+                        <h2>Confirme seu acesso</h2>
+                        <h3>Digite o cõdigo de 6 digitos enviado para o seu dispositivo.</h3>
+                        <form onSubmit={handleSubmitMFA}>
+                            <div className={styles.mfaTitleContainerInput}>
+                                <input
+                                    maxLength={1} type="text"
+                                    ref={el => {inputRef.current[0] = el!}}
+                                    onChange={(el) => {handleChangeInput(0, el.target.value, setInputValue1)}}
+                                    onKeyDown={(e) => handleKeyDown(e, 0, setInputValue1)}
+                                    value={inputValue1}
+                                />
+                                <input
+                                    maxLength={1} type="text"
+                                    ref={el => {inputRef.current[1] = el!}}
+                                    onChange={(el) => {handleChangeInput(1, el.target.value, setInputValue2)}}
+                                    onKeyDown={(e) => handleKeyDown(e, 1, setInputValue2)}
+                                    value={inputValue2}
+                                />
+                                <input
+                                    maxLength={1} type="text"
+                                    ref={el => {inputRef.current[2] = el!}}
+                                    onChange={(el) => {handleChangeInput(2, el.target.value, setInputValue3)}}
+                                    onKeyDown={(e) => handleKeyDown(e, 2, setInputValue3)}
+                                    value={inputValue3}
+                                />
+                                <input
+                                    maxLength={1} type="text"
+                                    ref={el => {inputRef.current[3] = el!}}
+                                    onChange={(el) => {handleChangeInput(3, el.target.value, setInputValue4)}}
+                                    onKeyDown={(e) => handleKeyDown(e, 3, setInputValue4)}
+                                    value={inputValue4}
+                                />
+                                <input
+                                    maxLength={1} type="text"
+                                    ref={el => {inputRef.current[4] = el!}}
+                                    onChange={(el) => {handleChangeInput(4, el.target.value, setInputValue5)}}
+                                    onKeyDown={(e) => handleKeyDown(e, 4, setInputValue5)}
+                                    value={inputValue5}
+                                />
+                                <input
+                                    maxLength={1} type="text"
+                                    ref={el => {inputRef.current[5] = el!}}
+                                    onChange={(el) => {handleChangeInput(5, el.target.value, setInputValue6)}}
+                                    onKeyDown={(e) => handleKeyDown(e, 5, setInputValue6)}
+                                    value={inputValue6}
+                                />
+                            </div>
 
-                        <button className={styles.mfaTitleContainerInputButton} type="submit">
-                            Enviar
-                        </button>
-                        <div onClick={() => backToLogin()} className={styles.voltar}>
-                            <ArrowLeftIcon />
-                            <p>Voltar</p>
-                        </div>
-                    </form>
+                            <button className={styles.mfaTitleContainerInputButton} type="submit">
+                                Enviar
+                            </button>
+                            <div onClick={() => backToLogin()} className={styles.voltar}>
+                                <ArrowLeftIcon />
+                                <p>Voltar</p>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        )
     )
 }
 

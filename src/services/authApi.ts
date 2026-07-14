@@ -16,7 +16,7 @@ export const login = async (user: string, password: string) => {
     return await response.json()
 }
 
-export const loginMfa = async (userId: number, code: number) => {
+export const loginMfa = async (userId: number, code: string) => {
     const mfaResponse = await fetch(`${API_URL}/auth/mfa`, {
         method: "POST",
         headers: {

@@ -86,7 +86,7 @@ export const login = async (req: Request, res: Response) => {
         // ------------------- 2a Etapa - MFA ------------------- //
         // Permite que o usuário continue a autenticação
         return res.status(200).json({
-            requiresMfa: true,
+            requiresSecret: !selectedUser.mfaSecret,
             userId: selectedUser._id
         })  
     } catch (error) {

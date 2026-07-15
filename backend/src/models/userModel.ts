@@ -12,9 +12,9 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>({
     user: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, required: true },
+    role: { type: String, required: true, default: null },
     mfaEnabled: { type: Boolean, required: true, default: false },
-    mfaSecret: { type: String, required: true, default: null }
+    mfaSecret: { type: String, default: null }
 },{
     timestamps: true
 })

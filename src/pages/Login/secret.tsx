@@ -1,8 +1,9 @@
 import { ArrowLeftIcon, ArrowRightIcon, CopyIcon, ShieldUserIcon } from "lucide-react"
 import styles from "./Login.module.css"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Messages } from "../../components/Messages"
 import { LoginMfa } from "./mfa"
+import { createSecret } from "../../services/authApi"
 
 type SecretProps = {
     userId: number
@@ -11,10 +12,29 @@ type SecretProps = {
 
 export function Secret({ userId, backToLogin} : SecretProps) {
     const [ openSecret, setOpenSecret ] = useState(true)
-    const [ secretManual ] = useState("BJEW RKOM PKRM TMKRO")
+
+    const [ qrCode, setQrCode ] = useState()
+    const [ manualSecret, setManualSecret ] = useState("")
+
+    useEffect(() => {
+        const loadCreateSecret = async () => {
+            try {
+                const response = await createSecret(userId)
+                setQrCode(response.qrCode)
+                setManualSecret(response.secret)
+            }
+            catch(error){
+                Messages.error("Erro ao carregar o secret")
+                console.log(`Erro ao criar o secret: ${error}`)
+                backToLogin()
+            }
+        }
+
+        loadCreateSecret()
+    }, [])
 
     const handleCopyClick = () => {
-        navigator.clipboard.writeText(secretManual)
+        navigator.clipboard.writeText(manualSecret)
         Messages.success("Código copiado")
     }
 
@@ -43,7 +63,7 @@ export function Secret({ userId, backToLogin} : SecretProps) {
                     <div className={styles.secretQrCodeContainer}>
                         <div className={styles.secretContainerQrCodeContent}>
                             <div className={styles.secretQrCode}>
-                                <p>QR CODE</p>
+                                {qrCode && <img src={qrCode} alt="QR Code MFA" />}
                             </div>
                         </div>
                         <div className={styles.secretQrCodeInfo}>
@@ -65,7 +85,7 @@ export function Secret({ userId, backToLogin} : SecretProps) {
                     <div className={styles.manualSecret}>
                         <h3>CÓDIGO SECRET (CONFIGURAÇÃO MANUAL)</h3>
                         <div className={styles.manualSecretContent}>
-                            <p>{secretManual}</p>
+                            <p>{manualSecret}</p>
                             <CopyIcon onClick={() => handleCopyClick()}/>
                         </div>
                     </div>

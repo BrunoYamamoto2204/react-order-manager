@@ -77,16 +77,11 @@ export const login = async (req: Request, res: Response) => {
                 message: `(401) - Falha no login! Credenciais inválidas`
             })
         }
-
-        // Validação se o secret está configurado para utilizar o MFA
-        // if (!selectedUser.mfaEnabled) {
-        //     return res.status(403).json({ message: "MFA não configurado para este usuário" })
-        // }
         
-        // ------------------- 2a Etapa - MFA ------------------- //
+        // ------------------- 2a Etapa - Indentifica se precisa de configuração do secret ------------------- //
         // Permite que o usuário continue a autenticação
         return res.status(200).json({
-            requiresSecret: !selectedUser.mfaSecret,
+            requiresSecret: !selectedUser.mfaEnabled,
             userId: selectedUser._id
         })  
     } catch (error) {
@@ -106,6 +101,11 @@ export const loginWithMfa = async (req: Request, res: Response) => {
         if (!selectedUser){
             
             return res.status(404).json({ message: "Usuário não encontrado" })
+        }
+
+        // Valida a existência do secret antes de realizar login com MFA
+        if (!selectedUser.mfaEnabled) {
+            return res.status(403).json({ message: "MFA não configurado para este usuário" })
         }
 
         // Com o secret, calcula se o código está valido
@@ -131,7 +131,7 @@ export const loginWithMfa = async (req: Request, res: Response) => {
 // Gera o secret no primeiro acesso e salva no BD
 export const createSecret = async (req: Request, res: Response) => {
     try{
-        const { userId, code } = req.body
+        const { userId } = req.body
 
         const selectedUser = await User.findById(userId)
         if (!selectedUser){
@@ -146,7 +146,10 @@ export const createSecret = async (req: Request, res: Response) => {
         selectedUser.mfaSecret = secret.base32
         await selectedUser.save()
 
-        res.status(200).json({ qrCode: qrCodeImage, secret: secret })
+        res.status(200).json({ 
+            qrCode: qrCodeImage, 
+            secret: secret.base32
+        })
     } 
     catch (error) {
         return res.status(500).json({ message: `{Erro ao configurar MFA: ${error}` })

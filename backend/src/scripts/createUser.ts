@@ -19,7 +19,7 @@ const createUser = async () => {
             process.exit(1)
         }
         
-        const existingUser = await User.findOne({ username })
+        const existingUser = await User.findOne({ user: username })
         if (existingUser) {
             console.log("⚠ Username já existe!")
             process.exit(1)
@@ -30,7 +30,9 @@ const createUser = async () => {
         const newUser = new User({
             user: username,
             password: hashPassword,
-            role: role,
+            role: role || "user",
+            mfaEnabled: false,
+            mfaSecret: null
         })
 
         await newUser.save()

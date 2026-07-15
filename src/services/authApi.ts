@@ -39,6 +39,23 @@ export const loginMfa = async (userId: number, code: string) => {
     return data.user
 }
 
+export const createSecret = async (userId: number) => {
+    const response = await fetch(`${API_URL}/auth/secret`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'x-api-key': API_KEY
+        },
+        body: JSON.stringify({
+            userId: userId
+        })
+    })
+    console.log(response)
+    if (!response.ok) throw new Error("Erro na criação do secret")
+
+    return response.json()
+}
+
 export const logout = () => {
     localStorage.removeItem("token")
 }

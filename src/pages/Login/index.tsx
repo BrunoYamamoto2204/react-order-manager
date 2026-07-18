@@ -14,7 +14,7 @@ export function Login() {
     const [ viewPassword, setViewPassword ] = useState(false)
 
     // MFA
-    const [ requireSecret, setRequireSecret ] = useState(true)
+    const [ requireSecret, setRequireSecret ] = useState(false)
     const [ loginPage, setLoginPage ] = useState(true)
     const [ userId, setUserId ] = useState(0)
 
@@ -27,11 +27,12 @@ export function Login() {
             
             const loginData = await login(username, password)
             
+            // Garante que retornou requiresSecret
             if(loginData.requiresSecret) {
-                setUserId(loginData.userId)
-                setRequireSecret(loginData.requiresSecret)
+                setRequireSecret(loginData.requiresSecret) // Validação se tem secret ou não, para avançar diretamente para MFA
             }
 
+            setUserId(loginData.userId)
             setLoginPage(false)
         } catch(error) {
             Messages.error("Credenciais incorretas")

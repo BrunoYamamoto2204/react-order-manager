@@ -29,17 +29,19 @@ export const loginMfa = async (userId: number, code: string) => {
         })
     })
 
-    if(!mfaResponse.ok) throw new Error("Erro na autenticação MFA")
+    const data = await mfaResponse.json()
+
+    if(!mfaResponse.ok) throw new Error(data.message)
 
     // token no localhost é utilizado pelo context provider para validar se o usuário já realizou login no navegador há menos de 7 dias
-    const data = await mfaResponse.json()
+    
     localStorage.setItem("token", data.token)
 
     // Retorna o user, para validar ao acessar as rotas, se está logado
     return data.user
 }
 
-export const createSecret = async (userId: number) => {
+export const createSecret = async (userId: number, gerarNovamente? : boolean) => {
     const response = await fetch(`${API_URL}/auth/secret`, {
         method: "POST",
         headers: {
@@ -47,13 +49,34 @@ export const createSecret = async (userId: number) => {
             'x-api-key': API_KEY
         },
         body: JSON.stringify({
-            userId: userId
+            userId: userId,
+            gerarNovamente: gerarNovamente
         })
     })
-    console.log(response)
-    if (!response.ok) throw new Error("Erro na criação do secret")
 
-    return response.json()
+    const data = await response.json()
+
+    if (!response.ok) throw new Error(data.message)
+
+    return data
+}
+
+export const confirmUserSecret = async (userId: number, code: string) => {
+    const reponse = await fetch(`${API_URL}/auth/confirmSecret`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "x-api-key": API_KEY
+        },
+        body: JSON.stringify({
+            userId: userId,
+            code: code
+        })
+    })
+
+    const data = await reponse.json()
+
+    if (!reponse.ok) return new Error(data.message)
 }
 
 export const logout = () => {

@@ -105,18 +105,18 @@ export const loginWithMfa = async (req: Request, res: Response) => {
 
         // Valida a existência do secret antes de realizar login com MFA
         if (!selectedUser.mfaEnabled) {
-            return res.status(403).json({ message: "MFA não configurado para este usuário" })
+            return res.status(403).json({ message: "Insira o SECRET no Authenticator e digite código informado" })
         }
 
         // Com o secret, calcula se o código está valido
-        // const isValid = speakeasy.totp.verify({
-        //     secret: selectedUser.mfaSecret,
-        //     encoding: "base32",
-        //     token: code
-        // })
-        // if (!isValid) {
-        //     return res.status(401).json({ message: "Secret inválido ou expirado" })
-        // }
+        const isValid = speakeasy.totp.verify({
+            secret: selectedUser.mfaSecret,
+            encoding: "base32",
+            token: code
+        })
+        if (!isValid) {
+            return res.status(401).json({ message: "Secret inválido ou expirado" })
+        }
 
         return res.status(200).json({
             token: createToken(selectedUser),
@@ -131,15 +131,30 @@ export const loginWithMfa = async (req: Request, res: Response) => {
 // Gera o secret no primeiro acesso e salva no BD
 export const createSecret = async (req: Request, res: Response) => {
     try{
-        const { userId } = req.body
+        const { userId, gerarNovamente } = req.body
+        let secret
 
         const selectedUser = await User.findById(userId)
         if (!selectedUser){
             return res.status(404).json({ message: "Usuário não encontrado" })
         }
 
+        if (selectedUser.mfaSecret || gerarNovamente){
+            const url = speakeasy.otpauthURL({
+                secret: selectedUser.mfaSecret,
+                label: `ComandaApp - ${selectedUser.user}`,
+                encoding: "base32"
+            })
+
+            secret = {
+                base32: selectedUser.mfaSecret,
+                otpauth_url: url
+            }
+        } else {
+            secret = speakeasy.generateSecret({ name: `ComandaApp - ${selectedUser.user}` })
+        }
+
         // Cria o secret e gera o QRcode
-        const secret = speakeasy.generateSecret({ name: "ComandaApp" })
         const qrCodeImage = await qrcode.toDataURL(secret.otpauth_url!)
 
         // Salva o secret no registor do usuário 
@@ -152,7 +167,7 @@ export const createSecret = async (req: Request, res: Response) => {
         })
     } 
     catch (error) {
-        return res.status(500).json({ message: `{Erro ao configurar MFA: ${error}` })
+        return res.status(500).json({ message: `Erro ao configurar MFA: ${error}` })
     }
 }
 

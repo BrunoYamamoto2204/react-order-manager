@@ -437,7 +437,11 @@
 .secretQrCode{
     aspect-ratio: 1 / 1;
     width: min(100%, 22rem);
-    background-color: red;
+}
+
+.secretQrCode img{
+    width: 100%;
+    height: 100%;
 }
 
 .secretQrCodeInfo{
@@ -509,6 +513,7 @@
     padding: 1rem 2rem;
     border-radius: 1rem;
     border: 0.2rem solid var(--primary-dark);
+    font-size: 1.6rem;
 }
 
 .containerButtons {

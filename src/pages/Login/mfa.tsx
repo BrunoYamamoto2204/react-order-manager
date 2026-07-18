@@ -4,7 +4,7 @@ import { useRef, useState } from "react"
 import { Messages } from "../../components/Messages"
 import { useNavigate } from "react-router"
 import { useAuth } from "../../hooks/useAuth"
-import { loginMfa } from "../../services/authApi"
+import { confirmUserSecret, loginMfa } from "../../services/authApi"
 
 type LoginMfaProps = {
     userId: number
@@ -31,13 +31,16 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
         const code = `${inputValue1}${inputValue2}${inputValue3}${inputValue4}${inputValue5}${inputValue6}`
 
         try {
-            const mfaData = await loginMfa(userId, code)
-            setUser(mfaData.user)
+            confirmUserSecret(userId, code)
+
+            const mfaUser = await loginMfa(userId, code)
+            setUser(mfaUser)
 
             navigate("/")
             Messages.success("Login bem-sucedido")
         } catch (error) {
-            Messages.error("Código incorreto")
+            const erroMessage = error instanceof Error ? error.message : "Erro na autenticação MFA"
+            Messages.error(erroMessage) 
             console.log("Erro de MFA: ", error)
         }
     }
@@ -90,7 +93,7 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
             <div className={styles.mfaFormContainer}>
                 <div className={styles.mfaTitleContainerCode}>
                     <h2>Confirme seu acesso</h2>
-                    <h3>Digite o cõdigo de 6 digitos enviado para o seu dispositivo.</h3>
+                    <h3>Digite o código de 6 digitos enviado para o seu dispositivo.</h3>
                     <form onSubmit={handleSubmitMFA}>
                         <div className={styles.mfaTitleContainerInput}>
                             <input

@@ -115,7 +115,7 @@ export const loginWithMfa = async (req: Request, res: Response) => {
             token: code
         })
         if (!isValid) {
-            return res.status(401).json({ message: "Secret inválido ou expirado" })
+            return res.status(401).json({ message: "Código inválido ou expirado" })
         }
 
         return res.status(200).json({
@@ -193,7 +193,7 @@ export const confirmUserSecret = async (req: Request, res: Response) => {
             token: code
         })
         if (!isValid) {
-            return res.status(401).json({ message: "Secret inválido ou expirado" })
+            return res.status(401).json({ message: "Código inválido ou expirado" })
         }
 
         // Caso o secret exista e seja válido, permitir a utilização de MFA

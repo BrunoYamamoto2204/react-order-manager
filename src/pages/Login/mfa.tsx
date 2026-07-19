@@ -31,7 +31,7 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
         const code = `${inputValue1}${inputValue2}${inputValue3}${inputValue4}${inputValue5}${inputValue6}`
 
         try {
-            confirmUserSecret(userId, code)
+            await confirmUserSecret(userId, code)
 
             const mfaUser = await loginMfa(userId, code)
             setUser(mfaUser)
@@ -47,21 +47,30 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
 
     const handleChangeInput = (index: number, digit: string, setValue: any) => {
         if(digit != " "){
-            // Caso for o último, não foca no próximo (inexistente)
-            if(index === 5) setValue(digit)
             
-            // Valida se o digito é um número 
-            else if (!isNaN(Number(digit)) && index < 5 ){
+            if (!isNaN(Number(digit))) {
                 setValue(digit)
-                inputRef.current[index + 1].focus()
+
+                // Caso for o último, não foca no próximo (inexistente)
+                if (index < 5)
+                    inputRef.current[index + 1].focus()
             }
         }
     }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, index: number, setValue: any) => {
         const keyPressed = event.key
+        console.log(event.key, index);
+        if (keyPressed === "Backspace") {
+            event.preventDefault();
+            
+            setValue("");
 
-        if (keyPressed === "Backspace") setValue("") 
+            if (index > 0){
+                setValue("")
+                inputRef.current[index - 1].focus()
+            }
+        }
         
         if (keyPressed === "ArrowLeft") 
             if (index > 0) inputRef.current[index - 1].focus()

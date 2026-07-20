@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, InfoIcon, ShieldUserIcon } from "lucide-react"
+import { ArrowLeftIcon, ShieldUserIcon } from "lucide-react"
 import styles from "./Login.module.css"
 import { useRef, useState } from "react"
 import { Messages } from "../../components/Messages"
@@ -60,7 +60,7 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, index: number, setValue: any) => {
         const keyPressed = event.key
-        
+
         if (keyPressed === "Backspace") {
             event.preventDefault();
             

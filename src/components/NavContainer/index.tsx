@@ -3,14 +3,10 @@ import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
 import { useEffect, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 
 export function NavContainer() {
     const [ isMobile, setIsMobile ] = useState(false)
     const [ isMenuOpen, setIsMenuOpen ] = useState(false)
-
-    const { user } = useAuth()
-    const userRole = user?.role
 
     useEffect(() => {
         const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")

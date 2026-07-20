@@ -295,6 +295,7 @@
 
 .mfaFormContainer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -341,6 +342,29 @@
     background: var(--primary);
     color: var(--gray-800);
 }
+
+.info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2rem;
+    justify-content: center;
+    align-content: center;
+    margin-top: 10rem;
+}
+
+.info svg{ 
+    width: 1.5rem;
+    height: 1.5em;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}
+
+.info p{
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+} 
 
 .voltar {
     display: flex;

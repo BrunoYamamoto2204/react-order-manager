@@ -3,10 +3,14 @@ import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
 import { useEffect, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 export function NavContainer() {
     const [ isMobile, setIsMobile ] = useState(false)
     const [ isMenuOpen, setIsMenuOpen ] = useState(false)
+
+    const { user } = useAuth()
+    const userRole = user?.role
 
     useEffect(() => {
         const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
@@ -49,33 +53,40 @@ export function NavContainer() {
                     <nav>
                         <NavButton 
                             icon={<HouseIcon />} 
-                            sectionName="home" 
+                            sectionName="home"
+                            allowedRoles={["admin", "user"]}
                         />
                         <NavButton 
                             icon={<ScrollText/>} 
-                            sectionName="pedidos" 
+                            sectionName="pedidos"
+                            allowedRoles={["admin", "user"]}
                         />
                         <NavButton 
                             icon={<CakeIcon />} 
                             sectionName="produtos" 
+                            allowedRoles={["admin", "user"]}
                         />
                         <NavButton 
                             icon={<User2Icon />} 
-                            sectionName="clientes" 
+                            sectionName="clientes"
+                            allowedRoles={["admin", "user"]}
                         />
                         <NavButton 
                             icon={<ChartNoAxesCombinedIcon />} 
-                            sectionName="analises" 
+                            sectionName="analises"
+                            allowedRoles={["admin"]}
                         />
                         <NavButton 
                             icon={<DollarSignIcon />} 
-                            sectionName="financeiro" 
+                            sectionName="financeiro"
+                            allowedRoles={["admin"]}
                         />
                     </nav>
 
                     <NavButton 
                         icon={<LogOutIcon />} 
                         sectionName="sair" 
+                        allowedRoles={["admin", "user"]}
                     />
                 </div>
             </>
@@ -93,32 +104,39 @@ export function NavContainer() {
                 <NavButton 
                     icon={<HouseIcon />} 
                     sectionName="home" 
+                    allowedRoles={["admin", "user"]}
                 />
                 <NavButton 
                     icon={<ScrollText/>} 
                     sectionName="pedidos" 
+                    allowedRoles={["admin", "user"]}
                 />
                 <NavButton 
                     icon={<CakeIcon />} 
                     sectionName="produtos" 
+                    allowedRoles={["admin", "user"]}
                 />
                 <NavButton 
                     icon={<User2Icon />} 
                     sectionName="clientes" 
+                    allowedRoles={["admin", "user"]}
                 />
                 <NavButton 
                     icon={<ChartNoAxesCombinedIcon />} 
                     sectionName="analises" 
+                    allowedRoles={["admin"]}
                 />
                 <NavButton 
                     icon={<DollarSignIcon />} 
                     sectionName="financeiro" 
+                    allowedRoles={["admin"]}
                 />
             </nav>
 
             <NavButton 
                 icon={<LogOutIcon />} 
                 sectionName="sair" 
+                allowedRoles={["admin", "user"]}
             />
         </div>
     )

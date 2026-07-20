@@ -21,7 +21,7 @@ import { Financeiro } from "./pages/Financeiro";
 import { CreateFinanceiro } from "./pages/Financeiro/createFinanceiro";
 import { EditFinanceiro } from "./pages/Financeiro/editFinanceiro";
 
-function ProtectedRoute({ children }: {children: React.ReactNode }){
+function ProtectedRoute({ children, allowedRoles } : { children: React.ReactNode, allowedRoles: string[] }){
   const { user, isLoading } = useAuth()
 
   if (isLoading) {
@@ -39,8 +39,13 @@ function ProtectedRoute({ children }: {children: React.ReactNode }){
     )
   }
 
+  // Valida se tem usuário
   if (!user) {
     return <Navigate to="/login"></Navigate>
+  }
+
+  if (!allowedRoles.includes(user.role)){
+    return <Navigate to="/"></Navigate>
   }
 
   return <>{children}</>
@@ -59,85 +64,85 @@ function AppRoutes(){
       
       {/* Rotas protegidas */}
       <Route path="/" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <Home />
           </ProtectedRoute>
       }/>
 
       <Route path="/analises" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <Analises />
           </ProtectedRoute>
       }/>
 
       <Route path="/clientes" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <Clientes />
           </ProtectedRoute>
       }/>
 
       <Route path="/pedidos" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <Pedidos />
           </ProtectedRoute>
       }/>
 
       <Route path="/financeiro" element={
-        <ProtectedRoute>
+        <ProtectedRoute allowedRoles={["admin"]}>
           <Financeiro />
         </ProtectedRoute>
       }/>
 
       <Route path="/produtos" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <Produtos />
           </ProtectedRoute>
       }/>
 
       <Route path="/produtos/criar" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <CreateProdutos />
           </ProtectedRoute>
       }/>
 
       <Route path="/clientes/criar" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <CreateCliente />
           </ProtectedRoute>
       }/>
 
       <Route path="/pedidos/novo" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <CreatePedido />
           </ProtectedRoute>
       }/>
 
       <Route path="/financeiro/criar" element={
-        <ProtectedRoute>
+        <ProtectedRoute allowedRoles={["admin", "user"]}>
           <CreateFinanceiro />
         </ProtectedRoute>
       }/>
 
       <Route path="/pedidos/editar/:id" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <EditPedido />
           </ProtectedRoute>
       }/>
 
       <Route path="/produtos/editar/:id" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <EditProdutos />
           </ProtectedRoute>
       }/>
 
       <Route path="/clientes/editar/:id" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <EditCliente />
           </ProtectedRoute>
       }/>
 
       <Route path="/financeiro/editar/:id" element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin", "user"]}>
             <EditFinanceiro />
           </ProtectedRoute>
       }/>

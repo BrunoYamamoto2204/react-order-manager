@@ -6,15 +6,16 @@ import { useState } from "react";
 type NavButtonProps = {
     icon: React.ReactNode;
     sectionName: string;
+    allowedRoles: string[]
 } & React.ComponentProps<"button">
 
-export function NavButton({ icon, sectionName } : NavButtonProps) {
+export function NavButton({ icon, sectionName, allowedRoles } : NavButtonProps) {
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
     const [ confirmLogout, setConfirmLogout ] = useState(false)
 
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
 
     // Formata a URL 
     const currentSection = sectionName === "home" ? "/" : `/${sectionName}`
@@ -35,6 +36,9 @@ export function NavButton({ icon, sectionName } : NavButtonProps) {
     function firstUpperCase(name: string){
         return name.charAt(0).toUpperCase() + name.slice(1)
     }
+
+    if (user?.role && !allowedRoles.includes(user?.role))
+        return
 
     if (sectionName === "sair"){
         return (

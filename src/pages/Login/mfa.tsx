@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, ShieldUserIcon } from "lucide-react"
+import { ArrowLeftIcon, InfoIcon, ShieldUserIcon } from "lucide-react"
 import styles from "./Login.module.css"
 import { useRef, useState } from "react"
 import { Messages } from "../../components/Messages"
@@ -60,7 +60,7 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, index: number, setValue: any) => {
         const keyPressed = event.key
-        console.log(event.key, index);
+        
         if (keyPressed === "Backspace") {
             event.preventDefault();
             
@@ -96,7 +96,11 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
                 <div className={styles.mfaTitleContainerTexts}>
                     <h2>Comanda App</h2>
                     <h3>Proteja sua conta</h3>
-                    <p>Conta protegida com autenticação de dois fatores. Acesse o aplicativo Authenticator para obter o código.</p>
+                    <p>
+                        Autenticação de dois fatores ativa. Abra o Google Authenticator 
+                        ou qualquer app compatível (Microsoft Authenticator, Authy) 
+                        e insira o código de 6 dígitos exibido.
+                    </p>
                 </div>
             </div>
             <div className={styles.mfaFormContainer}>
@@ -152,6 +156,7 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
                         <button className={styles.mfaTitleContainerInputButton} type="submit">
                             Enviar
                         </button>
+                            
                         <div onClick={() => handleBackButton()} className={styles.voltar}>
                             <ArrowLeftIcon />
                             <p>Voltar</p>

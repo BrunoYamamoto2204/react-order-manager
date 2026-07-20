@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import speakeasy from "speakeasy"
 import qrcode from "qrcode"
-import { use } from 'react';
 
 // Permite a estensão do Request, permitindo usar req.user 
 interface AuthenticatedRequest extends Request {

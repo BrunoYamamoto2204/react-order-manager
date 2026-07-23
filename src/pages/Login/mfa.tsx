@@ -16,6 +16,8 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
     const navigate = useNavigate()
     const { setUser } = useAuth()
 
+    const [ isSubmiting, setIsSubmiting ] = useState(false)
+
     const [ inputValue1, setInputValue1 ] = useState("")
     const [ inputValue2, setInputValue2 ] = useState("")
     const [ inputValue3, setInputValue3 ] = useState("")
@@ -31,6 +33,9 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
         const code = `${inputValue1}${inputValue2}${inputValue3}${inputValue4}${inputValue5}${inputValue6}`
 
         try {
+            setIsSubmiting(true)
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
             await confirmUserSecret(userId, code)
 
             const mfaUser = await loginMfa(userId, code)
@@ -42,6 +47,8 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
             const erroMessage = error instanceof Error ? error.message : "Erro na autenticação MFA"
             Messages.error(erroMessage) 
             console.log("Erro de MFA: ", error)
+        } finally {
+            setIsSubmiting(false)
         }
     }
 
@@ -153,8 +160,8 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
                             />
                         </div>
 
-                        <button className={styles.mfaTitleContainerInputButton} type="submit">
-                            Enviar
+                        <button className={styles.mfaTitleContainerInputButton} type="submit" disabled={isSubmiting}>
+                            {isSubmiting ? "Entrando..." : "Entrar"}
                         </button>
                             
                         <div onClick={() => handleBackButton()} className={styles.voltar}>

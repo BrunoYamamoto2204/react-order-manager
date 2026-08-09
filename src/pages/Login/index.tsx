@@ -54,11 +54,13 @@ export function Login() {
                 <Secret 
                     userId={userId}
                     backToLogin={backToLogin}
+                    requireSecret={requireSecret}
                 />
             ) : (
                 <LoginMfa 
                     userId={userId} 
                     backToLogin={backToLogin} 
+                    requireSecret={requireSecret}
                 />
             )
         )

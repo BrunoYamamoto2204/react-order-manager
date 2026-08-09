@@ -20,11 +20,59 @@ import { useAuth } from "./hooks/useAuth";
 import { Financeiro } from "./pages/Financeiro";
 import { CreateFinanceiro } from "./pages/Financeiro/createFinanceiro";
 import { EditFinanceiro } from "./pages/Financeiro/editFinanceiro";
+import { Permissoes } from "./pages/Permissoes";
+import { checkPermissionAsync } from "./services/permissionApi";
+import { useEffect, useState } from "react";
 
-function ProtectedRoute({ children, allowedRoles } : { children: React.ReactNode, allowedRoles: string[] }){
+type ProtectedRouteType = { 
+  children: React.ReactNode, 
+  module: string, 
+  action: string,
+}
+
+function ProtectedRoute({ children, module, action } : ProtectedRouteType){
   const { user, isLoading } = useAuth()
 
-  if (isLoading) {
+  const [ isAllowed,  setIsAllowed ] = useState<boolean>()
+
+  useEffect(() => {
+    setIsAllowed(undefined)
+    let ignore = false
+
+    if (!user?.role) {
+      if(!ignore)
+        setIsAllowed(false)
+      return
+    }
+
+    const checkPermission = async () => {
+      if (module === "permissions") {
+        if(!ignore)
+          setIsAllowed(user.role === "admin")
+        return
+      }
+
+      if (module === "home") {
+        if(!ignore)
+          setIsAllowed(true)
+        return
+      }
+
+      const payload = { role: user.role, module: module, permission: action }
+      const allowed = await checkPermissionAsync(payload)
+      
+      if(!ignore)
+        setIsAllowed(allowed)
+    }
+
+    checkPermission()
+
+    return () => {
+        ignore = true
+    }
+  }, [module, action, user])
+
+  if (isLoading || isAllowed === undefined) {
     return (
       <div style={{ 
           display: 'flex', 
@@ -40,13 +88,11 @@ function ProtectedRoute({ children, allowedRoles } : { children: React.ReactNode
   }
 
   // Valida se tem usuário
-  if (!user) {
+  if (!user) 
     return <Navigate to="/login"></Navigate>
-  }
 
-  if (!allowedRoles.includes(user.role)){
+  if (!isAllowed)
     return <Navigate to="/"></Navigate>
-  }
 
   return <>{children}</>
 }
@@ -64,86 +110,92 @@ function AppRoutes(){
       
       {/* Rotas protegidas */}
       <Route path="/" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="home" action="all">
             <Home />
           </ProtectedRoute>
       }/>
 
       <Route path="/analises" element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute module="analyses" action="read">
             <Analises />
           </ProtectedRoute>
       }/>
 
       <Route path="/clientes" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="customers" action="read">
             <Clientes />
           </ProtectedRoute>
       }/>
 
       <Route path="/pedidos" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="orders" action="read">
             <Pedidos />
           </ProtectedRoute>
       }/>
 
       <Route path="/financeiro" element={
-        <ProtectedRoute allowedRoles={["admin"]}>
+        <ProtectedRoute module="financial" action="read">
           <Financeiro />
         </ProtectedRoute>
       }/>
 
       <Route path="/produtos" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="products" action="read">
             <Produtos />
           </ProtectedRoute>
       }/>
 
       <Route path="/produtos/criar" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="products" action="create">
             <CreateProdutos />
           </ProtectedRoute>
       }/>
 
       <Route path="/clientes/criar" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="customers" action="create">
             <CreateCliente />
           </ProtectedRoute>
       }/>
 
       <Route path="/pedidos/novo" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="orders" action="create">
             <CreatePedido />
           </ProtectedRoute>
       }/>
 
       <Route path="/financeiro/criar" element={
-        <ProtectedRoute allowedRoles={["admin", "user"]}>
+        <ProtectedRoute module="financial" action="create">
           <CreateFinanceiro />
         </ProtectedRoute>
       }/>
 
       <Route path="/pedidos/editar/:id" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="orders" action="update">
             <EditPedido />
           </ProtectedRoute>
       }/>
 
       <Route path="/produtos/editar/:id" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="products" action="update">
             <EditProdutos />
           </ProtectedRoute>
       }/>
 
       <Route path="/clientes/editar/:id" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="customers" action="update">
             <EditCliente />
           </ProtectedRoute>
       }/>
 
       <Route path="/financeiro/editar/:id" element={
-          <ProtectedRoute allowedRoles={["admin", "user"]}>
+          <ProtectedRoute module="financial" action="update">
             <EditFinanceiro />
+          </ProtectedRoute>
+      }/>
+
+      <Route path="/permissoes" element={
+          <ProtectedRoute module="permissions" action="all">
+            <Permissoes />
           </ProtectedRoute>
       }/>
 

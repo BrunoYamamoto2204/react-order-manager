@@ -11,7 +11,7 @@ html {
 body{
     font-family: var(--header-font);
     font-size: 1.6rem;  
-    background-color: var(--gray-900);
+    background-color: var(--background-theme);
     color: var(--text-default);
 }
 

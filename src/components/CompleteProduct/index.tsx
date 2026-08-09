@@ -4,6 +4,8 @@ import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DeleteConfirm } from "../DeleteConfirm";
 import type { Product } from "../../services/productsApi";
+import { useAuth } from "../../hooks/useAuth";
+import { checkPermissionAsync } from "../../services/permissionApi";
 
 type CompleteProductProps = {
     product: Product
@@ -12,9 +14,25 @@ type CompleteProductProps = {
 }
 
 export function CompleteProduct({ product, removeProduct, setShowProduct } : CompleteProductProps) {
+    const { user } = useAuth()
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false)
+
+    const [ allowEdit, setAllowEdit ] = useState()
+    const [ allowDelete, setAllowDelete] = useState()
+    
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "products", permission: "update" })
+            const responseDelete = await checkPermissionAsync({ role: user?.role!, module: "products", permission: "delete" })
+
+            setAllowEdit(responseEdit)
+            setAllowDelete(responseDelete)
+        } 
+
+        checkPermissions()
+    }, [])
     
     useEffect(() => {
         const mainElement = document.querySelector("main")
@@ -73,12 +91,14 @@ export function CompleteProduct({ product, removeProduct, setShowProduct } : Com
                                 >
                                     <ArrowLeftIcon/> Voltar
                                 </button>
-                                <button
-                                    className={`${styles.button} ${styles.editButton}`}
-                                    onClick={() => navigate(`/produtos/editar/${product._id}`)}
-                                >
-                                    <PencilIcon/> Editar
-                                </button>
+                                {allowEdit &&
+                                    <button
+                                        className={`${styles.button} ${styles.editButton}`}
+                                        onClick={() => navigate(`/produtos/editar/${product._id}`)}
+                                    >
+                                        <PencilIcon/> Editar
+                                    </button>
+                                }
                             </div>
                             
                         </div>
@@ -114,19 +134,21 @@ export function CompleteProduct({ product, removeProduct, setShowProduct } : Com
                                 </div>
                             </div>
                             {/* Excluir */}
-                            <div className={styles.infoBox}>
-                                <div className={styles.mobileDelete}>
-                                    <h3>Excluir produto?</h3>
-                                    <button 
-                                        type="button" 
-                                        className={`${styles.button} ${styles.deleteButton}`}
-                                        onClick={() => setConfirmDelete(true)}
-                                        style={{marginTop:"2rem"}}
-                                    >
-                                        <Trash2Icon /> Excluir
-                                    </button>
+                            {allowDelete && (
+                                <div className={styles.infoBox}>
+                                    <div className={styles.mobileDelete}>
+                                        <h3>Excluir produto?</h3>
+                                        <button 
+                                            type="button" 
+                                            className={`${styles.button} ${styles.deleteButton}`}
+                                            onClick={() => setConfirmDelete(true)}
+                                            style={{marginTop:"2rem"}}
+                                        >
+                                            <Trash2Icon /> Excluir
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -157,12 +179,15 @@ export function CompleteProduct({ product, removeProduct, setShowProduct } : Com
                         </button>
                         <h2>Produto #{product._id}</h2>
                     </div>
-                    <button
-                        className={`${styles.button} ${styles.editButton}`}
-                        onClick={() => navigate(`/produtos/editar/${product._id}`)}
-                    >
-                        <PencilIcon/> Editar
-                    </button>
+                    {allowEdit &&
+                        <button
+                            className={`${styles.button} ${styles.editButton}`}
+                            onClick={() => navigate(`/produtos/editar/${product._id}`)}
+                        >
+                            <PencilIcon/> Editar
+                        </button>
+                    }
+                    
                 </div>
 
                 <div className={styles.productInfo}>
@@ -194,19 +219,21 @@ export function CompleteProduct({ product, removeProduct, setShowProduct } : Com
                             </div>
                         </div>
                         {/* Excluir */}
-                        <div className={styles.infoBox}>
-                            <div className={styles.obs}>
-                                <h3>Excluir produto?</h3>
-                                <button 
-                                    type="button" 
-                                    className={`${styles.button} ${styles.deleteButton}`}
-                                    onClick={() => setConfirmDelete(true)}
-                                    style={{marginTop:"2rem"}}
-                                >
-                                    <Trash2Icon /> Excluir
-                                </button>
+                        {allowDelete && (
+                            <div className={styles.infoBox}>
+                                <div className={styles.obs}>
+                                    <h3>Excluir produto?</h3>
+                                    <button 
+                                        type="button" 
+                                        className={`${styles.button} ${styles.deleteButton}`}
+                                        onClick={() => setConfirmDelete(true)}
+                                        style={{marginTop:"2rem"}}
+                                    >
+                                        <Trash2Icon /> Excluir
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

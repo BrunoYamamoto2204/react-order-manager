@@ -8,11 +8,12 @@ import { confirmUserSecret, loginMfa } from "../../services/authApi"
 
 type LoginMfaProps = {
     userId: number
+    requireSecret: boolean
     setOpenSecret?: (secretScreen: boolean) => void
     backToLogin: () => void
 }
 
-export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps) {
+export function LoginMfa({ userId, requireSecret, setOpenSecret, backToLogin } : LoginMfaProps) {
     const navigate = useNavigate()
     const { setUser } = useAuth()
 
@@ -34,9 +35,10 @@ export function LoginMfa({ userId, setOpenSecret, backToLogin } : LoginMfaProps)
 
         try {
             setIsSubmiting(true)
-            await new Promise(resolve => setTimeout(resolve, 5000));
 
-            await confirmUserSecret(userId, code)
+            // Apenas quando o secret ainda não foi configurado
+            if (requireSecret)
+                await confirmUserSecret(userId, code)
 
             const mfaUser = await loginMfa(userId, code)
             setUser(mfaUser)

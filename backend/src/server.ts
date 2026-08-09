@@ -10,7 +10,8 @@ import financialRoutes from "./routes/financialRoute"
 import { apiKeyAuth } from "./middleware/apiKeyAuth";
 import { jwtAuth } from "./middleware/jwtAuth";
 import productTypeRoute from "./routes/productTypeRoute";
-import { checkRole } from "./middleware/checkRole";
+import permissionRouter from "./routes/permissionRoute";
+
 
 dotenv.config();
 
@@ -42,8 +43,9 @@ app.use("/api/auth", authRoutes)
 app.use("/api/orders", jwtAuth, orderRoutes)
 app.use("/api/products", jwtAuth, productRoutes)
 app.use("/api/customers", jwtAuth, customerRoutes)
-app.use("/api/financial", jwtAuth, checkRole ,financialRoutes)
+app.use("/api/financial", jwtAuth, financialRoutes)
 app.use("/api/productTypes", jwtAuth, productTypeRoute)
+app.use("/api/permisions", jwtAuth, permissionRouter)
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`))
 // ----------------------------------------------------- //

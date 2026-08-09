@@ -2,6 +2,11 @@
     --header-font: "Mulish", sans-serif;
     --main-font: "Figtree", sans-serif;
 
+    --nav-theme: #0B1120;
+    --background-theme: #0f172a;
+    --auxiliary-theme: #1e293b;
+    --dark-auxiliary-theme: #131B2E;
+
     --options-color: #F4F0F1;
     --gray-100: #e6e9f0;
     --gray-200: #cdd3e1;
@@ -16,6 +21,8 @@
     --primary-light: #4de7b7;
     --primary: #0da170;
     --primary-dark: #065f46;
+
+    --background-green: #184045;
 
     --link-color: #10b981;
     --link-hover: #0b8a60;

@@ -7,10 +7,11 @@ import { createSecret } from "../../services/authApi"
 
 type SecretProps = {
     userId: number
+    requireSecret: boolean
     backToLogin: () => void
 }
 
-export function Secret({ userId, backToLogin} : SecretProps) {
+export function Secret({ userId, requireSecret, backToLogin} : SecretProps) {
     const [ openSecret, setOpenSecret ] = useState(true)
 
     const [ qrCode, setQrCode ] = useState()
@@ -43,6 +44,7 @@ export function Secret({ userId, backToLogin} : SecretProps) {
                 userId={userId}
                 setOpenSecret={setOpenSecret}
                 backToLogin={backToLogin}
+                requireSecret={requireSecret}
             />
         ) : (
             <div className={styles.secretContainer}>

@@ -1,5 +1,5 @@
 .navContainer {
-    background-color: var(--gray-800);
+    background-color: var(--nav-theme);
     max-width: 27rem;
     height: 100vh;
     display: grid;

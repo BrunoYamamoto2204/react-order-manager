@@ -1,4 +1,4 @@
-import { CakeIcon, ChartNoAxesCombinedIcon, ClipboardListIcon, DollarSignIcon, HouseIcon, LogOutIcon, MenuIcon, ScrollText, User2Icon, XIcon } from "lucide-react";
+import { CakeIcon, ChartNoAxesCombinedIcon, ClipboardListIcon, DollarSignIcon, HouseIcon, LogOutIcon, MenuIcon, ScrollText, ShieldIcon, User2Icon, XIcon } from "lucide-react";
 import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
@@ -77,10 +77,15 @@ export function NavContainer() {
                             sectionName="financeiro"
                             allowedRoles={["admin"]}
                         />
+                        <NavButton 
+                            icon={<DollarSignIcon />} 
+                            sectionName="financeiro"
+                            allowedRoles={["admin"]}
+                        />
                     </nav>
 
                     <NavButton 
-                        icon={<LogOutIcon />} 
+                        icon={<ShieldIcon />} 
                         sectionName="sair" 
                         allowedRoles={["admin", "user"]}
                     />
@@ -126,6 +131,11 @@ export function NavContainer() {
                     icon={<DollarSignIcon />} 
                     sectionName="financeiro" 
                     allowedRoles={["admin"]}
+                />
+                <NavButton 
+                    icon={<ShieldIcon />} 
+                    sectionName="permissoes"
+                    allowedRoles={["admin", "user"]}
                 />
             </nav>
 

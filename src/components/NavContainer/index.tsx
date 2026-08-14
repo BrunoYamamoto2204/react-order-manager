@@ -3,10 +3,32 @@ import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
 import { useEffect, useState } from "react";
+import { checkPermissionAsync } from "../../services/permissionApi";
+import { useAuth } from "../../hooks/useAuth";
 
 export function NavContainer() {
+    const { user, readPemissions } = useAuth()
+
     const [ isMobile, setIsMobile ] = useState(false)
     const [ isMenuOpen, setIsMenuOpen ] = useState(false)
+
+    const [ permissions, setPermissions ] = useState<Record<string, boolean>>({})
+    
+    useEffect(() => {
+        const modules = ["orders", "products", "customers", "analytics", "financial"]
+        
+        const checkPermissions = async () => {
+            // Valida se cada módulo é permitido || [true, false, false, ...]
+            const results = await Promise.all(
+                modules.map(m => checkPermissionAsync({ role: user?.role!, module: m, permission: "read" }))
+            )
+
+            //Atribui o módulo ao valor
+            setPermissions(Object.fromEntries(modules.map((m, i) => [m, results[i]])))
+        }
+
+        checkPermissions()
+    }, [readPemissions])
 
     useEffect(() => {
         const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
@@ -107,16 +129,22 @@ export function NavContainer() {
                     sectionName="home" 
                     allowedRoles={["admin", "user"]}
                 />
-                <NavButton 
-                    icon={<ScrollText/>} 
-                    sectionName="pedidos" 
-                    allowedRoles={["admin", "user"]}
-                />
-                <NavButton 
-                    icon={<CakeIcon />} 
-                    sectionName="produtos" 
-                    allowedRoles={["admin", "user"]}
-                />
+                {permissions.orders && (
+                    <NavButton 
+                        icon={<ScrollText/>} 
+                        sectionName="pedidos" 
+                        allowedRoles={["admin", "user"]}
+                    />
+                )}
+
+                {permissions.products && (
+                    <NavButton 
+                        icon={<CakeIcon />} 
+                        sectionName="produtos" 
+                        allowedRoles={["admin", "user"]}
+                    />
+                )}
+
                 <NavButton 
                     icon={<User2Icon />} 
                     sectionName="clientes" 

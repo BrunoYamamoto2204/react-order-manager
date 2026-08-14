@@ -17,7 +17,6 @@ export function Produtos() {
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false);
-    const [ editPermition ] = useState<string[]>(["admin"])
 
     const [ loading, setLoading ] = useState(true);
     const [ products, setProducts ] = useState<Product[]>([])
@@ -411,7 +410,6 @@ export function Produtos() {
                             product={product!}
                             removeProduct={removeProduct}
                             setShowProduct={setShowProduct}
-                            editPermition={editPermition}
                         />
                     )}
 
@@ -522,7 +520,6 @@ export function Produtos() {
                         product={product!}
                         removeProduct={removeProduct}
                         setShowProduct={setShowProduct}
-                        editPermition={editPermition}
                     />
                 )}
 

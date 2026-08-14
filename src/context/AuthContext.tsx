@@ -8,7 +8,9 @@ type User = {
 
 type AuthContextProps = {
     user: User | null
-    isLoading: boolean
+    isLoading: boolean,
+    readPemissions: string[],
+    setReadPemissions: (permissions: string[]) => void,
     logout: () => void
     setUser: (user: User | null) => void  
 }

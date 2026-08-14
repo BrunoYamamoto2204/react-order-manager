@@ -5,6 +5,7 @@ import styles from "./Permissoes.module.css"
 import { useEffect, useRef, useState } from "react";
 import { Messages } from "../../components/Messages";
 import { getPermissions, modifyPermission } from "../../services/permissionApi";
+import { useAuth } from "../../hooks/useAuth";
 
 export type PermissionsType = {
     products: string[]
@@ -25,6 +26,9 @@ export type PemissionResponseType = {
 
 export function Permissoes() {
     const inputRef = useRef<HTMLDivElement>(null)
+
+    const { setReadPemissions } = useAuth()
+
     const [ isSubmitting, setIsSubmitting ] = useState(false)
     const [ isOpen, setIsOpen ] = useState(false)
 
@@ -42,6 +46,7 @@ export function Permissoes() {
 
     useEffect(() => { loadPermissions() }, [])
 
+    // Identifica clique fora da modal
     useEffect(() => {
         const handleClickRef = (event: MouseEvent) => {
             if (
@@ -60,35 +65,48 @@ export function Permissoes() {
     }, [])
 
     const loadPermissions = async () => {
-            // Busca todos os registros de permissões para cada role
-            const data = await getPermissions()
-            setContent(data)
-            
-            // Define a lista de roles
-            setRoles(data.map(r => r.role))
+        // Busca todos os registros de permissões para cada role
+        const data = await getPermissions()
+        setContent(data)
+        
+        // Define a lista de roles
+        setRoles(data.map(r => r.role))
 
-            const currentRole = selectedUser != undefined 
-                ? selectedUser
-                : data[0].role 
+        const currentRole = selectedUser != undefined 
+            ? selectedUser
+            : data[0].role 
 
-            // Define uma role padrão
-            setSelectedUser(currentRole)
+        // Define uma role padrão
+        setSelectedUser(currentRole)
 
-            // Define as permissões 
-            selectUserPermissions(currentRole, data)
-        }
+        // Define as permissões 
+        selectUserPermissions(currentRole, data)
+    }
 
     // Atualiza as permissões do usuário
     const selectUserPermissions = async (role: string, source: PemissionResponseType[]) => {
-        const userContent = source?.find(p => p.role === role)
+        const roleContent = source?.find(p => p.role === role)
 
         setPermissions({
-            products: userContent!.products,
-            customers: userContent!.customers,
-            orders: userContent!.orders,
-            analyses: userContent!.analyses,
-            financial: userContent!.financial,
+            products: roleContent!.products,
+            customers: roleContent!.customers,
+            orders: roleContent!.orders,
+            analyses: roleContent!.analyses,
+            financial: roleContent!.financial,
         })
+    }
+
+    const getReadPermissions = () => {
+        const views: string[] = []
+
+        Object.entries(permissions).forEach(([, permissionList]) => {
+            permissionList.forEach(permission => {
+                if (permission === "read")
+                    views.push(permission)
+            })
+        })
+
+        setReadPemissions(views)
     }
 
     // Modifica as permissões e o usuário selecionadop
@@ -148,6 +166,9 @@ export function Permissoes() {
             await modifyPermission(payload)
 
             Messages.success("Permissões alteradas com sucesso")
+            
+            getReadPermissions()
+
             loadPermissions()
         } catch(error) {
             Messages.error("Erro ao atualizar permissões")
@@ -224,6 +245,7 @@ export function Permissoes() {
                                 id={`${module}Create`}
                                 checked={permissions.includes("create")}
                                 onChange={() => handleToggle(module, "create")}
+                                disabled={!permissions.includes("read") ? true : false}
                             />
                             <label htmlFor={`${module}Create`}>Adicionar</label>
                         </div>
@@ -236,6 +258,7 @@ export function Permissoes() {
                                 id={`${module}Update`}
                                 checked={permissions.includes("update")}
                                 onChange={() => handleToggle(module, "update")}
+                                disabled={!permissions.includes("read") ? true : false}
                             />
                             <label htmlFor={`${module}Update`}>Editar</label>
                         </div>
@@ -248,6 +271,7 @@ export function Permissoes() {
                                 id={`${module}Delete`}
                                 checked={permissions.includes("delete")}
                                 onChange={() => handleToggle(module, "delete")}
+                                disabled={!permissions.includes("read") ? true : false}
                             />
                             <label htmlFor={`${module}Delete`}>Excluir</label>
                         </div>

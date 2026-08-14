@@ -13,6 +13,7 @@ type User = {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [ user, setUser ] = useState<User | null>(null)
     const [ isLoading, setIsLoading ] = useState(true)
+    const [ readPemissions, setReadPemissions ] = useState<string[]>([])
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -53,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, logout, setUser}}>
+        <AuthContext.Provider value={{ user, isLoading, readPemissions, setReadPemissions, logout, setUser}}>
             {children}
         </AuthContext.Provider>
     )

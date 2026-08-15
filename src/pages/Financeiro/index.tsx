@@ -11,8 +11,11 @@ import { deleteIncomeExpense, getIncomesExpenses, type Financial } from "../../s
 import { useNavigate } from "react-router"
 import { Messages } from "../../components/Messages"
 import { CompleteTransaction } from "../../components/CompleteTransaction"
+import { checkPermissionAsync } from "../../services/permissionApi"
+import { useAuth } from "../../hooks/useAuth"
 
 export function Financeiro () {  
+    const { user } = useAuth()
     const navigate = useNavigate()
 
     const formatDateString = (date: Date) => {
@@ -48,8 +51,18 @@ export function Financeiro () {
     const [ expenseButton, setExpenseButton ] = useState(false)
     const [ revenueButton, setRevenueButton ] = useState(false)
 
-    // const [ confirmDelete, setConfirmDelete ] = useState(false)
-    // const [ idToDeleteTransaction, setIdToDeleteTransaction ] = useState("")
+    const [ allowCreate, setAllowCreate ] = useState()
+
+    // Permissions
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "financial", permission: "create" })
+
+            setAllowCreate(responseEdit)
+        } 
+
+        checkPermissions()
+    },[])
 
     useEffect(() => {
         document.title = "Contas - Comanda"
@@ -116,7 +129,6 @@ export function Financeiro () {
         setPageNumber(0)
     }, [currentTransactions, expenseButton, revenueButton, searchInput])
 
-
     // Atualiza os valores, segundo o período
     useEffect(() => {
         const loadFilteredOrders = async () => {
@@ -169,12 +181,14 @@ export function Financeiro () {
     }, [currentTransactions])
 
     // Verifica o valor mais caro das despesas
-    const mostExpensiveExpense = currentTransactions.length > 0
+    const mostExpensiveExpense = (
+        currentTransactions.length > 0
         ? Math.max(...currentTransactions
             .filter(t => t.category === "Despesa")
             .map(t => t.value)
         )
         : 0
+    )
     
     // Atribui a despesa com o maior valor
     const mostExpensiveExpenseObject = currentTransactions.find(
@@ -613,27 +627,29 @@ export function Financeiro () {
                         subtitle="Gerencie o seu financeiro e controle suas receitas e gastos"
                     />
                     
-                        {isMobile ? (
-                            <div className={styles.mobileButtons}>
+                    {isMobile ? (
+                        <div className={styles.mobileButtons}>
+                        {allowCreate && 
                             <button
                                 onClick={() => navigate("/financeiro/criar")}
                                 className={styles.mobileAddButton}
                             >
                                 <PlusIcon/>
                             </button>
-                        </div>
-                        ) : (
-                            <div className={styles.addButton}>
+                        }
+                    </div>
+                    ) : (
+                        <div className={styles.addButton}>
+                        {allowCreate && 
                             <button
                                 onClick={() => navigate("/financeiro/criar")}
                                 className={styles.mobileAddButton}
                             >
                                 + Criar conta
                             </button>
-                            </div>
-                        )}
-                        
-                    
+                        }
+                        </div>
+                    )}
                 </div>  
                 
                 {/* Filtro de data */}

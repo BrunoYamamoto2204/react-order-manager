@@ -18,8 +18,12 @@ import { MediaQueryOrderList } from "../../components/MediaQueryOrderList";
 import CustomDatePicker from "../../components/CustomDatePicker";
 import { ExportContainer } from "../../components/ExportContainer";
 import { getCustomerById } from "../../services/customersApi";
+import { checkPermissionAsync } from "../../services/permissionApi";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Pedidos() {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
 
     const [ isTablet, setIsTablet ] = useState(false);
@@ -48,6 +52,8 @@ export function Pedidos() {
     
     const [ openExport, setOpenExport ] = useState(false);
 
+    const [ allowCreate, setAllowCreate ] = useState()
+
     // Converte p/ string
     const formatDateString = (date : Date) => {
         return date.toLocaleDateString('sv-SE');
@@ -64,6 +70,16 @@ export function Pedidos() {
     // Data em String 
     const [ startDate, setStartDate ] = useState(formatDateString(firstDay))
     const [ endDate, setEndDate ] = useState(formatDateString(lastDay))  
+
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "orders", permission: "create" })
+
+            setAllowCreate(responseEdit)
+        } 
+
+        checkPermissions()
+    },[])
 
     // Título e MediaQuery
     useEffect(() => {
@@ -626,12 +642,14 @@ export function Pedidos() {
                     <div className={styles.header}>
                         <Title title="Pedidos" subtitle="Confira o histórico de pedidos"/>
                         <div className={styles.mobileButtons}>
-                            <button
-                                onClick={() => navigate("/pedidos/novo")}
-                                className={styles.mobileAddButton}
-                            >
-                                <PlusIcon/>
-                            </button>
+                            {allowCreate &&
+                                <button
+                                    onClick={() => navigate("/pedidos/novo")}
+                                    className={styles.mobileAddButton}
+                                >
+                                    <PlusIcon/>
+                                </button>
+                            }
                             <button className={styles.buttonHeader}
                                 onClick={() => setOpenExport(true)}
                             >
@@ -861,9 +879,11 @@ export function Pedidos() {
                             >
                                 <CalendarIcon/> Filtrar Horário
                             </button>
-                            <button onClick={() => navigate("/pedidos/novo")}>
-                                <PlusIcon/> Adicionar Pedido
-                            </button>
+                            {allowCreate &&
+                                <button onClick={() => navigate("/pedidos/novo")}>
+                                    <PlusIcon/> Adicionar Pedido
+                                </button>
+                            }
                             <button className={styles.buttonHeader}
                                 onClick={() => setOpenExport(true)}
                             >
@@ -1080,9 +1100,11 @@ export function Pedidos() {
                         >
                             <CalendarIcon/> Filtrar Data
                         </button>
-                        <button onClick={() => navigate("/pedidos/novo")}>
-                            <PlusIcon/> Adicionar Pedido
-                        </button>
+                        {allowCreate &&
+                            <button onClick={() => navigate("/pedidos/novo")}>
+                                <PlusIcon/> Adicionar Pedido
+                            </button>
+                        }
                         <button className={styles.buttonHeader}
                             onClick={() => setOpenExport(true)}
                         >

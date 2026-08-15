@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { DeleteConfirm } from "../DeleteConfirm";
 import { type Customer } from "../../services/customersApi";
 import { getOrders } from "../../services/ordersApi";
+import { checkPermissionAsync } from "../../services/permissionApi";
+import { useAuth } from "../../hooks/useAuth";
 
 type CompleteCustomerProps = {
     customer: Customer
@@ -17,10 +19,19 @@ export function CompleteCustomer({
     removeCustomer, 
     setShowCustomer 
 } : CompleteCustomerProps) {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false)
+
+    const [ confirmDelete, setConfirmDelete ] = useState(false)
+    const [ pendingQuantity, setPendingQuantity ] = useState(0)
+
+    const [ allowEdit, setAllowEdit ] = useState()
+    const [ allowDelete, setAllowDelete] = useState()
     
+    // MQ
     useEffect(() => {
         const mainElement = document.querySelector("main")
         if (mainElement) {
@@ -40,9 +51,7 @@ export function CompleteCustomer({
         }
     }, [])
 
-    const [ confirmDelete, setConfirmDelete ] = useState(false)
-    const [ pendingQuantity, setPendingQuantity ] = useState(0)
-
+    // Pedidos pendentes
     useEffect(() => {
         const loadPendingOrders = async () => {
             const ordersData = await getOrders()
@@ -55,6 +64,19 @@ export function CompleteCustomer({
         loadPendingOrders()
     },[customer._id])
 
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "customers", permission: "update" })
+            const responseDelete = await checkPermissionAsync({ role: user?.role!, module: "customers", permission: "delete" })
+
+            setAllowEdit(responseEdit)
+            setAllowDelete(responseDelete)
+        } 
+
+        checkPermissions()
+        
+    }, [])
+    console.log(allowEdit)
     const titleAndValue = (title: string, value: string) => {
         return (
             <div style={{marginBottom:"2rem"}}>
@@ -149,12 +171,14 @@ export function CompleteCustomer({
                                     <ArrowLeftIcon/> Voltar
                                 </button>
 
-                                <button
-                                    className={`${styles.button} ${styles.editButton}`}
-                                    onClick={() => navigate(`/clientes/editar/${customer._id}`)}
-                                >
-                                    <PencilIcon/> Editar
-                                </button>
+                                {allowEdit &&
+                                    <button
+                                        className={`${styles.button} ${styles.editButton}`}
+                                        onClick={() => navigate(`/clientes/editar/${customer._id}`)}
+                                    >
+                                        <PencilIcon/> Editar
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -239,12 +263,14 @@ export function CompleteCustomer({
                     </button>
                     <h2>Cliente #{customer._id}</h2>
                 </div>
-                <button
-                    className={`${styles.button} ${styles.editButton}`}
-                    onClick={() => navigate(`/clientes/editar/${customer._id}`)}
-                >
-                    <PencilIcon/> Editar
-                </button>
+                {allowEdit && (
+                    <button
+                        className={`${styles.button} ${styles.editButton}`}
+                        onClick={() => navigate(`/clientes/editar/${customer._id}`)}
+                    >
+                        <PencilIcon/> Editar
+                    </button>
+                )}
             </div>
 
             <div className={styles.customerInfo}>
@@ -285,19 +311,21 @@ export function CompleteCustomer({
                     </div>
 
                     {/* Excluir */}
-                    <div className={styles.infoBox}>
-                        <div className={styles.obs}>
-                            <h3>Excluir cliente?</h3>
-                            <button 
-                                type="button" 
-                                className={`${styles.button} ${styles.deleteButton}`}
-                                onClick={() => setConfirmDelete(true)}
-                                style={{marginTop:"2rem"}}
-                            >
-                                <Trash2Icon /> Excluir
-                            </button>
+                    {allowDelete &&
+                        <div className={styles.infoBox}>
+                            <div className={styles.obs}>
+                                <h3>Excluir cliente?</h3>
+                                <button 
+                                    type="button" 
+                                    className={`${styles.button} ${styles.deleteButton}`}
+                                    onClick={() => setConfirmDelete(true)}
+                                    style={{marginTop:"2rem"}}
+                                >
+                                    <Trash2Icon /> Excluir
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>

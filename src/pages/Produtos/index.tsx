@@ -1,7 +1,6 @@
 import { Container } from "../../components/Container";
 import { Title } from "../../components/Title";
 import { MainTemplate } from "../../templates/MainTemplate";
-
 import styles from "./Produtos.module.css"
 import { ProductsList } from "../../components/ProductsList";
 import { useEffect, useState } from "react";
@@ -12,8 +11,12 @@ import { deleteProduct, getProducts } from "../../services/productsApi";
 import type { Product } from "../../services/productsApi";
 import { CompleteProduct } from "../../components/CompleteProduct";
 import { MediaQueryProductList } from "../../components/MediaQueryProductList";
+import { checkPermissionAsync } from "../../services/permissionApi";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Produtos() {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false);
@@ -32,6 +35,18 @@ export function Produtos() {
 
     const [ showProduct, setShowProduct ] = useState(false)
     const [ product, setProduct ] =  useState<Product>()
+
+    const [ allowCreate, setAllowCreate ] = useState()
+
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "products", permission: "create" })
+
+            setAllowCreate(responseEdit)
+        } 
+
+        checkPermissions()
+    },[])
 
     // Título e MediaQuery
     useEffect(() => {
@@ -415,12 +430,14 @@ export function Produtos() {
 
                     <div className={styles.header}>
                         <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
-                        <button 
-                            onClick={() => navigate("/produtos/criar")}
-                            className={styles.mobileAddButton}
-                        >
-                            <PlusIcon/>
-                        </button>
+                        {allowCreate && (
+                            <button 
+                                onClick={() => navigate("/produtos/criar")}
+                                className={styles.mobileAddButton}
+                            >
+                                <PlusIcon/>
+                            </button>
+                        )}
                     </div>
 
                     <div className={styles.searchProduct}>
@@ -525,9 +542,11 @@ export function Produtos() {
 
                 <div className={styles.header}>
                     <Title title="Produtos" subtitle="Gerenciamento de dados dos produtos"/>
-                    <button onClick={() => navigate("/produtos/criar")}>
-                        <PlusIcon/> Adicionar Produto
-                    </button>
+                    {allowCreate && (
+                        <button onClick={() => navigate("/produtos/criar")}>
+                            <PlusIcon/> Adicionar Produto
+                        </button>
+                    )}
                 </div>
 
                 <div className={styles.searchProduct}>

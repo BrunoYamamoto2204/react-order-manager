@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { DeleteConfirm } from "../DeleteConfirm";
 import type { Financial } from "../../services/financialApi";
 import { formatDate } from "../../utils/format-date";
+import { useAuth } from "../../hooks/useAuth";
+import { checkPermissionAsync } from "../../services/permissionApi";
 
 type CompleteTransactionProps = {
     transaction: Financial
@@ -17,10 +19,28 @@ export function CompleteTransaction({
     removeTransaction, 
     setShowTransaction 
 } : CompleteTransactionProps) {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false)
     
+    const [ allowEdit, setAllowEdit ] = useState()
+    const [ allowDelete, setAllowDelete] = useState()
+
+    // Perissions
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "financial", permission: "update" })
+            const responseDelete = await checkPermissionAsync({ role: user?.role!, module: "financial", permission: "delete" })
+
+            setAllowEdit(responseEdit)
+            setAllowDelete(responseDelete)
+        } 
+
+        checkPermissions()
+    }, [])
+
     // MediaQuery
     useEffect(() => {
         const mainElement = document.querySelector("main")
@@ -88,12 +108,14 @@ export function CompleteTransaction({
                         )}
                         
                         <div className={styles.buttonBoxMQ}>
-                            <button
-                                className={`${styles.button} ${styles.editButton}`}
-                                onClick={() => navigate(`/financeiro/editar/${transaction._id}`)}
-                            >
-                                <PencilIcon/> Editar
-                            </button>
+                            {allowEdit && 
+                                <button
+                                    className={`${styles.button} ${styles.editButton}`}
+                                    onClick={() => navigate(`/financeiro/editar/${transaction._id}`)}
+                                >
+                                    <PencilIcon/> Editar
+                                </button>
+                            }
                             <button
                                 className={`${styles.button} ${styles.backButton}`}
                                 onClick={() => setShowTransaction(false)}
@@ -113,12 +135,14 @@ export function CompleteTransaction({
                             </button>
                             <h2>Conta #{transaction._id}</h2>
                         </div>
-                        <button
-                            className={`${styles.button} ${styles.editButton}`}
-                            onClick={() => navigate(`/financeiro/editar/${transaction._id}`)}
-                        >
-                            <PencilIcon/> Editar
-                        </button>
+                        {allowEdit &&
+                            <button
+                                className={`${styles.button} ${styles.editButton}`}
+                                onClick={() => navigate(`/financeiro/editar/${transaction._id}`)}
+                            >
+                                <PencilIcon/> Editar
+                            </button>
+                        }
                     </div>
                 )}
                 
@@ -182,19 +206,21 @@ export function CompleteTransaction({
                             </div>
                         </div>
                         {/* Excluir */}
-                        <div className={styles.infoBox}>
-                            <div className={deleteClass}>
-                                <h3>Excluir conta?</h3>
-                                <button 
-                                    type="button" 
-                                    className={`${styles.button} ${styles.deleteButton}`}
-                                    onClick={() => setConfirmDelete(true)}
-                                    style={{marginTop:"2rem"}}
-                                >
-                                    <Trash2Icon /> Excluir
-                                </button>
+                        {allowDelete && 
+                            <div className={styles.infoBox}>
+                                <div className={deleteClass}>
+                                    <h3>Excluir conta?</h3>
+                                    <button 
+                                        type="button" 
+                                        className={`${styles.button} ${styles.deleteButton}`}
+                                        onClick={() => setConfirmDelete(true)}
+                                        style={{marginTop:"2rem"}}
+                                    >
+                                        <Trash2Icon /> Excluir
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>

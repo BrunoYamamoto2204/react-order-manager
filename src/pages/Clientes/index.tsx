@@ -11,8 +11,12 @@ import { Messages } from "../../components/Messages"
 import { deleteCustomer, getCustomers, type Customer } from "../../services/customersApi"
 import { CompleteCustomer } from "../../components/CompleteCustomer"
 import { MediaQueryCustomerList } from "../../components/MediaQueryCustomerList"
+import { checkPermissionAsync } from "../../services/permissionApi"
+import { useAuth } from "../../hooks/useAuth"
 
 export function Clientes() {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false);
@@ -31,7 +35,19 @@ export function Clientes() {
 
     const [ showCustomer, setShowCustomer ] = useState(false)
     const [ customer, setCustomer ] =  useState<Customer>()
+
+    const [ allowCreate, setAllowCreate ] = useState()
     
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "customers", permission: "create" })
+
+            setAllowCreate(responseEdit)
+        } 
+
+        checkPermissions()
+    },[])
+
     // Título e Mídia Query
     useEffect(() => {
         document.title = "Clientes - Comanda"
@@ -389,7 +405,6 @@ export function Clientes() {
         document.querySelector("main")?.scroll({top: 0, behavior: "smooth"})
     }
 
-
     if (loading) {
         return (
             <MainTemplate>
@@ -416,12 +431,14 @@ export function Clientes() {
 
                     <div className={styles.header}>
                         <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
-                        <button 
-                            onClick={() => navigate("/clientes/criar")}
-                            className={styles.mobileAddButton}
-                        >
-                            <PlusIcon/>
-                        </button>
+                        {allowCreate && 
+                            <button 
+                                onClick={() => navigate("/clientes/criar")}
+                                className={styles.mobileAddButton}
+                            >
+                                <PlusIcon/>
+                            </button>
+                        }
                     </div>
 
                     <div className={styles.searchCustomer}>
@@ -527,9 +544,11 @@ export function Clientes() {
 
                 <div className={styles.header}>
                     <Title title={"Clientes"} subtitle={"Cadastro de Clientes"} />
-                    <button onClick={() => navigate("/clientes/criar")}>
-                        <PlusIcon/> Adicionar Cliente
-                    </button>
+                    {allowCreate && 
+                        <button onClick={() => navigate("/clientes/criar")}>
+                            <PlusIcon/> Adicionar Cliente
+                        </button>
+                    }
                 </div>
 
                 <div className={styles.searchCustomer}>

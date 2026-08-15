@@ -4,7 +4,7 @@ export type PermissionsType = {
     products: string[]
     customers: string[]
     orders: string[]
-    analyses: string[]
+    analytics: string[]
     financial: string[]
 };
 
@@ -22,7 +22,7 @@ const PermissionSchema = new Schema<IPermission>({
     products: { type: [ String ], default: []},
     customers: { type: [ String ], default: []},
     orders: { type: [ String ], default: []},
-    analyses: { type: [ String ], default: []},
+    analytics: { type: [ String ], default: []},
     financial: { type: [ String ], default: []},
 })
 

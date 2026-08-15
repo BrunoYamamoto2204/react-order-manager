@@ -4,6 +4,8 @@ import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { Order } from "../../services/ordersApi";
 import { useEffect, useState } from "react";
 import { DeleteConfirm } from "../DeleteConfirm";
+import { checkPermissionAsync } from "../../services/permissionApi";
+import { useAuth } from "../../hooks/useAuth";
 
 type CompleteOrderProps = {
     order: Order
@@ -12,10 +14,29 @@ type CompleteOrderProps = {
 }
 
 export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOrderProps) {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
 
     const [ isMobile, setIsMobile ] = useState(false)
 
+    const [ allowEdit, setAllowEdit ] = useState()
+    const [ allowDelete, setAllowDelete] = useState()
+
+    // Permissions
+    useEffect(() => {
+        const checkPermissions = async () => {
+            const responseEdit = await checkPermissionAsync({ role: user?.role!, module: "orders", permission: "update" })
+            const responseDelete = await checkPermissionAsync({ role: user?.role!, module: "orders", permission: "delete" })
+
+            setAllowEdit(responseEdit)
+            setAllowDelete(responseDelete)
+        } 
+
+        checkPermissions()
+    }, [])
+
+    // MQ
     useEffect(() => {
         const mainElement = document.querySelector("main")
         if (mainElement) {
@@ -142,12 +163,15 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                 >
                                     <ArrowLeftIcon/> Voltar
                                 </button>
-                                <button
-                                    className={`${styles.button} ${styles.editButton}`}
-                                    onClick={() => navigate(`/pedidos/editar/${order._id}`)}
-                                >
-                                    <PencilIcon/> Editar
-                                </button>
+
+                                {allowEdit && 
+                                    <button
+                                        className={`${styles.button} ${styles.editButton}`}
+                                        onClick={() => navigate(`/pedidos/editar/${order._id}`)}
+                                    >
+                                        <PencilIcon/> Editar
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -228,19 +252,22 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                     <p>{order.obs ? order.obs : "Sem observações "}</p>
                                 </div>
                             </div>
-                            <div className={styles.infoBox}>
-                                <div className={styles.mobileDelete}>
-                                    <h3>Excluir pedido?</h3>
-                                    <button 
-                                        type="button" 
-                                        className={`${styles.button} ${styles.deleteButton}`}
-                                        onClick={() => setConfirmDelete(true)}
-                                        style={{marginTop:"2rem"}}
-                                    >
-                                        <Trash2Icon /> Excluir
-                                    </button>
+                            {/* Excluir */}
+                            {allowDelete &&
+                                <div className={styles.infoBox}>
+                                    <div className={styles.mobileDelete}>
+                                        <h3>Excluir pedido?</h3>
+                                        <button 
+                                            type="button" 
+                                            className={`${styles.button} ${styles.deleteButton}`}
+                                            onClick={() => setConfirmDelete(true)}
+                                            style={{marginTop:"2rem"}}
+                                        >
+                                            <Trash2Icon /> Excluir
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -271,12 +298,14 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                         </button>
                         <h2>Pedido #{order._id}</h2>
                     </div>
-                    <button
-                        className={`${styles.button} ${styles.editButton}`}
-                        onClick={() => navigate(`/pedidos/editar/${order._id}`)}
-                    >
-                        <PencilIcon/> Editar
-                    </button>
+                    {allowEdit && 
+                        <button
+                            className={`${styles.button} ${styles.editButton}`}
+                            onClick={() => navigate(`/pedidos/editar/${order._id}`)}
+                        >
+                            <PencilIcon/> Editar
+                        </button>
+                    }
                 </div>
 
                 <div className={styles.orderInfo}>
@@ -354,19 +383,22 @@ export function CompleteOrder({ order, removeOrders, setShowOrder } : CompleteOr
                                 <p>{order.obs ? order.obs : "Sem observações "}</p>
                             </div>
                         </div>
-                        <div className={styles.infoBox}>
-                            <div className={styles.obs}>
-                                <h3>Excluir pedido?</h3>
-                                <button 
-                                    type="button" 
-                                    className={`${styles.button} ${styles.deleteButton}`}
-                                    onClick={() => setConfirmDelete(true)}
-                                    style={{marginTop:"2rem"}}
-                                >
-                                    <Trash2Icon /> Excluir
-                                </button>
+                        {/* Excluir */}
+                        {allowDelete &&
+                            <div className={styles.infoBox}>
+                                <div className={styles.obs}>
+                                    <h3>Excluir pedido?</h3>
+                                    <button 
+                                        type="button" 
+                                        className={`${styles.button} ${styles.deleteButton}`}
+                                        onClick={() => setConfirmDelete(true)}
+                                        style={{marginTop:"2rem"}}
+                                    >
+                                        <Trash2Icon /> Excluir
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>

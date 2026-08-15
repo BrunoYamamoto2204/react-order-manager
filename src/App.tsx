@@ -116,7 +116,7 @@ function AppRoutes(){
       }/>
 
       <Route path="/analises" element={
-          <ProtectedRoute module="analyses" action="read">
+          <ProtectedRoute module="analytics" action="read">
             <Analises />
           </ProtectedRoute>
       }/>

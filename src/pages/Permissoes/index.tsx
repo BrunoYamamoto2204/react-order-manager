@@ -11,7 +11,7 @@ export type PermissionsType = {
     products: string[]
     customers: string[]
     orders: string[]
-    analyses: string[]
+    analytics: string[]
     financial: string[]
 };
 
@@ -20,7 +20,7 @@ export type PemissionResponseType = {
     products: string[]
     customers: string[]
     orders: string[]
-    analyses: string[]
+    analytics: string[]
     financial: string[]
 };
 
@@ -40,7 +40,7 @@ export function Permissoes() {
         products: [],
         customers: [],
         orders: [],
-        analyses: [],
+        analytics: [],
         financial: [],
     });
 
@@ -91,7 +91,7 @@ export function Permissoes() {
             products: roleContent!.products,
             customers: roleContent!.customers,
             orders: roleContent!.orders,
-            analyses: roleContent!.analyses,
+            analytics: roleContent!.analytics,
             financial: roleContent!.financial,
         })
     }
@@ -182,7 +182,7 @@ export function Permissoes() {
             products: [],
             customers: [],
             orders: [],
-            analyses: [],
+            analytics: [],
             financial: []
         })
 
@@ -311,7 +311,7 @@ export function Permissoes() {
                             {/* Financeiro */}
                             {permissionCard("Financeiro", "Controle de receitas e despesas", "financial", <BanknoteIcon/>, permissions.financial)}
                             {/* Análises */}
-                            {permissionCard("Análises", "Relatórios, KPI e Insights", "analyses", <ChartNoAxesCombinedIcon/>, permissions.analyses, true, ["create", "update", "delete"])}
+                            {permissionCard("Análises", "Relatórios, KPI e Insights", "analytics", <ChartNoAxesCombinedIcon/>, permissions.analytics, true, ["create", "update", "delete"])}
                         </div>
 
                         <div className={styles.buttons}>

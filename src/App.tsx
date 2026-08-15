@@ -23,6 +23,8 @@ import { EditFinanceiro } from "./pages/Financeiro/editFinanceiro";
 import { Permissoes } from "./pages/Permissoes";
 import { checkPermissionAsync } from "./services/permissionApi";
 import { useEffect, useState } from "react";
+import { MainTemplate } from "./templates/MainTemplate";
+import { Container } from "./components/Container";
 
 type ProtectedRouteType = { 
   children: React.ReactNode, 
@@ -74,16 +76,21 @@ function ProtectedRoute({ children, module, action } : ProtectedRouteType){
 
   if (isLoading || isAllowed === undefined) {
     return (
-      <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh',
-          fontSize: '2rem',
-          color: 'var(--primary)'
-      }}>
-          Carregando...
-      </div>
+      <MainTemplate>
+        <Container>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh',
+            fontSize: '2rem',
+            color: 'var(--primary)'
+        }}>
+            Carregando...
+        </div>
+        </Container>
+      </MainTemplate>
+      
     )
   }
 

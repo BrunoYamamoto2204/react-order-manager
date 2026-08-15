@@ -13,6 +13,7 @@ export function NavContainer() {
     const [ isMenuOpen, setIsMenuOpen ] = useState(false)
 
     const [ permissions, setPermissions ] = useState<Record<string, boolean>>({})
+    const [ permissionsLoaded, setPermissionsLoaded ] = useState(false)
     
     useEffect(() => {
         const modules = ["orders", "products", "customers", "analytics", "financial"]
@@ -25,6 +26,7 @@ export function NavContainer() {
 
             //Atribui o módulo ao valor
             setPermissions(Object.fromEntries(modules.map((m, i) => [m, results[i]])))
+            setPermissionsLoaded(true)
         }
 
         checkPermissions()
@@ -68,59 +70,34 @@ export function NavContainer() {
                         <h2>Gerenciador de Pedidos</h2>
                     </div>
                     
-                    <nav>
-                        <NavButton 
-                            icon={<HouseIcon />} 
-                            sectionName="home" 
-
-                        />
-                        {permissions.orders && (
+                   {permissionsLoaded && (   
+                        <>
+                            <nav>
+                                <NavButton key="home" icon={<HouseIcon />} sectionName="home" />
+                                {permissions.orders && (
+                                    <NavButton key="pedidos" icon={<ScrollText/>} sectionName="pedidos" />
+                                )} 
+                                {permissions.products && (
+                                    <NavButton key="produtos" icon={<CakeIcon />} sectionName="produtos" />
+                                )} 
+                                {permissions.customers && (
+                                    <NavButton key="clientes" icon={<User2Icon />} sectionName="clientes" />
+                                )} 
+                                {permissions.analytics && (
+                                    <NavButton key="analises" icon={<ChartNoAxesCombinedIcon />} sectionName="analises" />
+                                )} 
+                                {permissions.financial && (
+                                    <NavButton key="financeiro" icon={<DollarSignIcon />} sectionName="financeiro" />
+                                )} 
+                                <NavButton key="permissoes" icon={<ShieldIcon />} sectionName="permissoes" />
+                            </nav>
+                            
                             <NavButton 
-                                icon={<ScrollText/>} 
-                                sectionName="pedidos" 
-
+                                icon={<ShieldIcon />} 
+                                sectionName="sair" 
                             />
-                        )}
-
-                        {permissions.products && (
-                            <NavButton 
-                                icon={<CakeIcon />} 
-                                sectionName="produtos" 
-
-                            />
-                        )}
-
-                        {permissions.customers && (
-                            <NavButton 
-                                icon={<User2Icon />} 
-                                sectionName="clientes" 
-                            />
-                        )}
-
-                        {permissions.analytics && (
-                            <NavButton 
-                                icon={<ChartNoAxesCombinedIcon />} 
-                                sectionName="analises"
-                            />
-                        )}
-
-                        {permissions.financial && (
-                            <NavButton 
-                                icon={<DollarSignIcon />} 
-                                sectionName="financeiro"
-                            />
-                        )}
-
-                        <NavButton 
-                            icon={<ShieldIcon />} 
-                            sectionName="permissoes"
-                        />
-                    </nav>
-
-                    <NavButton 
-                        icon={<ShieldIcon />} 
-                        sectionName="sair" 
-                    />
+                        </>
+                    )}
                 </div>
             </>
         )
@@ -133,60 +110,36 @@ export function NavContainer() {
                 <h2>Gerenciador de Pedidos</h2>
             </div>
 
-            <nav>
-                <NavButton 
-                    icon={<HouseIcon />} 
-                    sectionName="home" 
+            {permissionsLoaded && (  
+                <>
+                    <nav>
+                        <NavButton key="home" icon={<HouseIcon />} sectionName="home" />
+                        {permissions.orders && (
+                            <NavButton key="pedidos" icon={<ScrollText/>} sectionName="pedidos" />
+                        )} 
+                        {permissions.products && (
+                            <NavButton key="produtos" icon={<CakeIcon />} sectionName="produtos" />
+                        )} 
+                        {permissions.customers && (
+                            <NavButton key="clientes" icon={<User2Icon />} sectionName="clientes" />
+                        )} 
+                        {permissions.analytics && (
+                            <NavButton key="analises" icon={<ChartNoAxesCombinedIcon />} sectionName="analises" />
+                        )} 
+                        {permissions.financial && (
+                            <NavButton key="financeiro" icon={<DollarSignIcon />} sectionName="financeiro" />
+                        )} 
+                        <NavButton key="permissoes" icon={<ShieldIcon />} sectionName="permissoes" />
+                    </nav>
+                
 
-                />
-                {permissions.orders && (
                     <NavButton 
-                        icon={<ScrollText/>} 
-                        sectionName="pedidos" 
+                        icon={<LogOutIcon />} 
+                        sectionName="sair"
 
                     />
-                )}
-
-                {permissions.products && (
-                    <NavButton 
-                        icon={<CakeIcon />} 
-                        sectionName="produtos" 
-
-                    />
-                )}
-
-                {permissions.customers && (
-                    <NavButton 
-                        icon={<User2Icon />} 
-                        sectionName="clientes" 
-                    />
-                )}
-
-                {permissions.analytics && (
-                    <NavButton 
-                        icon={<ChartNoAxesCombinedIcon />} 
-                        sectionName="analises"
-                    />
-                )}
-
-                {permissions.financial && (
-                    <NavButton 
-                        icon={<DollarSignIcon />} 
-                        sectionName="financeiro"
-                    />
-                )}
-
-                <NavButton 
-                    icon={<ShieldIcon />} 
-                    sectionName="permissoes"
-                />
-            </nav>
-
-            <NavButton 
-                icon={<LogOutIcon />} 
-                sectionName="sair"
-
-            />
+                </>
+            )}
         </div>
     )
 }

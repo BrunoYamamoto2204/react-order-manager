@@ -1,10 +1,17 @@
 .navContainer {
     background-color: var(--nav-theme);
-    max-width: 27rem;
+    max-width: 30rem;
     height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr auto;
     padding: 2rem;
+    border-right: 0.2rem solid var(--gray-600);
+}
+
+.navContainer nav{
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
 }
 
 .titleContainer {
@@ -14,11 +21,16 @@
 
 .titleContainer h1 {
     font-size: 2.8rem;
+    color: var(--primary-light);
+    font-size: 200%;
 }
 
 .titleContainer h2 {
     font-size: 2rem;
     color: var(--secondary-text);
+    font-family: var(--main-font);
+    font-weight: 300;
+    font-size: 110%;
 }
 
 .titleContainer svg {

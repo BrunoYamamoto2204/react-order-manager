@@ -1,4 +1,4 @@
-import { CakeIcon, ChartNoAxesCombinedIcon, ClipboardListIcon, DollarSignIcon, HouseIcon, LogOutIcon, MenuIcon, ScrollText, ShieldIcon, User2Icon, XIcon } from "lucide-react";
+import { ArchiveIcon, BanknoteIcon, CakeIcon, ChartNoAxesCombinedIcon, ClipboardListIcon, DollarSignIcon, HouseIcon, MenuIcon, ScrollText, ShieldIcon, ShoppingCartIcon, User2Icon, Users2, XIcon } from "lucide-react";
 import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
@@ -106,7 +106,7 @@ export function NavContainer() {
     return (
         <div className={styles.navContainer}>
             <div className={styles.titleContainer}>
-                <h1><ClipboardListIcon /> Comanda App</h1>
+                <h1>Comanda App</h1>
                 <h2>Gerenciador de Pedidos</h2>
             </div>
 
@@ -115,28 +115,26 @@ export function NavContainer() {
                     <nav>
                         <NavButton key="home" icon={<HouseIcon />} sectionName="home" />
                         {permissions.orders && (
-                            <NavButton key="pedidos" icon={<ScrollText/>} sectionName="pedidos" />
+                            <NavButton key="pedidos" icon={<ShoppingCartIcon/>} sectionName="pedidos" />
                         )} 
                         {permissions.products && (
-                            <NavButton key="produtos" icon={<CakeIcon />} sectionName="produtos" />
+                            <NavButton key="produtos" icon={<ArchiveIcon />} sectionName="produtos" />
                         )} 
                         {permissions.customers && (
-                            <NavButton key="clientes" icon={<User2Icon />} sectionName="clientes" />
+                            <NavButton key="clientes" icon={<Users2 />} sectionName="clientes" />
                         )} 
                         {permissions.analytics && (
                             <NavButton key="analises" icon={<ChartNoAxesCombinedIcon />} sectionName="analises" />
                         )} 
                         {permissions.financial && (
-                            <NavButton key="financeiro" icon={<DollarSignIcon />} sectionName="financeiro" />
+                            <NavButton key="financeiro" icon={<BanknoteIcon />} sectionName="financeiro" />
                         )} 
                         <NavButton key="permissoes" icon={<ShieldIcon />} sectionName="permissoes" />
                     </nav>
-                
 
                     <NavButton 
-                        icon={<LogOutIcon />} 
-                        sectionName="sair"
-
+                        icon={<User2Icon />} 
+                        sectionName="conta"
                     />
                 </>
             )}

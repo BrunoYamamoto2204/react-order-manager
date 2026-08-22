@@ -6,13 +6,13 @@
 .navButton {
     display: flex;
     align-items: center;
-    padding: 1.5rem 2rem;
+    padding: 1.2rem 1rem;
     text-align: start;
     width: 100%;
     border: none;
     border-radius: 0.5rem;
-    background-color: var(--gray-800);
-    color: var(--text-default);
+    background-color: var(--nav-theme);
+    color: var(--gray-300);
     transition: all 0.2s ease-in-out;
     font-family: var(--header-font);
 }
@@ -24,16 +24,18 @@
 
 .navButton:hover {
     background-color: var(--gray-500);
+    cursor: pointer;
 }
 
 .buttonActive {
     background-color: var(--gray-200);
-    color: var(--gray-800);
+    color: var(--gray-900);
 }
 
 .buttonActive:hover {
-    background-color: var(--gray-200);
+    background-color: var(--gray-300);
     color: var(--gray-800);
+    cursor: default;
 }
 
 /* Botão de confirmar */
@@ -70,6 +72,95 @@
     color: var(--gray-100);
     background-color: var(--gray-600);
     transform: scale(1.05);
+}
+
+/* User Button */
+.verticalLine {
+    width: 0.2rem;
+    height: 0.2rem;
+    width: 100%;
+    background-color: var(--gray-700);
+    border: none;
+    margin: 2.5rem auto;
+}
+
+.userContainer {
+    display: flex;
+    padding: 1.5rem 0.8rem;
+    text-align: start;
+    width: 100%;
+    border: none;
+    background-color: var(--nav-theme);
+    color: var(--gray-300);
+    transition: all 0.2s ease-in-out;
+    font-family: var(--header-font);
+    gap: 1.5rem;
+    font-size: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--background-theme);
+    border-radius: 1rem;
+    border: 0.15em solid var(--gray-800);
+}
+
+.userContent{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.userButtonTexts {
+    display: flex;
+    flex-direction: column;
+}
+
+.userContainer p {
+    font-size: 2rem;
+    color: var(--gray-100);
+}
+
+.userContainer p.userButtonTextsRole { 
+    color: var(--gray-300);
+    font-size: 1.5rem;
+}
+
+.userButtonImg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    flex-shrink: 0;
+}
+
+.userButtonImg svg {
+    width: 90%;
+    height: 90%;
+    background: var(--gray-600);
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+
+.userButtonLogout {
+    color: var(--gray-300);
+    background: inherit;
+    border: none;
+    text-align: start;
+    transition: all ease-in-out 0.2s;
+    font-size: 1.5rem;
+    padding: 0.4rem;
+}
+
+.userButtonLogout svg {
+    height: 100%;
+    width: 100%;
+}
+
+.userButtonLogout:hover {
+    color: #fc7c78;
+    background: rgba(255, 0, 0, 0.11);
+    cursor: pointer;
+    border-radius: 1rem;
 }
 
 /* Confirm Delete */

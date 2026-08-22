@@ -1,4 +1,4 @@
-import { BanknoteIcon, CakeIcon, ChartNoAxesCombinedIcon, SaveIcon, ScrollTextIcon, ShieldHalfIcon, User2Icon } from "lucide-react";
+import { ArchiveIcon, BanknoteIcon, ChartNoAxesCombinedIcon, SaveIcon, ShieldHalfIcon, ShoppingCartIcon, User2Icon, Users2 } from "lucide-react";
 import { Container } from "../../components/Container";
 import { MainTemplate } from "../../templates/MainTemplate";
 import styles from "./Permissoes.module.css"
@@ -303,11 +303,11 @@ export function Permissoes() {
                     <form onSubmit={handleSubmit}>
                         <div className={styles.permissionContainer}>
                             {/* Produtos */}
-                            {permissionCard("Produtos", "Gerenciamento de cadastro de produtos", "products", <CakeIcon/>, permissions.products)}
+                            {permissionCard("Produtos", "Gerenciamento de cadastro de produtos", "products", <ArchiveIcon/>, permissions.products)}
                             {/* Clientes */}
-                            {permissionCard("Clientes", "Gerenciamento de cadastro de clientes", "customers", <User2Icon/>, permissions.customers)}
+                            {permissionCard("Clientes", "Gerenciamento de cadastro de clientes", "customers", <Users2/>, permissions.customers)}
                             {/* Pedidos */}
-                            {permissionCard("Pedidos", "Controle dos produtos e clientes do pedido", "orders", <ScrollTextIcon/>, permissions.orders)}
+                            {permissionCard("Pedidos", "Controle dos produtos e clientes do pedido", "orders", <ShoppingCartIcon/>, permissions.orders)}
                             {/* Financeiro */}
                             {permissionCard("Financeiro", "Controle de receitas e despesas", "financial", <BanknoteIcon/>, permissions.financial)}
                             {/* Análises */}

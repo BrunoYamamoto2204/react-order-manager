@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router";
 import styles from "./NavButton.module.css"
 import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
+import { LogOutIcon } from "lucide-react";
 
 type NavButtonProps = {
     icon: React.ReactNode;
@@ -9,7 +10,10 @@ type NavButtonProps = {
 } & React.ComponentProps<"button">
 
 export function NavButton({ icon, sectionName  } : NavButtonProps) {
+    const { user } = useAuth()
+
     const navigate = useNavigate();
+
     const { pathname } = useLocation();
 
     const [ confirmLogout, setConfirmLogout ] = useState(false)
@@ -36,7 +40,7 @@ export function NavButton({ icon, sectionName  } : NavButtonProps) {
         return name.charAt(0).toUpperCase() + name.slice(1)
     }
 
-    if (sectionName === "sair"){
+    if (sectionName === "conta"){
         return (
             <div className={styles.navButtonContainer} >
                 {confirmLogout && (
@@ -66,13 +70,26 @@ export function NavButton({ icon, sectionName  } : NavButtonProps) {
                     </div>                
                 )}
 
-                <button
-                    className={`${styles.navButton} ${activeButton}`}
-                    onClick={() => setConfirmLogout(true)}
-                >
-                    {icon}
-                    <span>{firstUpperCase(sectionName)}</span>
-                </button>
+                <hr className={styles.verticalLine} />
+
+                <div className={styles.userContainer}>
+                    <div className={styles.userContent}>
+                        <div className={styles.userButtonImg}>
+                            {icon}
+                        </div>
+                        <div className={styles.userButtonTexts}>
+                            <p>{user?.username}</p>
+                            <p className={styles.userButtonTextsRole}>{user?.role}</p>
+                        </div>
+                    </div>
+
+                     <button
+                        onClick={() => setConfirmLogout(true)}
+                        className={styles.userButtonLogout}
+                    >
+                        <LogOutIcon />
+                    </button>
+                </div>
             </div>
         )
     }

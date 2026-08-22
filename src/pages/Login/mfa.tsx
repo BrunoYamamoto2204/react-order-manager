@@ -41,7 +41,11 @@ export function LoginMfa({ userId, requireSecret, setOpenSecret, backToLogin } :
                 await confirmUserSecret(userId, code)
 
             const mfaUser = await loginMfa(userId, code)
-            setUser(mfaUser)
+            setUser({
+                id: mfaUser.id,
+                username: mfaUser.user,
+                role: mfaUser.role
+            })
 
             navigate("/")
             Messages.success("Login bem-sucedido")

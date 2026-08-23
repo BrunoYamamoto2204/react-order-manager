@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkPermission } from '../controllers/permissionController';
-import { PermissionsType } from '../models/PermissionModel';
+import { PermissionsType } from '../models/permissionModel';
 
 interface AuthenticatedRequest extends Request {
     user?: {

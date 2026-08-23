@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Permission, { PermissionPayload, PermissionsType } from '../models/PermissionModel';
+import Permission, { PermissionPayload, PermissionsType } from '../models/permissionModel';
 
 type CheckPermissionType = {
     role: string, 

@@ -19,6 +19,7 @@ export function NavContainer() {
         const modules = ["orders", "products", "customers", "analytics", "financial"]
         
         const checkPermissions = async () => {
+             await new Promise(resolve => setTimeout(resolve, 2000))
             // Valida se cada módulo é permitido || [true, false, false, ...]
             const results = await Promise.all(
                 modules.map(m => checkPermissionAsync({ role: user?.role!, module: m, permission: "read" }))
@@ -46,6 +47,16 @@ export function NavContainer() {
             mediaQueryMobile.removeEventListener("change", handleMobile)
         }
     },[])
+
+    function NavSkeleton({ count = 4 }: { count?: number }) {
+        return (
+            <>
+                {Array.from({ length: count }).map((_, i) => (
+                    <div key={i} className={styles.skeletonButton} />
+                ))}
+            </>
+        )
+    }
 
     if (isMobile) {
         return(
@@ -109,11 +120,11 @@ export function NavContainer() {
                 <h1>Comanda App</h1>
                 <h2>Gerenciador de Pedidos</h2>
             </div>
-
-            {permissionsLoaded && (  
-                <>
-                    <nav>
-                        <NavButton key="home" icon={<HouseIcon />} sectionName="home" />
+            <nav>
+                <NavButton key="home" icon={<HouseIcon />} sectionName="home" />
+                
+                {permissionsLoaded ? (  
+                    <>
                         {permissions.orders && (
                             <NavButton key="pedidos" icon={<ShoppingCartIcon/>} sectionName="pedidos" />
                         )} 
@@ -129,15 +140,18 @@ export function NavContainer() {
                         {permissions.financial && (
                             <NavButton key="financeiro" icon={<BanknoteIcon />} sectionName="financeiro" />
                         )} 
-                        <NavButton key="permissoes" icon={<ShieldIcon />} sectionName="permissoes" />
-                    </nav>
+                    </>
+                ) : (
+                    <NavSkeleton />
+                )}
 
-                    <NavButton 
-                        icon={<User2Icon />} 
-                        sectionName="conta"
-                    />
-                </>
-            )}
+                <NavButton key="permissoes" icon={<ShieldIcon />} sectionName="permissoes" />
+            </nav>
+
+            <NavButton 
+                icon={<User2Icon />} 
+                sectionName="conta"
+            />
         </div>
     )
 }

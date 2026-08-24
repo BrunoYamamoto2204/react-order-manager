@@ -25,6 +25,7 @@ import { checkPermissionAsync } from "./services/permissionApi";
 import { useEffect, useState } from "react";
 import { MainTemplate } from "./templates/MainTemplate";
 import { Container } from "./components/Container";
+import { PermissionsProvider } from "./context/PermissionsProvider";
 
 type ProtectedRouteType = { 
   children: React.ReactNode, 
@@ -216,9 +217,11 @@ export function App(){
   return(
     <BrowserRouter>  {/*Usar navigate para navergar entre componentes */}
        <AuthProvider> {/* Verifica se há login e se o token é válido */}
-        <MessageContainer > {/*Usar Mensagens do Toastify */}
-          <AppRoutes />
-        </MessageContainer>
+        <PermissionsProvider>
+          <MessageContainer > {/*Usar Mensagens do Toastify */}
+            <AppRoutes />
+          </MessageContainer>
+        </PermissionsProvider>
       </AuthProvider>
     </BrowserRouter>
   )

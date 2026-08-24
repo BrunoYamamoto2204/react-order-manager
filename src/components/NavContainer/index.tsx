@@ -3,36 +3,15 @@ import { NavButton } from "../NavButton";
 
 import styles from "./NavContainer.module.css"
 import { useEffect, useState } from "react";
-import { checkPermissionAsync } from "../../services/permissionApi";
-import { useAuth } from "../../hooks/useAuth";
+import { usePermissions } from "../../hooks/usePermissions";
 
 export function NavContainer() {
-    const { user, readPemissions } = useAuth()
-
     const [ isMobile, setIsMobile ] = useState(false)
     const [ isMenuOpen, setIsMenuOpen ] = useState(false)
 
-    const [ permissions, setPermissions ] = useState<Record<string, boolean>>({})
-    const [ permissionsLoaded, setPermissionsLoaded ] = useState(false)
+    const { permissions, permissionsLoaded } = usePermissions()
     
-    useEffect(() => {
-        const modules = ["orders", "products", "customers", "analytics", "financial"]
-        
-        const checkPermissions = async () => {
-             await new Promise(resolve => setTimeout(resolve, 2000))
-            // Valida se cada módulo é permitido || [true, false, false, ...]
-            const results = await Promise.all(
-                modules.map(m => checkPermissionAsync({ role: user?.role!, module: m, permission: "read" }))
-            )
-
-            //Atribui o módulo ao valor
-            setPermissions(Object.fromEntries(modules.map((m, i) => [m, results[i]])))
-            setPermissionsLoaded(true)
-        }
-
-        checkPermissions()
-    }, [readPemissions])
-
+    // Media Query
     useEffect(() => {
         const mediaQueryMobile = window.matchMedia("(max-width: 1050px)")
         setIsMobile(mediaQueryMobile.matches)
@@ -122,7 +101,7 @@ export function NavContainer() {
             </div>
             <nav>
                 <NavButton key="home" icon={<HouseIcon />} sectionName="home" />
-                
+
                 {permissionsLoaded ? (  
                     <>
                         {permissions.orders && (
